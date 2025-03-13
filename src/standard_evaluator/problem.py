@@ -288,16 +288,13 @@ class OptProblem(BaseModel):
 
     Args:
         name: The name of the problem. Defaults to 'opt_problem'
-        variables: A list of variable objects.
-        tool: Tool used for the evaluator.
-        inputs: Input variables.
-        outputs: Output variables.
-        evaluator_identifier: Unique identifier of the evaluator.
-        version: Version of the evaluator.
-        description: Description of the evaluator.
+        variables: A list of input variables.
+        responses: A list of output variables.
+        objectives: Names of the objective(s) for the optimization problem. Must be either variables or responses defined in the problem..
+        constraints: Names of the constraints of the optimization problem. Must be responses defined in the problem. To define bounds on variables use the variable bounds.
+        description: A description of the optimization problem. To define mathematical symbols use markdown syntax.
         cite: Listing of relevant citations that should be referenced when publishing work that uses this class.
-        component_type: Component type (ExplicitComponent, ImplicitComponent, Group, etc.).
-        options: Additional options for the component.
+        options: Additional options for the problem.
     """
 
     name: str = Field(
