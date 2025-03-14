@@ -19,7 +19,16 @@ report.xml
 .cf-bucket-keys
 experimenting/reports/*
 experimenting/.ipynb_checkpoints/*
+experimenting/problem*_out
+
 docs/source/demos/reports/*
+docs/source/demos/problem*_out
+docs/source/demos/.ipynb_checkpoints/*
+docs/source/demos/after.json
+docs/source/demos/demo_group.json
+docs/source/demos/demo_group_NASA.json
+docs/source/demos/state.h5
+
+
 scripts/
 __main__*
-experimenting/problem*_out
