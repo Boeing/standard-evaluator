@@ -1,8 +1,0 @@
-# Target Python version used for dev
-PYTHON_VERSION_MINOR=9
-PYTHON_IMAGE_DEV=registry.web.boeing.com/math/images/stack/ubuntu20-python39:focal-20220826-3.9.15
-PYTHON_IMAGE_BUILD=registry.web.boeing.com/math/images/utility/ubuntu20-python39-gcc10:focal-20220826-3.9.15-10.3
-KCS_DEPLOYMENT_NAME=my-project-api
-KCS_ROUTE_DEV=https://dev-my-project-api.apps.kcs-pre-ewd.k8s.boeing.com
-KCS_ROUTE_TEST=https://test-my-project-api.apps.kcs-pre-ewd.k8s.boeing.com
-KCS_ROUTE_PROD=https://prod-my-project-api.apps.kcs-prod-ewd.k8s.boeing.com
