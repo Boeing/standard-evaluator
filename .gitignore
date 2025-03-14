@@ -17,6 +17,9 @@ report.xml
 .vscode
 .python-gitlab.cfg
 .cf-bucket-keys
+.project-config
+.project-config-local
+scripts
 experimenting/reports/*
 experimenting/.ipynb_checkpoints/*
 experimenting/problem*_out
