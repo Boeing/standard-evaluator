@@ -17,6 +17,9 @@ report.xml
 .vscode
 .python-gitlab.cfg
 .cf-bucket-keys
+.project-config
+.project-config-local
+scripts
 experimenting/reports/*
 experimenting/.ipynb_checkpoints/*
 experimenting/problem*_out
@@ -28,7 +31,7 @@ docs/source/demos/after.json
 docs/source/demos/demo_group.json
 docs/source/demos/demo_group_NASA.json
 docs/source/demos/state.h5
-
+docs/source/demos/optproblem*.json
 
 scripts/
 __main__*
