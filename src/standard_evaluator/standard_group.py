@@ -37,6 +37,21 @@ class StandardGroup(StandardBase):
         options_list = []
         for subsys in self._subsystems_myproc:
             if isinstance(subsys, StandardBase):
+                options_list.append(subsys.full_options())
+        
+        return opt_dict_unit_merge(options_list)
+
+    def current_options(self) -> OptionsDictionaryUnit:
+        """Return all the current options. 
+        This is a combination between the original options (defaults) and values that
+        were overwritten by the end user.
+
+        Returns:
+            OptionsDictionaryUnit -- The combination of all options
+        """
+        options_list = []
+        for subsys in self._subsystems_myproc:
+            if isinstance(subsys, StandardBase):
                 options_list.append(subsys.current_options())
         
         return opt_dict_unit_merge(options_list)
