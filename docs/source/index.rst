@@ -6,23 +6,21 @@
 Standard Evaluator
 ==================
 
-This is a project to capture ideas for the standard evaluator to be used and implemented as part of the NASA MBSA&E project.
+This project implements the standard evaluator. 
 
 Description
 -----------
-Thoughts and ideas around the standard evaluator.
+This project expands the capabilities of the OpenMDAO components. It was developed under NASA Contract 80GRC023CA045.
 
 Dependencies
 ------------
-Fill in: Add a summary of main dependencies
+This project expands on the NASA OpenMDAO package. 
 
 Contents
 --------
 
 .. toctree::
    :maxdepth: 2
-
-   deliverable_explanations
 
    theory/index
    demos/index

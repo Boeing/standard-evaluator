@@ -1,0 +1,4681 @@
+{
+  "name": "",
+  "inputs": [
+    {
+      "name": "aircraft:canard:area",
+      "units": "ft**2",
+      "description": "canard theoretical area",
+      "options": {}
+    },
+    {
+      "name": "aircraft:canard:thickness_to_chord",
+      "units": "unitless",
+      "description": "canard thickness-chord ratio",
+      "options": {}
+    },
+    {
+      "name": "aircraft:canard:wetted_area_scaler",
+      "units": "unitless",
+      "description": "canard wetted area scaler",
+      "options": {}
+    },
+    {
+      "name": "characteristic_lengths.prep_geom:_Names:CROOT",
+      "units": "unitless",
+      "description": "",
+      "options": {}
+    },
+    {
+      "name": "aircraft:canard:aspect_ratio",
+      "units": "unitless",
+      "description": "canard theoretical aspect ratio",
+      "options": {}
+    },
+    {
+      "name": "aircraft:fuselage:avg_diameter",
+      "units": "ft",
+      "description": "average fuselage diameter",
+      "options": {}
+    },
+    {
+      "name": "aircraft:fuselage:length",
+      "units": "ft",
+      "description": "Define the Fuselage total length. If total_length is not input for a passenger transport, LEAPS will calculate the fuselage length, width and depth and the length of the passenger compartment.",
+      "options": {}
+    },
+    {
+      "name": "aircraft:horizontal_tail:area",
+      "units": "ft**2",
+      "description": "horizontal tail theoretical area; overridden by vol_coeff, if vol_coeff > 0.0",
+      "options": {}
+    },
+    {
+      "name": "aircraft:horizontal_tail:aspect_ratio",
+      "units": "unitless",
+      "description": "horizontal tail theoretical aspect ratio",
+      "options": {}
+    },
+    {
+      "name": "aircraft:horizontal_tail:thickness_to_chord",
+      "units": "unitless",
+      "description": "horizontal tail thickness-chord ratio",
+      "options": {}
+    },
+    {
+      "name": "aircraft:nacelle:avg_diameter",
+      "units": "ft",
+      "description": "Average diameter of engine nacelles for each engine model",
+      "options": {}
+    },
+    {
+      "name": "aircraft:nacelle:avg_length",
+      "units": "ft",
+      "description": "Average length of nacelles for each engine model",
+      "options": {}
+    },
+    {
+      "name": "aircraft:vertical_tail:area",
+      "units": "ft**2",
+      "description": "vertical tail theoretical area (per tail); overridden by vol_coeff if vol_coeff > 0.0",
+      "options": {}
+    },
+    {
+      "name": "aircraft:vertical_tail:aspect_ratio",
+      "units": "unitless",
+      "description": "vertical tail theoretical aspect ratio",
+      "options": {}
+    },
+    {
+      "name": "aircraft:vertical_tail:thickness_to_chord",
+      "units": "unitless",
+      "description": "vertical tail thickness-chord ratio",
+      "options": {}
+    },
+    {
+      "name": "aircraft:wing:area",
+      "units": "ft**2",
+      "description": "reference wing area",
+      "options": {}
+    },
+    {
+      "name": "aircraft:wing:aspect_ratio",
+      "units": "unitless",
+      "description": "ratio of the wing span to its mean chord",
+      "options": {}
+    },
+    {
+      "name": "aircraft:wing:glove_and_bat",
+      "units": "ft**2",
+      "description": "total glove and bat area beyond theoretical wing",
+      "options": {}
+    },
+    {
+      "name": "aircraft:wing:taper_ratio",
+      "units": "unitless",
+      "description": "taper ratio of the wing",
+      "options": {}
+    },
+    {
+      "name": "aircraft:wing:thickness_to_chord",
+      "units": "unitless",
+      "description": "wing thickness-chord ratio (weighted average)",
+      "options": {}
+    },
+    {
+      "name": "fuselage.prep_geom:_Names:CROOTB",
+      "units": "unitless",
+      "description": "",
+      "options": {}
+    },
+    {
+      "name": "fuselage.prep_geom:_Names:CROTVT",
+      "units": "unitless",
+      "description": "",
+      "options": {}
+    },
+    {
+      "name": "fuselage.prep_geom:_Names:CRTHTB",
+      "units": "unitless",
+      "description": "",
+      "options": {}
+    },
+    {
+      "name": "aircraft:fuselage:wetted_area_scaler",
+      "units": "unitless",
+      "description": "fuselage wetted area scaler",
+      "options": {}
+    },
+    {
+      "name": "aircraft:horizontal_tail:vertical_tail_fraction",
+      "units": "unitless",
+      "description": "Define the decimal fraction of vertical tail span where horizontal tail is mounted. Defaults: 0.0 == for body mounted (default for transport with all engines on wing); 1.0 == for T tail (default for transport with multiple engines on fuselage)",
+      "options": {}
+    },
+    {
+      "name": "aircraft:fuselage:max_height",
+      "units": "ft",
+      "description": "maximum fuselage height",
+      "options": {}
+    },
+    {
+      "name": "aircraft:fuselage:max_width",
+      "units": "ft",
+      "description": "maximum fuselage width",
+      "options": {}
+    },
+    {
+      "name": "aircraft:nacelle:wetted_area_scaler",
+      "units": "unitless",
+      "description": "nacelle wetted area scaler for each engine model",
+      "options": {}
+    },
+    {
+      "name": "aircraft:horizontal_tail:taper_ratio",
+      "units": "unitless",
+      "description": "horizontal tail theoretical taper ratio",
+      "options": {}
+    },
+    {
+      "name": "aircraft:vertical_tail:taper_ratio",
+      "units": "unitless",
+      "description": "vertical tail theoretical taper ratio",
+      "options": {}
+    },
+    {
+      "name": "aircraft:wing:span",
+      "units": "ft",
+      "description": "span of main wing",
+      "options": {}
+    },
+    {
+      "name": "tail.prep_geom:_Names:XMULTH",
+      "units": "unitless",
+      "description": "",
+      "options": {}
+    },
+    {
+      "name": "tail.prep_geom:_Names:XMULTV",
+      "units": "unitless",
+      "description": "",
+      "options": {}
+    },
+    {
+      "name": "aircraft:horizontal_tail:wetted_area_scaler",
+      "units": "unitless",
+      "description": "horizontal tail wetted area scaler",
+      "options": {}
+    },
+    {
+      "name": "aircraft:vertical_tail:wetted_area_scaler",
+      "units": "unitless",
+      "description": "vertical tail wetted area scaler",
+      "options": {}
+    },
+    {
+      "name": "aircraft:canard:wetted_area",
+      "units": "ft**2",
+      "description": "canard wetted area",
+      "options": {}
+    },
+    {
+      "name": "aircraft:fuselage:wetted_area",
+      "units": "ft**2",
+      "description": "fuselage wetted area",
+      "options": {}
+    },
+    {
+      "name": "aircraft:horizontal_tail:wetted_area",
+      "units": "ft**2",
+      "description": "horizontal tail wetted area",
+      "options": {}
+    },
+    {
+      "name": "aircraft:nacelle:total_wetted_area",
+      "units": "ft**2",
+      "description": "total nacelles wetted area",
+      "options": {}
+    },
+    {
+      "name": "aircraft:vertical_tail:wetted_area",
+      "units": "ft**2",
+      "description": "vertical tails wetted area",
+      "options": {}
+    },
+    {
+      "name": "aircraft:wing:wetted_area",
+      "units": "ft**2",
+      "description": "wing wetted area",
+      "options": {}
+    },
+    {
+      "name": "wing.prep_geom:_Names:CROOT",
+      "units": "unitless",
+      "description": "",
+      "options": {}
+    },
+    {
+      "name": "wing.prep_geom:_Names:CROOTB",
+      "units": "unitless",
+      "description": "",
+      "options": {}
+    },
+    {
+      "name": "wing.prep_geom:_Names:XDX",
+      "units": "unitless",
+      "description": "",
+      "options": {}
+    },
+    {
+      "name": "wing.prep_geom:_Names:XMULT",
+      "units": "unitless",
+      "description": "",
+      "options": {}
+    },
+    {
+      "name": "aircraft:wing:wetted_area_scaler",
+      "units": "unitless",
+      "description": "wing wetted area scaler",
+      "options": {}
+    }
+  ],
+  "outputs": [
+    {
+      "name": "aircraft:canard:wetted_area",
+      "units": "ft**2",
+      "description": "canard wetted area",
+      "options": {}
+    },
+    {
+      "name": "aircraft:canard:characteristic_length",
+      "units": "ft",
+      "description": "Reynolds characteristic length for the canard",
+      "options": {}
+    },
+    {
+      "name": "aircraft:canard:fineness",
+      "units": "unitless",
+      "description": "canard fineness ratio",
+      "options": {}
+    },
+    {
+      "name": "aircraft:fuselage:characteristic_length",
+      "units": "ft",
+      "description": "Reynolds characteristic length for the fuselage",
+      "options": {}
+    },
+    {
+      "name": "aircraft:fuselage:fineness",
+      "units": "unitless",
+      "description": "fuselage fineness ratio",
+      "options": {}
+    },
+    {
+      "name": "aircraft:horizontal_tail:characteristic_length",
+      "units": "ft",
+      "description": "Reynolds characteristic length for the horizontal tail",
+      "options": {}
+    },
+    {
+      "name": "aircraft:horizontal_tail:fineness",
+      "units": "unitless",
+      "description": "horizontal tail fineness ratio",
+      "options": {}
+    },
+    {
+      "name": "aircraft:nacelle:characteristic_length",
+      "units": "ft",
+      "description": "Reynolds characteristic length for nacelle for each engine model",
+      "options": {}
+    },
+    {
+      "name": "aircraft:nacelle:fineness",
+      "units": "unitless",
+      "description": "nacelle fineness ratio",
+      "options": {}
+    },
+    {
+      "name": "aircraft:vertical_tail:characteristic_length",
+      "units": "ft",
+      "description": "Reynolds characteristic length for the vertical tail",
+      "options": {}
+    },
+    {
+      "name": "aircraft:vertical_tail:fineness",
+      "units": "unitless",
+      "description": "vertical tail fineness ratio",
+      "options": {}
+    },
+    {
+      "name": "aircraft:wing:characteristic_length",
+      "units": "ft",
+      "description": "Reynolds characteristic length for the wing",
+      "options": {}
+    },
+    {
+      "name": "aircraft:wing:fineness",
+      "units": "unitless",
+      "description": "wing fineness ratio",
+      "options": {}
+    },
+    {
+      "name": "aircraft:fuselage:cross_section",
+      "units": "ft**2",
+      "description": "fuselage cross sectional area",
+      "options": {}
+    },
+    {
+      "name": "aircraft:fuselage:diameter_to_wing_span",
+      "units": "unitless",
+      "description": "fuselage diameter to wing span ratio",
+      "options": {}
+    },
+    {
+      "name": "aircraft:fuselage:length_to_diameter",
+      "units": "unitless",
+      "description": "fuselage length to diameter ratio",
+      "options": {}
+    },
+    {
+      "name": "aircraft:fuselage:wetted_area",
+      "units": "ft**2",
+      "description": "fuselage wetted area",
+      "options": {}
+    },
+    {
+      "name": "aircraft:fuselage:avg_diameter",
+      "units": "ft",
+      "description": "average fuselage diameter",
+      "options": {}
+    },
+    {
+      "name": "aircraft:fuselage:planform_area",
+      "units": "ft**2",
+      "description": "fuselage planform area",
+      "options": {}
+    },
+    {
+      "name": "aircraft:nacelle:total_wetted_area",
+      "units": "ft**2",
+      "description": "total nacelles wetted area",
+      "options": {}
+    },
+    {
+      "name": "aircraft:nacelle:wetted_area",
+      "units": "ft**2",
+      "description": "wetted area of a single nacelle for each engine model",
+      "options": {}
+    },
+    {
+      "name": "prelim.prep_geom:_Names:CROOT",
+      "units": "unitless",
+      "description": "",
+      "options": {}
+    },
+    {
+      "name": "prelim.prep_geom:_Names:CROOTB",
+      "units": "unitless",
+      "description": "",
+      "options": {}
+    },
+    {
+      "name": "prelim.prep_geom:_Names:CROTM",
+      "units": "unitless",
+      "description": "",
+      "options": {}
+    },
+    {
+      "name": "prelim.prep_geom:_Names:CROTVT",
+      "units": "unitless",
+      "description": "",
+      "options": {}
+    },
+    {
+      "name": "prelim.prep_geom:_Names:CRTHTB",
+      "units": "unitless",
+      "description": "",
+      "options": {}
+    },
+    {
+      "name": "prelim.prep_geom:_Names:SPANHT",
+      "units": "unitless",
+      "description": "",
+      "options": {}
+    },
+    {
+      "name": "prelim.prep_geom:_Names:SPANVT",
+      "units": "unitless",
+      "description": "",
+      "options": {}
+    },
+    {
+      "name": "prelim.prep_geom:_Names:XDX",
+      "units": "unitless",
+      "description": "",
+      "options": {}
+    },
+    {
+      "name": "prelim.prep_geom:_Names:XMULT",
+      "units": "unitless",
+      "description": "",
+      "options": {}
+    },
+    {
+      "name": "prelim.prep_geom:_Names:XMULTH",
+      "units": "unitless",
+      "description": "",
+      "options": {}
+    },
+    {
+      "name": "prelim.prep_geom:_Names:XMULTV",
+      "units": "unitless",
+      "description": "",
+      "options": {}
+    },
+    {
+      "name": "aircraft:horizontal_tail:wetted_area",
+      "units": "ft**2",
+      "description": "horizontal tail wetted area",
+      "options": {}
+    },
+    {
+      "name": "aircraft:vertical_tail:wetted_area",
+      "units": "ft**2",
+      "description": "vertical tails wetted area",
+      "options": {}
+    },
+    {
+      "name": "aircraft:design:total_wetted_area",
+      "units": "ft**2",
+      "description": "total aircraft wetted area",
+      "options": {}
+    },
+    {
+      "name": "aircraft:wing:wetted_area",
+      "units": "ft**2",
+      "description": "wing wetted area",
+      "options": {}
+    },
+    {
+      "name": "aircraft:wing:aspect_ratio",
+      "units": "unitless",
+      "description": "ratio of the wing span to its mean chord",
+      "options": {}
+    },
+    {
+      "name": "aircraft:canard:area",
+      "units": "ft**2",
+      "description": "",
+      "options": {
+        "tags": {
+          "__set__": [
+            "openmdao:indep_var",
+            "openmdao:allow_desvar"
+          ]
+        }
+      }
+    },
+    {
+      "name": "aircraft:canard:thickness_to_chord",
+      "units": "unitless",
+      "description": "",
+      "options": {
+        "tags": {
+          "__set__": [
+            "openmdao:indep_var",
+            "openmdao:allow_desvar"
+          ]
+        }
+      }
+    },
+    {
+      "name": "aircraft:canard:wetted_area_scaler",
+      "units": "unitless",
+      "description": "",
+      "options": {
+        "tags": {
+          "__set__": [
+            "openmdao:indep_var",
+            "openmdao:allow_desvar"
+          ]
+        }
+      }
+    },
+    {
+      "name": "aircraft:canard:aspect_ratio",
+      "units": "unitless",
+      "description": "",
+      "options": {
+        "tags": {
+          "__set__": [
+            "openmdao:indep_var",
+            "openmdao:allow_desvar"
+          ]
+        }
+      }
+    },
+    {
+      "name": "aircraft:fuselage:length",
+      "units": "ft",
+      "description": "",
+      "options": {
+        "tags": {
+          "__set__": [
+            "openmdao:indep_var",
+            "openmdao:allow_desvar"
+          ]
+        }
+      }
+    },
+    {
+      "name": "aircraft:horizontal_tail:area",
+      "units": "ft**2",
+      "description": "",
+      "options": {
+        "tags": {
+          "__set__": [
+            "openmdao:indep_var",
+            "openmdao:allow_desvar"
+          ]
+        }
+      }
+    },
+    {
+      "name": "aircraft:horizontal_tail:aspect_ratio",
+      "units": "unitless",
+      "description": "",
+      "options": {
+        "tags": {
+          "__set__": [
+            "openmdao:indep_var",
+            "openmdao:allow_desvar"
+          ]
+        }
+      }
+    },
+    {
+      "name": "aircraft:horizontal_tail:thickness_to_chord",
+      "units": "unitless",
+      "description": "",
+      "options": {
+        "tags": {
+          "__set__": [
+            "openmdao:indep_var",
+            "openmdao:allow_desvar"
+          ]
+        }
+      }
+    },
+    {
+      "name": "aircraft:nacelle:avg_diameter",
+      "units": "ft",
+      "description": "",
+      "options": {
+        "tags": {
+          "__set__": [
+            "openmdao:indep_var",
+            "openmdao:allow_desvar"
+          ]
+        }
+      }
+    },
+    {
+      "name": "aircraft:nacelle:avg_length",
+      "units": "ft",
+      "description": "",
+      "options": {
+        "tags": {
+          "__set__": [
+            "openmdao:indep_var",
+            "openmdao:allow_desvar"
+          ]
+        }
+      }
+    },
+    {
+      "name": "aircraft:vertical_tail:area",
+      "units": "ft**2",
+      "description": "",
+      "options": {
+        "tags": {
+          "__set__": [
+            "openmdao:indep_var",
+            "openmdao:allow_desvar"
+          ]
+        }
+      }
+    },
+    {
+      "name": "aircraft:vertical_tail:aspect_ratio",
+      "units": "unitless",
+      "description": "",
+      "options": {
+        "tags": {
+          "__set__": [
+            "openmdao:indep_var",
+            "openmdao:allow_desvar"
+          ]
+        }
+      }
+    },
+    {
+      "name": "aircraft:vertical_tail:thickness_to_chord",
+      "units": "unitless",
+      "description": "",
+      "options": {
+        "tags": {
+          "__set__": [
+            "openmdao:indep_var",
+            "openmdao:allow_desvar"
+          ]
+        }
+      }
+    },
+    {
+      "name": "aircraft:wing:area",
+      "units": "ft**2",
+      "description": "",
+      "options": {
+        "tags": {
+          "__set__": [
+            "openmdao:indep_var",
+            "openmdao:allow_desvar"
+          ]
+        }
+      }
+    },
+    {
+      "name": "aircraft:wing:glove_and_bat",
+      "units": "ft**2",
+      "description": "",
+      "options": {
+        "tags": {
+          "__set__": [
+            "openmdao:indep_var",
+            "openmdao:allow_desvar"
+          ]
+        }
+      }
+    },
+    {
+      "name": "aircraft:wing:taper_ratio",
+      "units": "unitless",
+      "description": "",
+      "options": {
+        "tags": {
+          "__set__": [
+            "openmdao:indep_var",
+            "openmdao:allow_desvar"
+          ]
+        }
+      }
+    },
+    {
+      "name": "aircraft:wing:thickness_to_chord",
+      "units": "unitless",
+      "description": "",
+      "options": {
+        "tags": {
+          "__set__": [
+            "openmdao:indep_var",
+            "openmdao:allow_desvar"
+          ]
+        }
+      }
+    },
+    {
+      "name": "aircraft:fuselage:wetted_area_scaler",
+      "units": "unitless",
+      "description": "",
+      "options": {
+        "tags": {
+          "__set__": [
+            "openmdao:indep_var",
+            "openmdao:allow_desvar"
+          ]
+        }
+      }
+    },
+    {
+      "name": "aircraft:horizontal_tail:vertical_tail_fraction",
+      "units": "unitless",
+      "description": "",
+      "options": {
+        "tags": {
+          "__set__": [
+            "openmdao:indep_var",
+            "openmdao:allow_desvar"
+          ]
+        }
+      }
+    },
+    {
+      "name": "aircraft:fuselage:max_height",
+      "units": "ft",
+      "description": "",
+      "options": {
+        "tags": {
+          "__set__": [
+            "openmdao:indep_var",
+            "openmdao:allow_desvar"
+          ]
+        }
+      }
+    },
+    {
+      "name": "aircraft:fuselage:max_width",
+      "units": "ft",
+      "description": "",
+      "options": {
+        "tags": {
+          "__set__": [
+            "openmdao:indep_var",
+            "openmdao:allow_desvar"
+          ]
+        }
+      }
+    },
+    {
+      "name": "aircraft:nacelle:wetted_area_scaler",
+      "units": "unitless",
+      "description": "",
+      "options": {
+        "tags": {
+          "__set__": [
+            "openmdao:indep_var",
+            "openmdao:allow_desvar"
+          ]
+        }
+      }
+    },
+    {
+      "name": "aircraft:horizontal_tail:taper_ratio",
+      "units": "unitless",
+      "description": "",
+      "options": {
+        "tags": {
+          "__set__": [
+            "openmdao:indep_var",
+            "openmdao:allow_desvar"
+          ]
+        }
+      }
+    },
+    {
+      "name": "aircraft:vertical_tail:taper_ratio",
+      "units": "unitless",
+      "description": "",
+      "options": {
+        "tags": {
+          "__set__": [
+            "openmdao:indep_var",
+            "openmdao:allow_desvar"
+          ]
+        }
+      }
+    },
+    {
+      "name": "aircraft:wing:span",
+      "units": "ft",
+      "description": "",
+      "options": {
+        "tags": {
+          "__set__": [
+            "openmdao:indep_var",
+            "openmdao:allow_desvar"
+          ]
+        }
+      }
+    },
+    {
+      "name": "aircraft:horizontal_tail:wetted_area_scaler",
+      "units": "unitless",
+      "description": "",
+      "options": {
+        "tags": {
+          "__set__": [
+            "openmdao:indep_var",
+            "openmdao:allow_desvar"
+          ]
+        }
+      }
+    },
+    {
+      "name": "aircraft:vertical_tail:wetted_area_scaler",
+      "units": "unitless",
+      "description": "",
+      "options": {
+        "tags": {
+          "__set__": [
+            "openmdao:indep_var",
+            "openmdao:allow_desvar"
+          ]
+        }
+      }
+    },
+    {
+      "name": "aircraft:wing:wetted_area_scaler",
+      "units": "unitless",
+      "description": "",
+      "options": {
+        "tags": {
+          "__set__": [
+            "openmdao:indep_var",
+            "openmdao:allow_desvar"
+          ]
+        }
+      }
+    }
+  ],
+  "cite": "",
+  "tool": "<class '__main__.PreMission'>",
+  "component_type": "Group",
+  "options": {
+    "openmdao_info": {
+      "pathname": "",
+      "iter_count": 1,
+      "iter_count_apply": 0,
+      "iter_count_without_approx": 1
+    },
+    "openmdao_options": {
+      "_dict": {
+        "assembled_jac_type": {
+          "val": "csc",
+          "values": [
+            "csc",
+            "dense"
+          ],
+          "types": null,
+          "desc": "Linear solver(s) in this group or implicit component, if using an assembled jacobian, will use this type.",
+          "upper": null,
+          "lower": null,
+          "check_valid": null,
+          "has_been_set": true,
+          "allow_none": false,
+          "recordable": true,
+          "set_function": null,
+          "deprecation": null
+        },
+        "derivs_method": {
+          "val": null,
+          "values": [
+            "jax",
+            "cs",
+            "fd",
+            null
+          ],
+          "types": null,
+          "desc": "The method to use for computing derivatives",
+          "upper": null,
+          "lower": null,
+          "check_valid": null,
+          "has_been_set": true,
+          "allow_none": true,
+          "recordable": true,
+          "set_function": null,
+          "deprecation": null
+        },
+        "aviary_options": {
+          "val": {
+            "__aviary_values__": {
+              "aircraft:fuselage:num_fuselages": [
+                1,
+                "unitless"
+              ],
+              "aircraft:propulsion:total_num_fuselage_engines": [
+                0,
+                "unitless"
+              ],
+              "aircraft:vertical_tail:num_tails": [
+                1,
+                "unitless"
+              ],
+              "aircraft:wing:span_efficiency_reduction": [
+                false,
+                "unitless"
+              ],
+              "aircraft:engine:num_engines": [
+                {
+                  "__numpy__": "AgAAAA==",
+                  "dtype": "<i4",
+                  "shape": [
+                    1
+                  ]
+                },
+                "unitless"
+              ],
+              "aircraft:propulsion:total_num_engines": [
+                2,
+                "unitless"
+              ]
+            }
+          },
+          "values": null,
+          "types": {
+            "__type__": "<class 'aviary.utils.aviary_values.AviaryValues'>"
+          },
+          "desc": "collection of Aircraft/Mission specific options",
+          "upper": null,
+          "lower": null,
+          "check_valid": null,
+          "has_been_set": true,
+          "allow_none": false,
+          "recordable": true,
+          "set_function": null,
+          "deprecation": null
+        },
+        "auto_order": {
+          "val": false,
+          "values": [
+            true,
+            false
+          ],
+          "types": {
+            "__type__": "<class 'bool'>"
+          },
+          "desc": "If True the order of subsystems is determined automatically based on the dependency graph.  It will not break or reorder cycles.",
+          "upper": null,
+          "lower": null,
+          "check_valid": null,
+          "has_been_set": true,
+          "allow_none": false,
+          "recordable": true,
+          "set_function": null,
+          "deprecation": null
+        }
+      },
+      "_parent_name": "<model> <class PreMission>",
+      "_read_only": false,
+      "_all_recordable": true,
+      "_context_cache": {}
+    }
+  },
+  "component_order": [
+    "prep_geom"
+  ],
+  "components": {
+    "prep_geom": {
+      "name": "prep_geom",
+      "inputs": [
+        {
+          "name": "aircraft:canard:area",
+          "units": "ft**2",
+          "description": "canard theoretical area",
+          "options": {}
+        },
+        {
+          "name": "aircraft:canard:thickness_to_chord",
+          "units": "unitless",
+          "description": "canard thickness-chord ratio",
+          "options": {}
+        },
+        {
+          "name": "aircraft:canard:wetted_area_scaler",
+          "units": "unitless",
+          "description": "canard wetted area scaler",
+          "options": {}
+        },
+        {
+          "name": "characteristic_lengths.prep_geom:_Names:CROOT",
+          "units": "unitless",
+          "description": "",
+          "options": {}
+        },
+        {
+          "name": "aircraft:canard:aspect_ratio",
+          "units": "unitless",
+          "description": "canard theoretical aspect ratio",
+          "options": {}
+        },
+        {
+          "name": "aircraft:fuselage:avg_diameter",
+          "units": "ft",
+          "description": "average fuselage diameter",
+          "options": {}
+        },
+        {
+          "name": "aircraft:fuselage:length",
+          "units": "ft",
+          "description": "Define the Fuselage total length. If total_length is not input for a passenger transport, LEAPS will calculate the fuselage length, width and depth and the length of the passenger compartment.",
+          "options": {}
+        },
+        {
+          "name": "aircraft:horizontal_tail:area",
+          "units": "ft**2",
+          "description": "horizontal tail theoretical area; overridden by vol_coeff, if vol_coeff > 0.0",
+          "options": {}
+        },
+        {
+          "name": "aircraft:horizontal_tail:aspect_ratio",
+          "units": "unitless",
+          "description": "horizontal tail theoretical aspect ratio",
+          "options": {}
+        },
+        {
+          "name": "aircraft:horizontal_tail:thickness_to_chord",
+          "units": "unitless",
+          "description": "horizontal tail thickness-chord ratio",
+          "options": {}
+        },
+        {
+          "name": "aircraft:nacelle:avg_diameter",
+          "units": "ft",
+          "description": "Average diameter of engine nacelles for each engine model",
+          "options": {}
+        },
+        {
+          "name": "aircraft:nacelle:avg_length",
+          "units": "ft",
+          "description": "Average length of nacelles for each engine model",
+          "options": {}
+        },
+        {
+          "name": "aircraft:vertical_tail:area",
+          "units": "ft**2",
+          "description": "vertical tail theoretical area (per tail); overridden by vol_coeff if vol_coeff > 0.0",
+          "options": {}
+        },
+        {
+          "name": "aircraft:vertical_tail:aspect_ratio",
+          "units": "unitless",
+          "description": "vertical tail theoretical aspect ratio",
+          "options": {}
+        },
+        {
+          "name": "aircraft:vertical_tail:thickness_to_chord",
+          "units": "unitless",
+          "description": "vertical tail thickness-chord ratio",
+          "options": {}
+        },
+        {
+          "name": "aircraft:wing:area",
+          "units": "ft**2",
+          "description": "reference wing area",
+          "options": {}
+        },
+        {
+          "name": "aircraft:wing:aspect_ratio",
+          "units": "unitless",
+          "description": "ratio of the wing span to its mean chord",
+          "options": {}
+        },
+        {
+          "name": "aircraft:wing:glove_and_bat",
+          "units": "ft**2",
+          "description": "total glove and bat area beyond theoretical wing",
+          "options": {}
+        },
+        {
+          "name": "aircraft:wing:taper_ratio",
+          "units": "unitless",
+          "description": "taper ratio of the wing",
+          "options": {}
+        },
+        {
+          "name": "aircraft:wing:thickness_to_chord",
+          "units": "unitless",
+          "description": "wing thickness-chord ratio (weighted average)",
+          "options": {}
+        },
+        {
+          "name": "fuselage.prep_geom:_Names:CROOTB",
+          "units": "unitless",
+          "description": "",
+          "options": {}
+        },
+        {
+          "name": "fuselage.prep_geom:_Names:CROTVT",
+          "units": "unitless",
+          "description": "",
+          "options": {}
+        },
+        {
+          "name": "fuselage.prep_geom:_Names:CRTHTB",
+          "units": "unitless",
+          "description": "",
+          "options": {}
+        },
+        {
+          "name": "aircraft:fuselage:wetted_area_scaler",
+          "units": "unitless",
+          "description": "fuselage wetted area scaler",
+          "options": {}
+        },
+        {
+          "name": "aircraft:horizontal_tail:vertical_tail_fraction",
+          "units": "unitless",
+          "description": "Define the decimal fraction of vertical tail span where horizontal tail is mounted. Defaults: 0.0 == for body mounted (default for transport with all engines on wing); 1.0 == for T tail (default for transport with multiple engines on fuselage)",
+          "options": {}
+        },
+        {
+          "name": "aircraft:fuselage:max_height",
+          "units": "ft",
+          "description": "maximum fuselage height",
+          "options": {}
+        },
+        {
+          "name": "aircraft:fuselage:max_width",
+          "units": "ft",
+          "description": "maximum fuselage width",
+          "options": {}
+        },
+        {
+          "name": "aircraft:nacelle:wetted_area_scaler",
+          "units": "unitless",
+          "description": "nacelle wetted area scaler for each engine model",
+          "options": {}
+        },
+        {
+          "name": "aircraft:horizontal_tail:taper_ratio",
+          "units": "unitless",
+          "description": "horizontal tail theoretical taper ratio",
+          "options": {}
+        },
+        {
+          "name": "aircraft:vertical_tail:taper_ratio",
+          "units": "unitless",
+          "description": "vertical tail theoretical taper ratio",
+          "options": {}
+        },
+        {
+          "name": "aircraft:wing:span",
+          "units": "ft",
+          "description": "span of main wing",
+          "options": {}
+        },
+        {
+          "name": "tail.prep_geom:_Names:XMULTH",
+          "units": "unitless",
+          "description": "",
+          "options": {}
+        },
+        {
+          "name": "tail.prep_geom:_Names:XMULTV",
+          "units": "unitless",
+          "description": "",
+          "options": {}
+        },
+        {
+          "name": "aircraft:horizontal_tail:wetted_area_scaler",
+          "units": "unitless",
+          "description": "horizontal tail wetted area scaler",
+          "options": {}
+        },
+        {
+          "name": "aircraft:vertical_tail:wetted_area_scaler",
+          "units": "unitless",
+          "description": "vertical tail wetted area scaler",
+          "options": {}
+        },
+        {
+          "name": "aircraft:canard:wetted_area",
+          "units": "ft**2",
+          "description": "canard wetted area",
+          "options": {}
+        },
+        {
+          "name": "aircraft:fuselage:wetted_area",
+          "units": "ft**2",
+          "description": "fuselage wetted area",
+          "options": {}
+        },
+        {
+          "name": "aircraft:horizontal_tail:wetted_area",
+          "units": "ft**2",
+          "description": "horizontal tail wetted area",
+          "options": {}
+        },
+        {
+          "name": "aircraft:nacelle:total_wetted_area",
+          "units": "ft**2",
+          "description": "total nacelles wetted area",
+          "options": {}
+        },
+        {
+          "name": "aircraft:vertical_tail:wetted_area",
+          "units": "ft**2",
+          "description": "vertical tails wetted area",
+          "options": {}
+        },
+        {
+          "name": "aircraft:wing:wetted_area",
+          "units": "ft**2",
+          "description": "wing wetted area",
+          "options": {}
+        },
+        {
+          "name": "wing.prep_geom:_Names:CROOT",
+          "units": "unitless",
+          "description": "",
+          "options": {}
+        },
+        {
+          "name": "wing.prep_geom:_Names:CROOTB",
+          "units": "unitless",
+          "description": "",
+          "options": {}
+        },
+        {
+          "name": "wing.prep_geom:_Names:XDX",
+          "units": "unitless",
+          "description": "",
+          "options": {}
+        },
+        {
+          "name": "wing.prep_geom:_Names:XMULT",
+          "units": "unitless",
+          "description": "",
+          "options": {}
+        },
+        {
+          "name": "aircraft:wing:wetted_area_scaler",
+          "units": "unitless",
+          "description": "wing wetted area scaler",
+          "options": {}
+        }
+      ],
+      "outputs": [
+        {
+          "name": "aircraft:canard:wetted_area",
+          "units": "ft**2",
+          "description": "canard wetted area",
+          "options": {}
+        },
+        {
+          "name": "aircraft:canard:characteristic_length",
+          "units": "ft",
+          "description": "Reynolds characteristic length for the canard",
+          "options": {}
+        },
+        {
+          "name": "aircraft:canard:fineness",
+          "units": "unitless",
+          "description": "canard fineness ratio",
+          "options": {}
+        },
+        {
+          "name": "aircraft:fuselage:characteristic_length",
+          "units": "ft",
+          "description": "Reynolds characteristic length for the fuselage",
+          "options": {}
+        },
+        {
+          "name": "aircraft:fuselage:fineness",
+          "units": "unitless",
+          "description": "fuselage fineness ratio",
+          "options": {}
+        },
+        {
+          "name": "aircraft:horizontal_tail:characteristic_length",
+          "units": "ft",
+          "description": "Reynolds characteristic length for the horizontal tail",
+          "options": {}
+        },
+        {
+          "name": "aircraft:horizontal_tail:fineness",
+          "units": "unitless",
+          "description": "horizontal tail fineness ratio",
+          "options": {}
+        },
+        {
+          "name": "aircraft:nacelle:characteristic_length",
+          "units": "ft",
+          "description": "Reynolds characteristic length for nacelle for each engine model",
+          "options": {}
+        },
+        {
+          "name": "aircraft:nacelle:fineness",
+          "units": "unitless",
+          "description": "nacelle fineness ratio",
+          "options": {}
+        },
+        {
+          "name": "aircraft:vertical_tail:characteristic_length",
+          "units": "ft",
+          "description": "Reynolds characteristic length for the vertical tail",
+          "options": {}
+        },
+        {
+          "name": "aircraft:vertical_tail:fineness",
+          "units": "unitless",
+          "description": "vertical tail fineness ratio",
+          "options": {}
+        },
+        {
+          "name": "aircraft:wing:characteristic_length",
+          "units": "ft",
+          "description": "Reynolds characteristic length for the wing",
+          "options": {}
+        },
+        {
+          "name": "aircraft:wing:fineness",
+          "units": "unitless",
+          "description": "wing fineness ratio",
+          "options": {}
+        },
+        {
+          "name": "aircraft:fuselage:cross_section",
+          "units": "ft**2",
+          "description": "fuselage cross sectional area",
+          "options": {}
+        },
+        {
+          "name": "aircraft:fuselage:diameter_to_wing_span",
+          "units": "unitless",
+          "description": "fuselage diameter to wing span ratio",
+          "options": {}
+        },
+        {
+          "name": "aircraft:fuselage:length_to_diameter",
+          "units": "unitless",
+          "description": "fuselage length to diameter ratio",
+          "options": {}
+        },
+        {
+          "name": "aircraft:fuselage:wetted_area",
+          "units": "ft**2",
+          "description": "fuselage wetted area",
+          "options": {}
+        },
+        {
+          "name": "aircraft:fuselage:avg_diameter",
+          "units": "ft",
+          "description": "average fuselage diameter",
+          "options": {}
+        },
+        {
+          "name": "aircraft:fuselage:planform_area",
+          "units": "ft**2",
+          "description": "fuselage planform area",
+          "options": {}
+        },
+        {
+          "name": "aircraft:nacelle:total_wetted_area",
+          "units": "ft**2",
+          "description": "total nacelles wetted area",
+          "options": {}
+        },
+        {
+          "name": "aircraft:nacelle:wetted_area",
+          "units": "ft**2",
+          "description": "wetted area of a single nacelle for each engine model",
+          "options": {}
+        },
+        {
+          "name": "prelim.prep_geom:_Names:CROOT",
+          "units": "unitless",
+          "description": "",
+          "options": {}
+        },
+        {
+          "name": "prelim.prep_geom:_Names:CROOTB",
+          "units": "unitless",
+          "description": "",
+          "options": {}
+        },
+        {
+          "name": "prelim.prep_geom:_Names:CROTM",
+          "units": "unitless",
+          "description": "",
+          "options": {}
+        },
+        {
+          "name": "prelim.prep_geom:_Names:CROTVT",
+          "units": "unitless",
+          "description": "",
+          "options": {}
+        },
+        {
+          "name": "prelim.prep_geom:_Names:CRTHTB",
+          "units": "unitless",
+          "description": "",
+          "options": {}
+        },
+        {
+          "name": "prelim.prep_geom:_Names:SPANHT",
+          "units": "unitless",
+          "description": "",
+          "options": {}
+        },
+        {
+          "name": "prelim.prep_geom:_Names:SPANVT",
+          "units": "unitless",
+          "description": "",
+          "options": {}
+        },
+        {
+          "name": "prelim.prep_geom:_Names:XDX",
+          "units": "unitless",
+          "description": "",
+          "options": {}
+        },
+        {
+          "name": "prelim.prep_geom:_Names:XMULT",
+          "units": "unitless",
+          "description": "",
+          "options": {}
+        },
+        {
+          "name": "prelim.prep_geom:_Names:XMULTH",
+          "units": "unitless",
+          "description": "",
+          "options": {}
+        },
+        {
+          "name": "prelim.prep_geom:_Names:XMULTV",
+          "units": "unitless",
+          "description": "",
+          "options": {}
+        },
+        {
+          "name": "aircraft:horizontal_tail:wetted_area",
+          "units": "ft**2",
+          "description": "horizontal tail wetted area",
+          "options": {}
+        },
+        {
+          "name": "aircraft:vertical_tail:wetted_area",
+          "units": "ft**2",
+          "description": "vertical tails wetted area",
+          "options": {}
+        },
+        {
+          "name": "aircraft:design:total_wetted_area",
+          "units": "ft**2",
+          "description": "total aircraft wetted area",
+          "options": {}
+        },
+        {
+          "name": "aircraft:wing:wetted_area",
+          "units": "ft**2",
+          "description": "wing wetted area",
+          "options": {}
+        },
+        {
+          "name": "aircraft:wing:aspect_ratio",
+          "units": "unitless",
+          "description": "ratio of the wing span to its mean chord",
+          "options": {}
+        }
+      ],
+      "cite": "",
+      "tool": "<class 'aviary.subsystems.geometry.flops_based.prep_geom.PrepGeom'>",
+      "component_type": "Group",
+      "options": {
+        "openmdao_info": {
+          "pathname": "prep_geom",
+          "iter_count": 1,
+          "iter_count_apply": 0,
+          "iter_count_without_approx": 1
+        },
+        "openmdao_options": {
+          "_dict": {
+            "assembled_jac_type": {
+              "val": "csc",
+              "values": [
+                "csc",
+                "dense"
+              ],
+              "types": null,
+              "desc": "Linear solver(s) in this group or implicit component, if using an assembled jacobian, will use this type.",
+              "upper": null,
+              "lower": null,
+              "check_valid": null,
+              "has_been_set": true,
+              "allow_none": false,
+              "recordable": true,
+              "set_function": null,
+              "deprecation": null
+            },
+            "derivs_method": {
+              "val": null,
+              "values": [
+                "jax",
+                "cs",
+                "fd",
+                null
+              ],
+              "types": null,
+              "desc": "The method to use for computing derivatives",
+              "upper": null,
+              "lower": null,
+              "check_valid": null,
+              "has_been_set": true,
+              "allow_none": true,
+              "recordable": true,
+              "set_function": null,
+              "deprecation": null
+            },
+            "auto_order": {
+              "val": false,
+              "values": [
+                true,
+                false
+              ],
+              "types": {
+                "__type__": "<class 'bool'>"
+              },
+              "desc": "If True the order of subsystems is determined automatically based on the dependency graph.  It will not break or reorder cycles.",
+              "upper": null,
+              "lower": null,
+              "check_valid": null,
+              "has_been_set": true,
+              "allow_none": false,
+              "recordable": true,
+              "set_function": null,
+              "deprecation": null
+            }
+          },
+          "_parent_name": "'prep_geom' <class PrepGeom>",
+          "_read_only": false,
+          "_all_recordable": true,
+          "_context_cache": {}
+        }
+      },
+      "component_order": [
+        "fuselage_prelim",
+        "wing_prelim",
+        "prelim",
+        "wing",
+        "tail",
+        "fuselage",
+        "nacelles",
+        "canard",
+        "characteristic_lengths",
+        "total_wetted_area"
+      ],
+      "components": {
+        "fuselage_prelim": {
+          "name": "fuselage_prelim",
+          "inputs": [
+            {
+              "name": "aircraft:fuselage:length",
+              "units": "ft",
+              "description": "Define the Fuselage total length. If total_length is not input for a passenger transport, LEAPS will calculate the fuselage length, width and depth and the length of the passenger compartment.",
+              "options": {}
+            },
+            {
+              "name": "aircraft:fuselage:max_height",
+              "units": "ft",
+              "description": "maximum fuselage height",
+              "options": {}
+            },
+            {
+              "name": "aircraft:fuselage:max_width",
+              "units": "ft",
+              "description": "maximum fuselage width",
+              "options": {}
+            }
+          ],
+          "outputs": [
+            {
+              "name": "aircraft:fuselage:avg_diameter",
+              "units": "ft",
+              "description": "average fuselage diameter",
+              "options": {}
+            },
+            {
+              "name": "aircraft:fuselage:planform_area",
+              "units": "ft**2",
+              "description": "fuselage planform area",
+              "options": {}
+            }
+          ],
+          "cite": "",
+          "tool": "<class 'aviary.subsystems.geometry.flops_based.fuselage.FuselagePrelim'>",
+          "component_type": "ExplicitComponent",
+          "options": {
+            "openmdao_info": {
+              "pathname": "prep_geom.fuselage_prelim",
+              "iter_count": 1,
+              "iter_count_apply": 0,
+              "iter_count_without_approx": 1
+            },
+            "openmdao_options": {
+              "_dict": {
+                "derivs_method": {
+                  "val": null,
+                  "values": [
+                    "jax",
+                    "cs",
+                    "fd",
+                    null
+                  ],
+                  "types": null,
+                  "desc": "The method to use for computing derivatives",
+                  "upper": null,
+                  "lower": null,
+                  "check_valid": null,
+                  "has_been_set": true,
+                  "allow_none": true,
+                  "recordable": true,
+                  "set_function": null,
+                  "deprecation": null
+                },
+                "distributed": {
+                  "val": false,
+                  "values": [
+                    true,
+                    false
+                  ],
+                  "types": {
+                    "__type__": "<class 'bool'>"
+                  },
+                  "desc": "If True, set all variables in this component as distributed across multiple processes",
+                  "upper": null,
+                  "lower": null,
+                  "check_valid": null,
+                  "has_been_set": true,
+                  "allow_none": false,
+                  "recordable": true,
+                  "set_function": null,
+                  "deprecation": null
+                },
+                "run_root_only": {
+                  "val": false,
+                  "values": [
+                    true,
+                    false
+                  ],
+                  "types": {
+                    "__type__": "<class 'bool'>"
+                  },
+                  "desc": "If True, call compute, compute_partials, linearize, apply_linear, apply_nonlinear, and compute_jacvec_product only on rank 0 and broadcast the results to the other ranks.",
+                  "upper": null,
+                  "lower": null,
+                  "check_valid": null,
+                  "has_been_set": true,
+                  "allow_none": false,
+                  "recordable": true,
+                  "set_function": null,
+                  "deprecation": null
+                },
+                "always_opt": {
+                  "val": false,
+                  "values": [
+                    true,
+                    false
+                  ],
+                  "types": {
+                    "__type__": "<class 'bool'>"
+                  },
+                  "desc": "If True, force nonlinear operations on this component to be included in the optimization loop even if this component is not relevant to the design variables and responses.",
+                  "upper": null,
+                  "lower": null,
+                  "check_valid": null,
+                  "has_been_set": true,
+                  "allow_none": false,
+                  "recordable": true,
+                  "set_function": null,
+                  "deprecation": null
+                },
+                "use_jit": {
+                  "val": true,
+                  "values": [
+                    true,
+                    false
+                  ],
+                  "types": {
+                    "__type__": "<class 'bool'>"
+                  },
+                  "desc": "If True, attempt to use jit on compute_primal, assuming jax or some other AD package is active.",
+                  "upper": null,
+                  "lower": null,
+                  "check_valid": null,
+                  "has_been_set": true,
+                  "allow_none": false,
+                  "recordable": true,
+                  "set_function": null,
+                  "deprecation": null
+                }
+              },
+              "_parent_name": "'prep_geom.fuselage_prelim' <class FuselagePrelim>",
+              "_read_only": false,
+              "_all_recordable": true,
+              "_context_cache": {}
+            }
+          }
+        },
+        "wing_prelim": {
+          "name": "wing_prelim",
+          "inputs": [
+            {
+              "name": "aircraft:wing:area",
+              "units": "ft**2",
+              "description": "reference wing area",
+              "options": {}
+            },
+            {
+              "name": "aircraft:wing:glove_and_bat",
+              "units": "ft**2",
+              "description": "total glove and bat area beyond theoretical wing",
+              "options": {}
+            },
+            {
+              "name": "aircraft:wing:span",
+              "units": "ft",
+              "description": "span of main wing",
+              "options": {}
+            }
+          ],
+          "outputs": [
+            {
+              "name": "aircraft:wing:aspect_ratio",
+              "units": "unitless",
+              "description": "ratio of the wing span to its mean chord",
+              "options": {}
+            }
+          ],
+          "cite": "",
+          "tool": "<class 'aviary.subsystems.geometry.flops_based.wing.WingPrelim'>",
+          "component_type": "ExplicitComponent",
+          "options": {
+            "openmdao_info": {
+              "pathname": "prep_geom.wing_prelim",
+              "iter_count": 1,
+              "iter_count_apply": 0,
+              "iter_count_without_approx": 1
+            },
+            "openmdao_options": {
+              "_dict": {
+                "derivs_method": {
+                  "val": null,
+                  "values": [
+                    "jax",
+                    "cs",
+                    "fd",
+                    null
+                  ],
+                  "types": null,
+                  "desc": "The method to use for computing derivatives",
+                  "upper": null,
+                  "lower": null,
+                  "check_valid": null,
+                  "has_been_set": true,
+                  "allow_none": true,
+                  "recordable": true,
+                  "set_function": null,
+                  "deprecation": null
+                },
+                "distributed": {
+                  "val": false,
+                  "values": [
+                    true,
+                    false
+                  ],
+                  "types": {
+                    "__type__": "<class 'bool'>"
+                  },
+                  "desc": "If True, set all variables in this component as distributed across multiple processes",
+                  "upper": null,
+                  "lower": null,
+                  "check_valid": null,
+                  "has_been_set": true,
+                  "allow_none": false,
+                  "recordable": true,
+                  "set_function": null,
+                  "deprecation": null
+                },
+                "run_root_only": {
+                  "val": false,
+                  "values": [
+                    true,
+                    false
+                  ],
+                  "types": {
+                    "__type__": "<class 'bool'>"
+                  },
+                  "desc": "If True, call compute, compute_partials, linearize, apply_linear, apply_nonlinear, and compute_jacvec_product only on rank 0 and broadcast the results to the other ranks.",
+                  "upper": null,
+                  "lower": null,
+                  "check_valid": null,
+                  "has_been_set": true,
+                  "allow_none": false,
+                  "recordable": true,
+                  "set_function": null,
+                  "deprecation": null
+                },
+                "always_opt": {
+                  "val": false,
+                  "values": [
+                    true,
+                    false
+                  ],
+                  "types": {
+                    "__type__": "<class 'bool'>"
+                  },
+                  "desc": "If True, force nonlinear operations on this component to be included in the optimization loop even if this component is not relevant to the design variables and responses.",
+                  "upper": null,
+                  "lower": null,
+                  "check_valid": null,
+                  "has_been_set": true,
+                  "allow_none": false,
+                  "recordable": true,
+                  "set_function": null,
+                  "deprecation": null
+                },
+                "use_jit": {
+                  "val": true,
+                  "values": [
+                    true,
+                    false
+                  ],
+                  "types": {
+                    "__type__": "<class 'bool'>"
+                  },
+                  "desc": "If True, attempt to use jit on compute_primal, assuming jax or some other AD package is active.",
+                  "upper": null,
+                  "lower": null,
+                  "check_valid": null,
+                  "has_been_set": true,
+                  "allow_none": false,
+                  "recordable": true,
+                  "set_function": null,
+                  "deprecation": null
+                }
+              },
+              "_parent_name": "'prep_geom.wing_prelim' <class WingPrelim>",
+              "_read_only": false,
+              "_all_recordable": true,
+              "_context_cache": {}
+            }
+          }
+        },
+        "prelim": {
+          "name": "prelim",
+          "inputs": [
+            {
+              "name": "aircraft:fuselage:avg_diameter",
+              "units": "ft",
+              "description": "average fuselage diameter",
+              "options": {}
+            },
+            {
+              "name": "aircraft:fuselage:max_width",
+              "units": "ft",
+              "description": "maximum fuselage width",
+              "options": {}
+            },
+            {
+              "name": "aircraft:horizontal_tail:area",
+              "units": "ft**2",
+              "description": "horizontal tail theoretical area; overridden by vol_coeff, if vol_coeff > 0.0",
+              "options": {}
+            },
+            {
+              "name": "aircraft:horizontal_tail:aspect_ratio",
+              "units": "unitless",
+              "description": "horizontal tail theoretical aspect ratio",
+              "options": {}
+            },
+            {
+              "name": "aircraft:horizontal_tail:taper_ratio",
+              "units": "unitless",
+              "description": "horizontal tail theoretical taper ratio",
+              "options": {}
+            },
+            {
+              "name": "aircraft:horizontal_tail:thickness_to_chord",
+              "units": "unitless",
+              "description": "horizontal tail thickness-chord ratio",
+              "options": {}
+            },
+            {
+              "name": "aircraft:vertical_tail:area",
+              "units": "ft**2",
+              "description": "vertical tail theoretical area (per tail); overridden by vol_coeff if vol_coeff > 0.0",
+              "options": {}
+            },
+            {
+              "name": "aircraft:vertical_tail:aspect_ratio",
+              "units": "unitless",
+              "description": "vertical tail theoretical aspect ratio",
+              "options": {}
+            },
+            {
+              "name": "aircraft:vertical_tail:taper_ratio",
+              "units": "unitless",
+              "description": "vertical tail theoretical taper ratio",
+              "options": {}
+            },
+            {
+              "name": "aircraft:vertical_tail:thickness_to_chord",
+              "units": "unitless",
+              "description": "vertical tail thickness-chord ratio",
+              "options": {}
+            },
+            {
+              "name": "aircraft:wing:area",
+              "units": "ft**2",
+              "description": "reference wing area",
+              "options": {}
+            },
+            {
+              "name": "aircraft:wing:glove_and_bat",
+              "units": "ft**2",
+              "description": "total glove and bat area beyond theoretical wing",
+              "options": {}
+            },
+            {
+              "name": "aircraft:wing:span",
+              "units": "ft",
+              "description": "span of main wing",
+              "options": {}
+            },
+            {
+              "name": "aircraft:wing:taper_ratio",
+              "units": "unitless",
+              "description": "taper ratio of the wing",
+              "options": {}
+            },
+            {
+              "name": "aircraft:wing:thickness_to_chord",
+              "units": "unitless",
+              "description": "wing thickness-chord ratio (weighted average)",
+              "options": {}
+            }
+          ],
+          "outputs": [
+            {
+              "name": "prep_geom:_Names:CROOT",
+              "units": "unitless",
+              "description": "",
+              "options": {}
+            },
+            {
+              "name": "prep_geom:_Names:CROOTB",
+              "units": "unitless",
+              "description": "",
+              "options": {}
+            },
+            {
+              "name": "prep_geom:_Names:CROTM",
+              "units": "unitless",
+              "description": "",
+              "options": {}
+            },
+            {
+              "name": "prep_geom:_Names:CROTVT",
+              "units": "unitless",
+              "description": "",
+              "options": {}
+            },
+            {
+              "name": "prep_geom:_Names:CRTHTB",
+              "units": "unitless",
+              "description": "",
+              "options": {}
+            },
+            {
+              "name": "prep_geom:_Names:SPANHT",
+              "units": "unitless",
+              "description": "",
+              "options": {}
+            },
+            {
+              "name": "prep_geom:_Names:SPANVT",
+              "units": "unitless",
+              "description": "",
+              "options": {}
+            },
+            {
+              "name": "prep_geom:_Names:XDX",
+              "units": "unitless",
+              "description": "",
+              "options": {}
+            },
+            {
+              "name": "prep_geom:_Names:XMULT",
+              "units": "unitless",
+              "description": "",
+              "options": {}
+            },
+            {
+              "name": "prep_geom:_Names:XMULTH",
+              "units": "unitless",
+              "description": "",
+              "options": {}
+            },
+            {
+              "name": "prep_geom:_Names:XMULTV",
+              "units": "unitless",
+              "description": "",
+              "options": {}
+            }
+          ],
+          "cite": "",
+          "tool": "<class 'aviary.subsystems.geometry.flops_based.prep_geom._Prelim'>",
+          "component_type": "ExplicitComponent",
+          "options": {
+            "openmdao_info": {
+              "pathname": "prep_geom.prelim",
+              "iter_count": 1,
+              "iter_count_apply": 0,
+              "iter_count_without_approx": 1
+            },
+            "openmdao_options": {
+              "_dict": {
+                "derivs_method": {
+                  "val": null,
+                  "values": [
+                    "jax",
+                    "cs",
+                    "fd",
+                    null
+                  ],
+                  "types": null,
+                  "desc": "The method to use for computing derivatives",
+                  "upper": null,
+                  "lower": null,
+                  "check_valid": null,
+                  "has_been_set": true,
+                  "allow_none": true,
+                  "recordable": true,
+                  "set_function": null,
+                  "deprecation": null
+                },
+                "distributed": {
+                  "val": false,
+                  "values": [
+                    true,
+                    false
+                  ],
+                  "types": {
+                    "__type__": "<class 'bool'>"
+                  },
+                  "desc": "If True, set all variables in this component as distributed across multiple processes",
+                  "upper": null,
+                  "lower": null,
+                  "check_valid": null,
+                  "has_been_set": true,
+                  "allow_none": false,
+                  "recordable": true,
+                  "set_function": null,
+                  "deprecation": null
+                },
+                "run_root_only": {
+                  "val": false,
+                  "values": [
+                    true,
+                    false
+                  ],
+                  "types": {
+                    "__type__": "<class 'bool'>"
+                  },
+                  "desc": "If True, call compute, compute_partials, linearize, apply_linear, apply_nonlinear, and compute_jacvec_product only on rank 0 and broadcast the results to the other ranks.",
+                  "upper": null,
+                  "lower": null,
+                  "check_valid": null,
+                  "has_been_set": true,
+                  "allow_none": false,
+                  "recordable": true,
+                  "set_function": null,
+                  "deprecation": null
+                },
+                "always_opt": {
+                  "val": false,
+                  "values": [
+                    true,
+                    false
+                  ],
+                  "types": {
+                    "__type__": "<class 'bool'>"
+                  },
+                  "desc": "If True, force nonlinear operations on this component to be included in the optimization loop even if this component is not relevant to the design variables and responses.",
+                  "upper": null,
+                  "lower": null,
+                  "check_valid": null,
+                  "has_been_set": true,
+                  "allow_none": false,
+                  "recordable": true,
+                  "set_function": null,
+                  "deprecation": null
+                },
+                "use_jit": {
+                  "val": true,
+                  "values": [
+                    true,
+                    false
+                  ],
+                  "types": {
+                    "__type__": "<class 'bool'>"
+                  },
+                  "desc": "If True, attempt to use jit on compute_primal, assuming jax or some other AD package is active.",
+                  "upper": null,
+                  "lower": null,
+                  "check_valid": null,
+                  "has_been_set": true,
+                  "allow_none": false,
+                  "recordable": true,
+                  "set_function": null,
+                  "deprecation": null
+                },
+                "aircraft:wing:span_efficiency_reduction": {
+                  "val": false,
+                  "values": [
+                    true,
+                    false
+                  ],
+                  "types": {
+                    "__type__": "<class 'bool'>"
+                  },
+                  "desc": "Define a switch for span efficiency reduction for extreme taper ratios: True == a span efficiency factor (*wing_span_efficiency_factor0*) is calculated based on wing taper ratio and aspect ratio; False == a span efficiency factor (*wing_span_efficiency_factor0*) is set to 1.0.",
+                  "upper": null,
+                  "lower": null,
+                  "check_valid": null,
+                  "has_been_set": true,
+                  "allow_none": false,
+                  "recordable": true,
+                  "set_function": null,
+                  "deprecation": null
+                }
+              },
+              "_parent_name": "'prep_geom.prelim' <class _Prelim>",
+              "_read_only": false,
+              "_all_recordable": true,
+              "_context_cache": {}
+            }
+          }
+        },
+        "wing": {
+          "name": "wing",
+          "inputs": [
+            {
+              "name": "prep_geom:_Names:CROOT",
+              "units": "unitless",
+              "description": "",
+              "options": {}
+            },
+            {
+              "name": "prep_geom:_Names:CROOTB",
+              "units": "unitless",
+              "description": "",
+              "options": {}
+            },
+            {
+              "name": "prep_geom:_Names:XDX",
+              "units": "unitless",
+              "description": "",
+              "options": {}
+            },
+            {
+              "name": "prep_geom:_Names:XMULT",
+              "units": "unitless",
+              "description": "",
+              "options": {}
+            },
+            {
+              "name": "aircraft:wing:area",
+              "units": "ft**2",
+              "description": "reference wing area",
+              "options": {}
+            },
+            {
+              "name": "aircraft:wing:wetted_area_scaler",
+              "units": "unitless",
+              "description": "wing wetted area scaler",
+              "options": {}
+            }
+          ],
+          "outputs": [
+            {
+              "name": "aircraft:wing:wetted_area",
+              "units": "ft**2",
+              "description": "wing wetted area",
+              "options": {}
+            }
+          ],
+          "cite": "",
+          "tool": "<class 'aviary.subsystems.geometry.flops_based.prep_geom._Wing'>",
+          "component_type": "ExplicitComponent",
+          "options": {
+            "openmdao_info": {
+              "pathname": "prep_geom.wing",
+              "iter_count": 1,
+              "iter_count_apply": 0,
+              "iter_count_without_approx": 1
+            },
+            "openmdao_options": {
+              "_dict": {
+                "derivs_method": {
+                  "val": null,
+                  "values": [
+                    "jax",
+                    "cs",
+                    "fd",
+                    null
+                  ],
+                  "types": null,
+                  "desc": "The method to use for computing derivatives",
+                  "upper": null,
+                  "lower": null,
+                  "check_valid": null,
+                  "has_been_set": true,
+                  "allow_none": true,
+                  "recordable": true,
+                  "set_function": null,
+                  "deprecation": null
+                },
+                "distributed": {
+                  "val": false,
+                  "values": [
+                    true,
+                    false
+                  ],
+                  "types": {
+                    "__type__": "<class 'bool'>"
+                  },
+                  "desc": "If True, set all variables in this component as distributed across multiple processes",
+                  "upper": null,
+                  "lower": null,
+                  "check_valid": null,
+                  "has_been_set": true,
+                  "allow_none": false,
+                  "recordable": true,
+                  "set_function": null,
+                  "deprecation": null
+                },
+                "run_root_only": {
+                  "val": false,
+                  "values": [
+                    true,
+                    false
+                  ],
+                  "types": {
+                    "__type__": "<class 'bool'>"
+                  },
+                  "desc": "If True, call compute, compute_partials, linearize, apply_linear, apply_nonlinear, and compute_jacvec_product only on rank 0 and broadcast the results to the other ranks.",
+                  "upper": null,
+                  "lower": null,
+                  "check_valid": null,
+                  "has_been_set": true,
+                  "allow_none": false,
+                  "recordable": true,
+                  "set_function": null,
+                  "deprecation": null
+                },
+                "always_opt": {
+                  "val": false,
+                  "values": [
+                    true,
+                    false
+                  ],
+                  "types": {
+                    "__type__": "<class 'bool'>"
+                  },
+                  "desc": "If True, force nonlinear operations on this component to be included in the optimization loop even if this component is not relevant to the design variables and responses.",
+                  "upper": null,
+                  "lower": null,
+                  "check_valid": null,
+                  "has_been_set": true,
+                  "allow_none": false,
+                  "recordable": true,
+                  "set_function": null,
+                  "deprecation": null
+                },
+                "use_jit": {
+                  "val": true,
+                  "values": [
+                    true,
+                    false
+                  ],
+                  "types": {
+                    "__type__": "<class 'bool'>"
+                  },
+                  "desc": "If True, attempt to use jit on compute_primal, assuming jax or some other AD package is active.",
+                  "upper": null,
+                  "lower": null,
+                  "check_valid": null,
+                  "has_been_set": true,
+                  "allow_none": false,
+                  "recordable": true,
+                  "set_function": null,
+                  "deprecation": null
+                },
+                "aircraft:fuselage:num_fuselages": {
+                  "val": 1,
+                  "values": null,
+                  "types": {
+                    "__type__": "<class 'int'>"
+                  },
+                  "desc": "number of fuselages",
+                  "upper": null,
+                  "lower": null,
+                  "check_valid": null,
+                  "has_been_set": true,
+                  "allow_none": false,
+                  "recordable": true,
+                  "set_function": null,
+                  "deprecation": null
+                }
+              },
+              "_parent_name": "'prep_geom.wing' <class _Wing>",
+              "_read_only": false,
+              "_all_recordable": true,
+              "_context_cache": {}
+            }
+          }
+        },
+        "tail": {
+          "name": "tail",
+          "inputs": [
+            {
+              "name": "prep_geom:_Names:XMULTH",
+              "units": "unitless",
+              "description": "",
+              "options": {}
+            },
+            {
+              "name": "prep_geom:_Names:XMULTV",
+              "units": "unitless",
+              "description": "",
+              "options": {}
+            },
+            {
+              "name": "aircraft:horizontal_tail:area",
+              "units": "ft**2",
+              "description": "horizontal tail theoretical area; overridden by vol_coeff, if vol_coeff > 0.0",
+              "options": {}
+            },
+            {
+              "name": "aircraft:horizontal_tail:vertical_tail_fraction",
+              "units": "unitless",
+              "description": "Define the decimal fraction of vertical tail span where horizontal tail is mounted. Defaults: 0.0 == for body mounted (default for transport with all engines on wing); 1.0 == for T tail (default for transport with multiple engines on fuselage)",
+              "options": {}
+            },
+            {
+              "name": "aircraft:horizontal_tail:wetted_area_scaler",
+              "units": "unitless",
+              "description": "horizontal tail wetted area scaler",
+              "options": {}
+            },
+            {
+              "name": "aircraft:vertical_tail:area",
+              "units": "ft**2",
+              "description": "vertical tail theoretical area (per tail); overridden by vol_coeff if vol_coeff > 0.0",
+              "options": {}
+            },
+            {
+              "name": "aircraft:vertical_tail:wetted_area_scaler",
+              "units": "unitless",
+              "description": "vertical tail wetted area scaler",
+              "options": {}
+            }
+          ],
+          "outputs": [
+            {
+              "name": "aircraft:horizontal_tail:wetted_area",
+              "units": "ft**2",
+              "description": "horizontal tail wetted area",
+              "options": {}
+            },
+            {
+              "name": "aircraft:vertical_tail:wetted_area",
+              "units": "ft**2",
+              "description": "vertical tails wetted area",
+              "options": {}
+            }
+          ],
+          "cite": "",
+          "tool": "<class 'aviary.subsystems.geometry.flops_based.prep_geom._Tail'>",
+          "component_type": "ExplicitComponent",
+          "options": {
+            "openmdao_info": {
+              "pathname": "prep_geom.tail",
+              "iter_count": 1,
+              "iter_count_apply": 0,
+              "iter_count_without_approx": 1
+            },
+            "openmdao_options": {
+              "_dict": {
+                "derivs_method": {
+                  "val": null,
+                  "values": [
+                    "jax",
+                    "cs",
+                    "fd",
+                    null
+                  ],
+                  "types": null,
+                  "desc": "The method to use for computing derivatives",
+                  "upper": null,
+                  "lower": null,
+                  "check_valid": null,
+                  "has_been_set": true,
+                  "allow_none": true,
+                  "recordable": true,
+                  "set_function": null,
+                  "deprecation": null
+                },
+                "distributed": {
+                  "val": false,
+                  "values": [
+                    true,
+                    false
+                  ],
+                  "types": {
+                    "__type__": "<class 'bool'>"
+                  },
+                  "desc": "If True, set all variables in this component as distributed across multiple processes",
+                  "upper": null,
+                  "lower": null,
+                  "check_valid": null,
+                  "has_been_set": true,
+                  "allow_none": false,
+                  "recordable": true,
+                  "set_function": null,
+                  "deprecation": null
+                },
+                "run_root_only": {
+                  "val": false,
+                  "values": [
+                    true,
+                    false
+                  ],
+                  "types": {
+                    "__type__": "<class 'bool'>"
+                  },
+                  "desc": "If True, call compute, compute_partials, linearize, apply_linear, apply_nonlinear, and compute_jacvec_product only on rank 0 and broadcast the results to the other ranks.",
+                  "upper": null,
+                  "lower": null,
+                  "check_valid": null,
+                  "has_been_set": true,
+                  "allow_none": false,
+                  "recordable": true,
+                  "set_function": null,
+                  "deprecation": null
+                },
+                "always_opt": {
+                  "val": false,
+                  "values": [
+                    true,
+                    false
+                  ],
+                  "types": {
+                    "__type__": "<class 'bool'>"
+                  },
+                  "desc": "If True, force nonlinear operations on this component to be included in the optimization loop even if this component is not relevant to the design variables and responses.",
+                  "upper": null,
+                  "lower": null,
+                  "check_valid": null,
+                  "has_been_set": true,
+                  "allow_none": false,
+                  "recordable": true,
+                  "set_function": null,
+                  "deprecation": null
+                },
+                "use_jit": {
+                  "val": true,
+                  "values": [
+                    true,
+                    false
+                  ],
+                  "types": {
+                    "__type__": "<class 'bool'>"
+                  },
+                  "desc": "If True, attempt to use jit on compute_primal, assuming jax or some other AD package is active.",
+                  "upper": null,
+                  "lower": null,
+                  "check_valid": null,
+                  "has_been_set": true,
+                  "allow_none": false,
+                  "recordable": true,
+                  "set_function": null,
+                  "deprecation": null
+                },
+                "aircraft:propulsion:total_num_fuselage_engines": {
+                  "val": 0,
+                  "values": null,
+                  "types": {
+                    "__type__": "<class 'int'>"
+                  },
+                  "desc": "total number of fuselage-mounted engines for the aircraft",
+                  "upper": null,
+                  "lower": null,
+                  "check_valid": null,
+                  "has_been_set": true,
+                  "allow_none": true,
+                  "recordable": true,
+                  "set_function": null,
+                  "deprecation": null
+                },
+                "aircraft:wing:span_efficiency_reduction": {
+                  "val": false,
+                  "values": [
+                    true,
+                    false
+                  ],
+                  "types": {
+                    "__type__": "<class 'bool'>"
+                  },
+                  "desc": "Define a switch for span efficiency reduction for extreme taper ratios: True == a span efficiency factor (*wing_span_efficiency_factor0*) is calculated based on wing taper ratio and aspect ratio; False == a span efficiency factor (*wing_span_efficiency_factor0*) is set to 1.0.",
+                  "upper": null,
+                  "lower": null,
+                  "check_valid": null,
+                  "has_been_set": true,
+                  "allow_none": false,
+                  "recordable": true,
+                  "set_function": null,
+                  "deprecation": null
+                }
+              },
+              "_parent_name": "'prep_geom.tail' <class _Tail>",
+              "_read_only": false,
+              "_all_recordable": true,
+              "_context_cache": {}
+            }
+          }
+        },
+        "fuselage": {
+          "name": "fuselage",
+          "inputs": [
+            {
+              "name": "prep_geom:_Names:CROOTB",
+              "units": "unitless",
+              "description": "",
+              "options": {}
+            },
+            {
+              "name": "prep_geom:_Names:CROTVT",
+              "units": "unitless",
+              "description": "",
+              "options": {}
+            },
+            {
+              "name": "prep_geom:_Names:CRTHTB",
+              "units": "unitless",
+              "description": "",
+              "options": {}
+            },
+            {
+              "name": "aircraft:fuselage:avg_diameter",
+              "units": "ft",
+              "description": "average fuselage diameter",
+              "options": {}
+            },
+            {
+              "name": "aircraft:fuselage:length",
+              "units": "ft",
+              "description": "Define the Fuselage total length. If total_length is not input for a passenger transport, LEAPS will calculate the fuselage length, width and depth and the length of the passenger compartment.",
+              "options": {}
+            },
+            {
+              "name": "aircraft:fuselage:wetted_area_scaler",
+              "units": "unitless",
+              "description": "fuselage wetted area scaler",
+              "options": {}
+            },
+            {
+              "name": "aircraft:horizontal_tail:thickness_to_chord",
+              "units": "unitless",
+              "description": "horizontal tail thickness-chord ratio",
+              "options": {}
+            },
+            {
+              "name": "aircraft:horizontal_tail:vertical_tail_fraction",
+              "units": "unitless",
+              "description": "Define the decimal fraction of vertical tail span where horizontal tail is mounted. Defaults: 0.0 == for body mounted (default for transport with all engines on wing); 1.0 == for T tail (default for transport with multiple engines on fuselage)",
+              "options": {}
+            },
+            {
+              "name": "aircraft:vertical_tail:thickness_to_chord",
+              "units": "unitless",
+              "description": "vertical tail thickness-chord ratio",
+              "options": {}
+            },
+            {
+              "name": "aircraft:wing:area",
+              "units": "ft**2",
+              "description": "reference wing area",
+              "options": {}
+            },
+            {
+              "name": "aircraft:wing:aspect_ratio",
+              "units": "unitless",
+              "description": "ratio of the wing span to its mean chord",
+              "options": {}
+            },
+            {
+              "name": "aircraft:wing:glove_and_bat",
+              "units": "ft**2",
+              "description": "total glove and bat area beyond theoretical wing",
+              "options": {}
+            },
+            {
+              "name": "aircraft:wing:thickness_to_chord",
+              "units": "unitless",
+              "description": "wing thickness-chord ratio (weighted average)",
+              "options": {}
+            }
+          ],
+          "outputs": [
+            {
+              "name": "aircraft:fuselage:cross_section",
+              "units": "ft**2",
+              "description": "fuselage cross sectional area",
+              "options": {}
+            },
+            {
+              "name": "aircraft:fuselage:diameter_to_wing_span",
+              "units": "unitless",
+              "description": "fuselage diameter to wing span ratio",
+              "options": {}
+            },
+            {
+              "name": "aircraft:fuselage:length_to_diameter",
+              "units": "unitless",
+              "description": "fuselage length to diameter ratio",
+              "options": {}
+            },
+            {
+              "name": "aircraft:fuselage:wetted_area",
+              "units": "ft**2",
+              "description": "fuselage wetted area",
+              "options": {}
+            }
+          ],
+          "cite": "",
+          "tool": "<class 'aviary.subsystems.geometry.flops_based.prep_geom._Fuselage'>",
+          "component_type": "ExplicitComponent",
+          "options": {
+            "openmdao_info": {
+              "pathname": "prep_geom.fuselage",
+              "iter_count": 1,
+              "iter_count_apply": 0,
+              "iter_count_without_approx": 1
+            },
+            "openmdao_options": {
+              "_dict": {
+                "derivs_method": {
+                  "val": null,
+                  "values": [
+                    "jax",
+                    "cs",
+                    "fd",
+                    null
+                  ],
+                  "types": null,
+                  "desc": "The method to use for computing derivatives",
+                  "upper": null,
+                  "lower": null,
+                  "check_valid": null,
+                  "has_been_set": true,
+                  "allow_none": true,
+                  "recordable": true,
+                  "set_function": null,
+                  "deprecation": null
+                },
+                "distributed": {
+                  "val": false,
+                  "values": [
+                    true,
+                    false
+                  ],
+                  "types": {
+                    "__type__": "<class 'bool'>"
+                  },
+                  "desc": "If True, set all variables in this component as distributed across multiple processes",
+                  "upper": null,
+                  "lower": null,
+                  "check_valid": null,
+                  "has_been_set": true,
+                  "allow_none": false,
+                  "recordable": true,
+                  "set_function": null,
+                  "deprecation": null
+                },
+                "run_root_only": {
+                  "val": false,
+                  "values": [
+                    true,
+                    false
+                  ],
+                  "types": {
+                    "__type__": "<class 'bool'>"
+                  },
+                  "desc": "If True, call compute, compute_partials, linearize, apply_linear, apply_nonlinear, and compute_jacvec_product only on rank 0 and broadcast the results to the other ranks.",
+                  "upper": null,
+                  "lower": null,
+                  "check_valid": null,
+                  "has_been_set": true,
+                  "allow_none": false,
+                  "recordable": true,
+                  "set_function": null,
+                  "deprecation": null
+                },
+                "always_opt": {
+                  "val": false,
+                  "values": [
+                    true,
+                    false
+                  ],
+                  "types": {
+                    "__type__": "<class 'bool'>"
+                  },
+                  "desc": "If True, force nonlinear operations on this component to be included in the optimization loop even if this component is not relevant to the design variables and responses.",
+                  "upper": null,
+                  "lower": null,
+                  "check_valid": null,
+                  "has_been_set": true,
+                  "allow_none": false,
+                  "recordable": true,
+                  "set_function": null,
+                  "deprecation": null
+                },
+                "use_jit": {
+                  "val": true,
+                  "values": [
+                    true,
+                    false
+                  ],
+                  "types": {
+                    "__type__": "<class 'bool'>"
+                  },
+                  "desc": "If True, attempt to use jit on compute_primal, assuming jax or some other AD package is active.",
+                  "upper": null,
+                  "lower": null,
+                  "check_valid": null,
+                  "has_been_set": true,
+                  "allow_none": false,
+                  "recordable": true,
+                  "set_function": null,
+                  "deprecation": null
+                },
+                "aircraft:wing:span_efficiency_reduction": {
+                  "val": false,
+                  "values": [
+                    true,
+                    false
+                  ],
+                  "types": {
+                    "__type__": "<class 'bool'>"
+                  },
+                  "desc": "Define a switch for span efficiency reduction for extreme taper ratios: True == a span efficiency factor (*wing_span_efficiency_factor0*) is calculated based on wing taper ratio and aspect ratio; False == a span efficiency factor (*wing_span_efficiency_factor0*) is set to 1.0.",
+                  "upper": null,
+                  "lower": null,
+                  "check_valid": null,
+                  "has_been_set": true,
+                  "allow_none": false,
+                  "recordable": true,
+                  "set_function": null,
+                  "deprecation": null
+                },
+                "aircraft:fuselage:num_fuselages": {
+                  "val": 1,
+                  "values": null,
+                  "types": {
+                    "__type__": "<class 'int'>"
+                  },
+                  "desc": "number of fuselages",
+                  "upper": null,
+                  "lower": null,
+                  "check_valid": null,
+                  "has_been_set": true,
+                  "allow_none": false,
+                  "recordable": true,
+                  "set_function": null,
+                  "deprecation": null
+                }
+              },
+              "_parent_name": "'prep_geom.fuselage' <class _Fuselage>",
+              "_read_only": false,
+              "_all_recordable": true,
+              "_context_cache": {}
+            }
+          }
+        },
+        "nacelles": {
+          "name": "nacelles",
+          "inputs": [
+            {
+              "name": "aircraft:nacelle:avg_diameter",
+              "units": "ft",
+              "description": "Average diameter of engine nacelles for each engine model",
+              "options": {}
+            },
+            {
+              "name": "aircraft:nacelle:avg_length",
+              "units": "ft",
+              "description": "Average length of nacelles for each engine model",
+              "options": {}
+            },
+            {
+              "name": "aircraft:nacelle:wetted_area_scaler",
+              "units": "unitless",
+              "description": "nacelle wetted area scaler for each engine model",
+              "options": {}
+            }
+          ],
+          "outputs": [
+            {
+              "name": "aircraft:nacelle:total_wetted_area",
+              "units": "ft**2",
+              "description": "total nacelles wetted area",
+              "options": {}
+            },
+            {
+              "name": "aircraft:nacelle:wetted_area",
+              "units": "ft**2",
+              "description": "wetted area of a single nacelle for each engine model",
+              "options": {}
+            }
+          ],
+          "cite": "",
+          "tool": "<class 'aviary.subsystems.geometry.flops_based.nacelle.Nacelles'>",
+          "component_type": "ExplicitComponent",
+          "options": {
+            "openmdao_info": {
+              "pathname": "prep_geom.nacelles",
+              "iter_count": 1,
+              "iter_count_apply": 0,
+              "iter_count_without_approx": 1
+            },
+            "openmdao_options": {
+              "_dict": {
+                "derivs_method": {
+                  "val": null,
+                  "values": [
+                    "jax",
+                    "cs",
+                    "fd",
+                    null
+                  ],
+                  "types": null,
+                  "desc": "The method to use for computing derivatives",
+                  "upper": null,
+                  "lower": null,
+                  "check_valid": null,
+                  "has_been_set": true,
+                  "allow_none": true,
+                  "recordable": true,
+                  "set_function": null,
+                  "deprecation": null
+                },
+                "distributed": {
+                  "val": false,
+                  "values": [
+                    true,
+                    false
+                  ],
+                  "types": {
+                    "__type__": "<class 'bool'>"
+                  },
+                  "desc": "If True, set all variables in this component as distributed across multiple processes",
+                  "upper": null,
+                  "lower": null,
+                  "check_valid": null,
+                  "has_been_set": true,
+                  "allow_none": false,
+                  "recordable": true,
+                  "set_function": null,
+                  "deprecation": null
+                },
+                "run_root_only": {
+                  "val": false,
+                  "values": [
+                    true,
+                    false
+                  ],
+                  "types": {
+                    "__type__": "<class 'bool'>"
+                  },
+                  "desc": "If True, call compute, compute_partials, linearize, apply_linear, apply_nonlinear, and compute_jacvec_product only on rank 0 and broadcast the results to the other ranks.",
+                  "upper": null,
+                  "lower": null,
+                  "check_valid": null,
+                  "has_been_set": true,
+                  "allow_none": false,
+                  "recordable": true,
+                  "set_function": null,
+                  "deprecation": null
+                },
+                "always_opt": {
+                  "val": false,
+                  "values": [
+                    true,
+                    false
+                  ],
+                  "types": {
+                    "__type__": "<class 'bool'>"
+                  },
+                  "desc": "If True, force nonlinear operations on this component to be included in the optimization loop even if this component is not relevant to the design variables and responses.",
+                  "upper": null,
+                  "lower": null,
+                  "check_valid": null,
+                  "has_been_set": true,
+                  "allow_none": false,
+                  "recordable": true,
+                  "set_function": null,
+                  "deprecation": null
+                },
+                "use_jit": {
+                  "val": true,
+                  "values": [
+                    true,
+                    false
+                  ],
+                  "types": {
+                    "__type__": "<class 'bool'>"
+                  },
+                  "desc": "If True, attempt to use jit on compute_primal, assuming jax or some other AD package is active.",
+                  "upper": null,
+                  "lower": null,
+                  "check_valid": null,
+                  "has_been_set": true,
+                  "allow_none": false,
+                  "recordable": true,
+                  "set_function": null,
+                  "deprecation": null
+                },
+                "aircraft:engine:num_engines": {
+                  "val": {
+                    "__numpy__": "AgAAAA==",
+                    "dtype": "<i4",
+                    "shape": [
+                      1
+                    ]
+                  },
+                  "values": null,
+                  "types": [
+                    {
+                      "__type__": "<class 'list'>"
+                    },
+                    {
+                      "__type__": "<class 'numpy.ndarray'>"
+                    },
+                    {
+                      "__type__": "<class 'int'>"
+                    }
+                  ],
+                  "desc": "total number of engines per model on the aircraft (fuselage, wing, or otherwise)",
+                  "upper": null,
+                  "lower": null,
+                  "check_valid": null,
+                  "has_been_set": true,
+                  "allow_none": false,
+                  "recordable": true,
+                  "set_function": null,
+                  "deprecation": null
+                }
+              },
+              "_parent_name": "'prep_geom.nacelles' <class Nacelles>",
+              "_read_only": false,
+              "_all_recordable": true,
+              "_context_cache": {}
+            }
+          }
+        },
+        "canard": {
+          "name": "canard",
+          "inputs": [
+            {
+              "name": "aircraft:canard:area",
+              "units": "ft**2",
+              "description": "canard theoretical area",
+              "options": {}
+            },
+            {
+              "name": "aircraft:canard:thickness_to_chord",
+              "units": "unitless",
+              "description": "canard thickness-chord ratio",
+              "options": {}
+            },
+            {
+              "name": "aircraft:canard:wetted_area_scaler",
+              "units": "unitless",
+              "description": "canard wetted area scaler",
+              "options": {}
+            }
+          ],
+          "outputs": [
+            {
+              "name": "aircraft:canard:wetted_area",
+              "units": "ft**2",
+              "description": "canard wetted area",
+              "options": {}
+            }
+          ],
+          "cite": "",
+          "tool": "<class 'aviary.subsystems.geometry.flops_based.canard.Canard'>",
+          "component_type": "ExplicitComponent",
+          "options": {
+            "openmdao_info": {
+              "pathname": "prep_geom.canard",
+              "iter_count": 1,
+              "iter_count_apply": 0,
+              "iter_count_without_approx": 1
+            },
+            "openmdao_options": {
+              "_dict": {
+                "derivs_method": {
+                  "val": null,
+                  "values": [
+                    "jax",
+                    "cs",
+                    "fd",
+                    null
+                  ],
+                  "types": null,
+                  "desc": "The method to use for computing derivatives",
+                  "upper": null,
+                  "lower": null,
+                  "check_valid": null,
+                  "has_been_set": true,
+                  "allow_none": true,
+                  "recordable": true,
+                  "set_function": null,
+                  "deprecation": null
+                },
+                "distributed": {
+                  "val": false,
+                  "values": [
+                    true,
+                    false
+                  ],
+                  "types": {
+                    "__type__": "<class 'bool'>"
+                  },
+                  "desc": "If True, set all variables in this component as distributed across multiple processes",
+                  "upper": null,
+                  "lower": null,
+                  "check_valid": null,
+                  "has_been_set": true,
+                  "allow_none": false,
+                  "recordable": true,
+                  "set_function": null,
+                  "deprecation": null
+                },
+                "run_root_only": {
+                  "val": false,
+                  "values": [
+                    true,
+                    false
+                  ],
+                  "types": {
+                    "__type__": "<class 'bool'>"
+                  },
+                  "desc": "If True, call compute, compute_partials, linearize, apply_linear, apply_nonlinear, and compute_jacvec_product only on rank 0 and broadcast the results to the other ranks.",
+                  "upper": null,
+                  "lower": null,
+                  "check_valid": null,
+                  "has_been_set": true,
+                  "allow_none": false,
+                  "recordable": true,
+                  "set_function": null,
+                  "deprecation": null
+                },
+                "always_opt": {
+                  "val": false,
+                  "values": [
+                    true,
+                    false
+                  ],
+                  "types": {
+                    "__type__": "<class 'bool'>"
+                  },
+                  "desc": "If True, force nonlinear operations on this component to be included in the optimization loop even if this component is not relevant to the design variables and responses.",
+                  "upper": null,
+                  "lower": null,
+                  "check_valid": null,
+                  "has_been_set": true,
+                  "allow_none": false,
+                  "recordable": true,
+                  "set_function": null,
+                  "deprecation": null
+                },
+                "use_jit": {
+                  "val": true,
+                  "values": [
+                    true,
+                    false
+                  ],
+                  "types": {
+                    "__type__": "<class 'bool'>"
+                  },
+                  "desc": "If True, attempt to use jit on compute_primal, assuming jax or some other AD package is active.",
+                  "upper": null,
+                  "lower": null,
+                  "check_valid": null,
+                  "has_been_set": true,
+                  "allow_none": false,
+                  "recordable": true,
+                  "set_function": null,
+                  "deprecation": null
+                },
+                "aviary_options": {
+                  "val": {
+                    "__repr_class__": "UNDEFINED"
+                  },
+                  "values": null,
+                  "types": {
+                    "__type__": "<class 'aviary.utils.aviary_values.AviaryValues'>"
+                  },
+                  "desc": "collection of Aircraft/Mission specific options",
+                  "upper": null,
+                  "lower": null,
+                  "check_valid": null,
+                  "has_been_set": false,
+                  "allow_none": false,
+                  "recordable": true,
+                  "set_function": null,
+                  "deprecation": null
+                }
+              },
+              "_parent_name": "'prep_geom.canard' <class Canard>",
+              "_read_only": false,
+              "_all_recordable": true,
+              "_context_cache": {}
+            }
+          }
+        },
+        "characteristic_lengths": {
+          "name": "characteristic_lengths",
+          "inputs": [
+            {
+              "name": "prep_geom:_Names:CROOT",
+              "units": "unitless",
+              "description": "",
+              "options": {}
+            },
+            {
+              "name": "aircraft:canard:area",
+              "units": "ft**2",
+              "description": "canard theoretical area",
+              "options": {}
+            },
+            {
+              "name": "aircraft:canard:aspect_ratio",
+              "units": "unitless",
+              "description": "canard theoretical aspect ratio",
+              "options": {}
+            },
+            {
+              "name": "aircraft:canard:thickness_to_chord",
+              "units": "unitless",
+              "description": "canard thickness-chord ratio",
+              "options": {}
+            },
+            {
+              "name": "aircraft:fuselage:avg_diameter",
+              "units": "ft",
+              "description": "average fuselage diameter",
+              "options": {}
+            },
+            {
+              "name": "aircraft:fuselage:length",
+              "units": "ft",
+              "description": "Define the Fuselage total length. If total_length is not input for a passenger transport, LEAPS will calculate the fuselage length, width and depth and the length of the passenger compartment.",
+              "options": {}
+            },
+            {
+              "name": "aircraft:horizontal_tail:area",
+              "units": "ft**2",
+              "description": "horizontal tail theoretical area; overridden by vol_coeff, if vol_coeff > 0.0",
+              "options": {}
+            },
+            {
+              "name": "aircraft:horizontal_tail:aspect_ratio",
+              "units": "unitless",
+              "description": "horizontal tail theoretical aspect ratio",
+              "options": {}
+            },
+            {
+              "name": "aircraft:horizontal_tail:thickness_to_chord",
+              "units": "unitless",
+              "description": "horizontal tail thickness-chord ratio",
+              "options": {}
+            },
+            {
+              "name": "aircraft:nacelle:avg_diameter",
+              "units": "ft",
+              "description": "Average diameter of engine nacelles for each engine model",
+              "options": {}
+            },
+            {
+              "name": "aircraft:nacelle:avg_length",
+              "units": "ft",
+              "description": "Average length of nacelles for each engine model",
+              "options": {}
+            },
+            {
+              "name": "aircraft:vertical_tail:area",
+              "units": "ft**2",
+              "description": "vertical tail theoretical area (per tail); overridden by vol_coeff if vol_coeff > 0.0",
+              "options": {}
+            },
+            {
+              "name": "aircraft:vertical_tail:aspect_ratio",
+              "units": "unitless",
+              "description": "vertical tail theoretical aspect ratio",
+              "options": {}
+            },
+            {
+              "name": "aircraft:vertical_tail:thickness_to_chord",
+              "units": "unitless",
+              "description": "vertical tail thickness-chord ratio",
+              "options": {}
+            },
+            {
+              "name": "aircraft:wing:area",
+              "units": "ft**2",
+              "description": "reference wing area",
+              "options": {}
+            },
+            {
+              "name": "aircraft:wing:aspect_ratio",
+              "units": "unitless",
+              "description": "ratio of the wing span to its mean chord",
+              "options": {}
+            },
+            {
+              "name": "aircraft:wing:glove_and_bat",
+              "units": "ft**2",
+              "description": "total glove and bat area beyond theoretical wing",
+              "options": {}
+            },
+            {
+              "name": "aircraft:wing:taper_ratio",
+              "units": "unitless",
+              "description": "taper ratio of the wing",
+              "options": {}
+            },
+            {
+              "name": "aircraft:wing:thickness_to_chord",
+              "units": "unitless",
+              "description": "wing thickness-chord ratio (weighted average)",
+              "options": {}
+            }
+          ],
+          "outputs": [
+            {
+              "name": "aircraft:canard:characteristic_length",
+              "units": "ft",
+              "description": "Reynolds characteristic length for the canard",
+              "options": {}
+            },
+            {
+              "name": "aircraft:canard:fineness",
+              "units": "unitless",
+              "description": "canard fineness ratio",
+              "options": {}
+            },
+            {
+              "name": "aircraft:fuselage:characteristic_length",
+              "units": "ft",
+              "description": "Reynolds characteristic length for the fuselage",
+              "options": {}
+            },
+            {
+              "name": "aircraft:fuselage:fineness",
+              "units": "unitless",
+              "description": "fuselage fineness ratio",
+              "options": {}
+            },
+            {
+              "name": "aircraft:horizontal_tail:characteristic_length",
+              "units": "ft",
+              "description": "Reynolds characteristic length for the horizontal tail",
+              "options": {}
+            },
+            {
+              "name": "aircraft:horizontal_tail:fineness",
+              "units": "unitless",
+              "description": "horizontal tail fineness ratio",
+              "options": {}
+            },
+            {
+              "name": "aircraft:nacelle:characteristic_length",
+              "units": "ft",
+              "description": "Reynolds characteristic length for nacelle for each engine model",
+              "options": {}
+            },
+            {
+              "name": "aircraft:nacelle:fineness",
+              "units": "unitless",
+              "description": "nacelle fineness ratio",
+              "options": {}
+            },
+            {
+              "name": "aircraft:vertical_tail:characteristic_length",
+              "units": "ft",
+              "description": "Reynolds characteristic length for the vertical tail",
+              "options": {}
+            },
+            {
+              "name": "aircraft:vertical_tail:fineness",
+              "units": "unitless",
+              "description": "vertical tail fineness ratio",
+              "options": {}
+            },
+            {
+              "name": "aircraft:wing:characteristic_length",
+              "units": "ft",
+              "description": "Reynolds characteristic length for the wing",
+              "options": {}
+            },
+            {
+              "name": "aircraft:wing:fineness",
+              "units": "unitless",
+              "description": "wing fineness ratio",
+              "options": {}
+            }
+          ],
+          "cite": "",
+          "tool": "<class 'aviary.subsystems.geometry.flops_based.characteristic_lengths.CharacteristicLengths'>",
+          "component_type": "ExplicitComponent",
+          "options": {
+            "openmdao_info": {
+              "pathname": "prep_geom.characteristic_lengths",
+              "iter_count": 1,
+              "iter_count_apply": 0,
+              "iter_count_without_approx": 1
+            },
+            "openmdao_options": {
+              "_dict": {
+                "derivs_method": {
+                  "val": null,
+                  "values": [
+                    "jax",
+                    "cs",
+                    "fd",
+                    null
+                  ],
+                  "types": null,
+                  "desc": "The method to use for computing derivatives",
+                  "upper": null,
+                  "lower": null,
+                  "check_valid": null,
+                  "has_been_set": true,
+                  "allow_none": true,
+                  "recordable": true,
+                  "set_function": null,
+                  "deprecation": null
+                },
+                "distributed": {
+                  "val": false,
+                  "values": [
+                    true,
+                    false
+                  ],
+                  "types": {
+                    "__type__": "<class 'bool'>"
+                  },
+                  "desc": "If True, set all variables in this component as distributed across multiple processes",
+                  "upper": null,
+                  "lower": null,
+                  "check_valid": null,
+                  "has_been_set": true,
+                  "allow_none": false,
+                  "recordable": true,
+                  "set_function": null,
+                  "deprecation": null
+                },
+                "run_root_only": {
+                  "val": false,
+                  "values": [
+                    true,
+                    false
+                  ],
+                  "types": {
+                    "__type__": "<class 'bool'>"
+                  },
+                  "desc": "If True, call compute, compute_partials, linearize, apply_linear, apply_nonlinear, and compute_jacvec_product only on rank 0 and broadcast the results to the other ranks.",
+                  "upper": null,
+                  "lower": null,
+                  "check_valid": null,
+                  "has_been_set": true,
+                  "allow_none": false,
+                  "recordable": true,
+                  "set_function": null,
+                  "deprecation": null
+                },
+                "always_opt": {
+                  "val": false,
+                  "values": [
+                    true,
+                    false
+                  ],
+                  "types": {
+                    "__type__": "<class 'bool'>"
+                  },
+                  "desc": "If True, force nonlinear operations on this component to be included in the optimization loop even if this component is not relevant to the design variables and responses.",
+                  "upper": null,
+                  "lower": null,
+                  "check_valid": null,
+                  "has_been_set": true,
+                  "allow_none": false,
+                  "recordable": true,
+                  "set_function": null,
+                  "deprecation": null
+                },
+                "use_jit": {
+                  "val": true,
+                  "values": [
+                    true,
+                    false
+                  ],
+                  "types": {
+                    "__type__": "<class 'bool'>"
+                  },
+                  "desc": "If True, attempt to use jit on compute_primal, assuming jax or some other AD package is active.",
+                  "upper": null,
+                  "lower": null,
+                  "check_valid": null,
+                  "has_been_set": true,
+                  "allow_none": false,
+                  "recordable": true,
+                  "set_function": null,
+                  "deprecation": null
+                },
+                "aircraft:engine:num_engines": {
+                  "val": {
+                    "__numpy__": "AgAAAA==",
+                    "dtype": "<i4",
+                    "shape": [
+                      1
+                    ]
+                  },
+                  "values": null,
+                  "types": [
+                    {
+                      "__type__": "<class 'list'>"
+                    },
+                    {
+                      "__type__": "<class 'numpy.ndarray'>"
+                    },
+                    {
+                      "__type__": "<class 'int'>"
+                    }
+                  ],
+                  "desc": "total number of engines per model on the aircraft (fuselage, wing, or otherwise)",
+                  "upper": null,
+                  "lower": null,
+                  "check_valid": null,
+                  "has_been_set": true,
+                  "allow_none": false,
+                  "recordable": true,
+                  "set_function": null,
+                  "deprecation": null
+                },
+                "aircraft:wing:span_efficiency_reduction": {
+                  "val": false,
+                  "values": [
+                    true,
+                    false
+                  ],
+                  "types": {
+                    "__type__": "<class 'bool'>"
+                  },
+                  "desc": "Define a switch for span efficiency reduction for extreme taper ratios: True == a span efficiency factor (*wing_span_efficiency_factor0*) is calculated based on wing taper ratio and aspect ratio; False == a span efficiency factor (*wing_span_efficiency_factor0*) is set to 1.0.",
+                  "upper": null,
+                  "lower": null,
+                  "check_valid": null,
+                  "has_been_set": true,
+                  "allow_none": false,
+                  "recordable": true,
+                  "set_function": null,
+                  "deprecation": null
+                }
+              },
+              "_parent_name": "'prep_geom.characteristic_lengths' <class CharacteristicLengths>",
+              "_read_only": false,
+              "_all_recordable": true,
+              "_context_cache": {}
+            }
+          }
+        },
+        "total_wetted_area": {
+          "name": "total_wetted_area",
+          "inputs": [
+            {
+              "name": "aircraft:canard:wetted_area",
+              "units": "ft**2",
+              "description": "canard wetted area",
+              "options": {}
+            },
+            {
+              "name": "aircraft:fuselage:wetted_area",
+              "units": "ft**2",
+              "description": "fuselage wetted area",
+              "options": {}
+            },
+            {
+              "name": "aircraft:horizontal_tail:wetted_area",
+              "units": "ft**2",
+              "description": "horizontal tail wetted area",
+              "options": {}
+            },
+            {
+              "name": "aircraft:nacelle:total_wetted_area",
+              "units": "ft**2",
+              "description": "total nacelles wetted area",
+              "options": {}
+            },
+            {
+              "name": "aircraft:vertical_tail:wetted_area",
+              "units": "ft**2",
+              "description": "vertical tails wetted area",
+              "options": {}
+            },
+            {
+              "name": "aircraft:wing:wetted_area",
+              "units": "ft**2",
+              "description": "wing wetted area",
+              "options": {}
+            }
+          ],
+          "outputs": [
+            {
+              "name": "aircraft:design:total_wetted_area",
+              "units": "ft**2",
+              "description": "total aircraft wetted area",
+              "options": {}
+            }
+          ],
+          "cite": "",
+          "tool": "<class 'aviary.subsystems.geometry.flops_based.wetted_area_total.TotalWettedArea'>",
+          "component_type": "ExplicitComponent",
+          "options": {
+            "openmdao_info": {
+              "pathname": "prep_geom.total_wetted_area",
+              "iter_count": 1,
+              "iter_count_apply": 0,
+              "iter_count_without_approx": 1
+            },
+            "openmdao_options": {
+              "_dict": {
+                "derivs_method": {
+                  "val": null,
+                  "values": [
+                    "jax",
+                    "cs",
+                    "fd",
+                    null
+                  ],
+                  "types": null,
+                  "desc": "The method to use for computing derivatives",
+                  "upper": null,
+                  "lower": null,
+                  "check_valid": null,
+                  "has_been_set": true,
+                  "allow_none": true,
+                  "recordable": true,
+                  "set_function": null,
+                  "deprecation": null
+                },
+                "distributed": {
+                  "val": false,
+                  "values": [
+                    true,
+                    false
+                  ],
+                  "types": {
+                    "__type__": "<class 'bool'>"
+                  },
+                  "desc": "If True, set all variables in this component as distributed across multiple processes",
+                  "upper": null,
+                  "lower": null,
+                  "check_valid": null,
+                  "has_been_set": true,
+                  "allow_none": false,
+                  "recordable": true,
+                  "set_function": null,
+                  "deprecation": null
+                },
+                "run_root_only": {
+                  "val": false,
+                  "values": [
+                    true,
+                    false
+                  ],
+                  "types": {
+                    "__type__": "<class 'bool'>"
+                  },
+                  "desc": "If True, call compute, compute_partials, linearize, apply_linear, apply_nonlinear, and compute_jacvec_product only on rank 0 and broadcast the results to the other ranks.",
+                  "upper": null,
+                  "lower": null,
+                  "check_valid": null,
+                  "has_been_set": true,
+                  "allow_none": false,
+                  "recordable": true,
+                  "set_function": null,
+                  "deprecation": null
+                },
+                "always_opt": {
+                  "val": false,
+                  "values": [
+                    true,
+                    false
+                  ],
+                  "types": {
+                    "__type__": "<class 'bool'>"
+                  },
+                  "desc": "If True, force nonlinear operations on this component to be included in the optimization loop even if this component is not relevant to the design variables and responses.",
+                  "upper": null,
+                  "lower": null,
+                  "check_valid": null,
+                  "has_been_set": true,
+                  "allow_none": false,
+                  "recordable": true,
+                  "set_function": null,
+                  "deprecation": null
+                },
+                "use_jit": {
+                  "val": true,
+                  "values": [
+                    true,
+                    false
+                  ],
+                  "types": {
+                    "__type__": "<class 'bool'>"
+                  },
+                  "desc": "If True, attempt to use jit on compute_primal, assuming jax or some other AD package is active.",
+                  "upper": null,
+                  "lower": null,
+                  "check_valid": null,
+                  "has_been_set": true,
+                  "allow_none": false,
+                  "recordable": true,
+                  "set_function": null,
+                  "deprecation": null
+                }
+              },
+              "_parent_name": "'prep_geom.total_wetted_area' <class TotalWettedArea>",
+              "_read_only": false,
+              "_all_recordable": true,
+              "_context_cache": {}
+            }
+          }
+        }
+      },
+      "promotions": {
+        "fuselage_prelim": [
+          [
+            "aircraft:fuselage:length",
+            "aircraft:fuselage:length"
+          ],
+          [
+            "aircraft:fuselage:max_height",
+            "aircraft:fuselage:max_height"
+          ],
+          [
+            "aircraft:fuselage:max_width",
+            "aircraft:fuselage:max_width"
+          ],
+          [
+            "aircraft:fuselage:avg_diameter",
+            "aircraft:fuselage:avg_diameter"
+          ],
+          [
+            "aircraft:fuselage:planform_area",
+            "aircraft:fuselage:planform_area"
+          ]
+        ],
+        "wing_prelim": [
+          [
+            "aircraft:wing:area",
+            "aircraft:wing:area"
+          ],
+          [
+            "aircraft:wing:glove_and_bat",
+            "aircraft:wing:glove_and_bat"
+          ],
+          [
+            "aircraft:wing:span",
+            "aircraft:wing:span"
+          ],
+          [
+            "aircraft:wing:aspect_ratio",
+            "aircraft:wing:aspect_ratio"
+          ]
+        ],
+        "prelim": [
+          [
+            "aircraft:fuselage:avg_diameter",
+            "aircraft:fuselage:avg_diameter"
+          ],
+          [
+            "aircraft:fuselage:max_width",
+            "aircraft:fuselage:max_width"
+          ],
+          [
+            "aircraft:horizontal_tail:area",
+            "aircraft:horizontal_tail:area"
+          ],
+          [
+            "aircraft:horizontal_tail:aspect_ratio",
+            "aircraft:horizontal_tail:aspect_ratio"
+          ],
+          [
+            "aircraft:horizontal_tail:taper_ratio",
+            "aircraft:horizontal_tail:taper_ratio"
+          ],
+          [
+            "aircraft:horizontal_tail:thickness_to_chord",
+            "aircraft:horizontal_tail:thickness_to_chord"
+          ],
+          [
+            "aircraft:vertical_tail:area",
+            "aircraft:vertical_tail:area"
+          ],
+          [
+            "aircraft:vertical_tail:aspect_ratio",
+            "aircraft:vertical_tail:aspect_ratio"
+          ],
+          [
+            "aircraft:vertical_tail:taper_ratio",
+            "aircraft:vertical_tail:taper_ratio"
+          ],
+          [
+            "aircraft:vertical_tail:thickness_to_chord",
+            "aircraft:vertical_tail:thickness_to_chord"
+          ],
+          [
+            "aircraft:wing:area",
+            "aircraft:wing:area"
+          ],
+          [
+            "aircraft:wing:glove_and_bat",
+            "aircraft:wing:glove_and_bat"
+          ],
+          [
+            "aircraft:wing:span",
+            "aircraft:wing:span"
+          ],
+          [
+            "aircraft:wing:taper_ratio",
+            "aircraft:wing:taper_ratio"
+          ],
+          [
+            "aircraft:wing:thickness_to_chord",
+            "aircraft:wing:thickness_to_chord"
+          ],
+          [
+            "prep_geom:_Names:CROOT",
+            "prelim.prep_geom:_Names:CROOT"
+          ],
+          [
+            "prep_geom:_Names:CROOTB",
+            "prelim.prep_geom:_Names:CROOTB"
+          ],
+          [
+            "prep_geom:_Names:CROTM",
+            "prelim.prep_geom:_Names:CROTM"
+          ],
+          [
+            "prep_geom:_Names:CROTVT",
+            "prelim.prep_geom:_Names:CROTVT"
+          ],
+          [
+            "prep_geom:_Names:CRTHTB",
+            "prelim.prep_geom:_Names:CRTHTB"
+          ],
+          [
+            "prep_geom:_Names:SPANHT",
+            "prelim.prep_geom:_Names:SPANHT"
+          ],
+          [
+            "prep_geom:_Names:SPANVT",
+            "prelim.prep_geom:_Names:SPANVT"
+          ],
+          [
+            "prep_geom:_Names:XDX",
+            "prelim.prep_geom:_Names:XDX"
+          ],
+          [
+            "prep_geom:_Names:XMULT",
+            "prelim.prep_geom:_Names:XMULT"
+          ],
+          [
+            "prep_geom:_Names:XMULTH",
+            "prelim.prep_geom:_Names:XMULTH"
+          ],
+          [
+            "prep_geom:_Names:XMULTV",
+            "prelim.prep_geom:_Names:XMULTV"
+          ]
+        ],
+        "wing": [
+          [
+            "prep_geom:_Names:CROOT",
+            "wing.prep_geom:_Names:CROOT"
+          ],
+          [
+            "prep_geom:_Names:CROOTB",
+            "wing.prep_geom:_Names:CROOTB"
+          ],
+          [
+            "prep_geom:_Names:XDX",
+            "wing.prep_geom:_Names:XDX"
+          ],
+          [
+            "prep_geom:_Names:XMULT",
+            "wing.prep_geom:_Names:XMULT"
+          ],
+          [
+            "aircraft:wing:area",
+            "aircraft:wing:area"
+          ],
+          [
+            "aircraft:wing:wetted_area_scaler",
+            "aircraft:wing:wetted_area_scaler"
+          ],
+          [
+            "aircraft:wing:wetted_area",
+            "aircraft:wing:wetted_area"
+          ]
+        ],
+        "tail": [
+          [
+            "prep_geom:_Names:XMULTH",
+            "tail.prep_geom:_Names:XMULTH"
+          ],
+          [
+            "prep_geom:_Names:XMULTV",
+            "tail.prep_geom:_Names:XMULTV"
+          ],
+          [
+            "aircraft:horizontal_tail:area",
+            "aircraft:horizontal_tail:area"
+          ],
+          [
+            "aircraft:horizontal_tail:vertical_tail_fraction",
+            "aircraft:horizontal_tail:vertical_tail_fraction"
+          ],
+          [
+            "aircraft:horizontal_tail:wetted_area_scaler",
+            "aircraft:horizontal_tail:wetted_area_scaler"
+          ],
+          [
+            "aircraft:vertical_tail:area",
+            "aircraft:vertical_tail:area"
+          ],
+          [
+            "aircraft:vertical_tail:wetted_area_scaler",
+            "aircraft:vertical_tail:wetted_area_scaler"
+          ],
+          [
+            "aircraft:horizontal_tail:wetted_area",
+            "aircraft:horizontal_tail:wetted_area"
+          ],
+          [
+            "aircraft:vertical_tail:wetted_area",
+            "aircraft:vertical_tail:wetted_area"
+          ]
+        ],
+        "fuselage": [
+          [
+            "prep_geom:_Names:CROOTB",
+            "fuselage.prep_geom:_Names:CROOTB"
+          ],
+          [
+            "prep_geom:_Names:CROTVT",
+            "fuselage.prep_geom:_Names:CROTVT"
+          ],
+          [
+            "prep_geom:_Names:CRTHTB",
+            "fuselage.prep_geom:_Names:CRTHTB"
+          ],
+          [
+            "aircraft:fuselage:avg_diameter",
+            "aircraft:fuselage:avg_diameter"
+          ],
+          [
+            "aircraft:fuselage:length",
+            "aircraft:fuselage:length"
+          ],
+          [
+            "aircraft:fuselage:wetted_area_scaler",
+            "aircraft:fuselage:wetted_area_scaler"
+          ],
+          [
+            "aircraft:horizontal_tail:thickness_to_chord",
+            "aircraft:horizontal_tail:thickness_to_chord"
+          ],
+          [
+            "aircraft:horizontal_tail:vertical_tail_fraction",
+            "aircraft:horizontal_tail:vertical_tail_fraction"
+          ],
+          [
+            "aircraft:vertical_tail:thickness_to_chord",
+            "aircraft:vertical_tail:thickness_to_chord"
+          ],
+          [
+            "aircraft:wing:area",
+            "aircraft:wing:area"
+          ],
+          [
+            "aircraft:wing:aspect_ratio",
+            "aircraft:wing:aspect_ratio"
+          ],
+          [
+            "aircraft:wing:glove_and_bat",
+            "aircraft:wing:glove_and_bat"
+          ],
+          [
+            "aircraft:wing:thickness_to_chord",
+            "aircraft:wing:thickness_to_chord"
+          ],
+          [
+            "aircraft:fuselage:cross_section",
+            "aircraft:fuselage:cross_section"
+          ],
+          [
+            "aircraft:fuselage:diameter_to_wing_span",
+            "aircraft:fuselage:diameter_to_wing_span"
+          ],
+          [
+            "aircraft:fuselage:length_to_diameter",
+            "aircraft:fuselage:length_to_diameter"
+          ],
+          [
+            "aircraft:fuselage:wetted_area",
+            "aircraft:fuselage:wetted_area"
+          ]
+        ],
+        "nacelles": [
+          [
+            "aircraft:nacelle:avg_diameter",
+            "aircraft:nacelle:avg_diameter"
+          ],
+          [
+            "aircraft:nacelle:avg_length",
+            "aircraft:nacelle:avg_length"
+          ],
+          [
+            "aircraft:nacelle:wetted_area_scaler",
+            "aircraft:nacelle:wetted_area_scaler"
+          ],
+          [
+            "aircraft:nacelle:total_wetted_area",
+            "aircraft:nacelle:total_wetted_area"
+          ],
+          [
+            "aircraft:nacelle:wetted_area",
+            "aircraft:nacelle:wetted_area"
+          ]
+        ],
+        "canard": [
+          [
+            "aircraft:canard:area",
+            "aircraft:canard:area"
+          ],
+          [
+            "aircraft:canard:thickness_to_chord",
+            "aircraft:canard:thickness_to_chord"
+          ],
+          [
+            "aircraft:canard:wetted_area_scaler",
+            "aircraft:canard:wetted_area_scaler"
+          ],
+          [
+            "aircraft:canard:wetted_area",
+            "aircraft:canard:wetted_area"
+          ]
+        ],
+        "characteristic_lengths": [
+          [
+            "prep_geom:_Names:CROOT",
+            "characteristic_lengths.prep_geom:_Names:CROOT"
+          ],
+          [
+            "aircraft:canard:area",
+            "aircraft:canard:area"
+          ],
+          [
+            "aircraft:canard:aspect_ratio",
+            "aircraft:canard:aspect_ratio"
+          ],
+          [
+            "aircraft:canard:thickness_to_chord",
+            "aircraft:canard:thickness_to_chord"
+          ],
+          [
+            "aircraft:fuselage:avg_diameter",
+            "aircraft:fuselage:avg_diameter"
+          ],
+          [
+            "aircraft:fuselage:length",
+            "aircraft:fuselage:length"
+          ],
+          [
+            "aircraft:horizontal_tail:area",
+            "aircraft:horizontal_tail:area"
+          ],
+          [
+            "aircraft:horizontal_tail:aspect_ratio",
+            "aircraft:horizontal_tail:aspect_ratio"
+          ],
+          [
+            "aircraft:horizontal_tail:thickness_to_chord",
+            "aircraft:horizontal_tail:thickness_to_chord"
+          ],
+          [
+            "aircraft:nacelle:avg_diameter",
+            "aircraft:nacelle:avg_diameter"
+          ],
+          [
+            "aircraft:nacelle:avg_length",
+            "aircraft:nacelle:avg_length"
+          ],
+          [
+            "aircraft:vertical_tail:area",
+            "aircraft:vertical_tail:area"
+          ],
+          [
+            "aircraft:vertical_tail:aspect_ratio",
+            "aircraft:vertical_tail:aspect_ratio"
+          ],
+          [
+            "aircraft:vertical_tail:thickness_to_chord",
+            "aircraft:vertical_tail:thickness_to_chord"
+          ],
+          [
+            "aircraft:wing:area",
+            "aircraft:wing:area"
+          ],
+          [
+            "aircraft:wing:aspect_ratio",
+            "aircraft:wing:aspect_ratio"
+          ],
+          [
+            "aircraft:wing:glove_and_bat",
+            "aircraft:wing:glove_and_bat"
+          ],
+          [
+            "aircraft:wing:taper_ratio",
+            "aircraft:wing:taper_ratio"
+          ],
+          [
+            "aircraft:wing:thickness_to_chord",
+            "aircraft:wing:thickness_to_chord"
+          ],
+          [
+            "aircraft:canard:characteristic_length",
+            "aircraft:canard:characteristic_length"
+          ],
+          [
+            "aircraft:canard:fineness",
+            "aircraft:canard:fineness"
+          ],
+          [
+            "aircraft:fuselage:characteristic_length",
+            "aircraft:fuselage:characteristic_length"
+          ],
+          [
+            "aircraft:fuselage:fineness",
+            "aircraft:fuselage:fineness"
+          ],
+          [
+            "aircraft:horizontal_tail:characteristic_length",
+            "aircraft:horizontal_tail:characteristic_length"
+          ],
+          [
+            "aircraft:horizontal_tail:fineness",
+            "aircraft:horizontal_tail:fineness"
+          ],
+          [
+            "aircraft:nacelle:characteristic_length",
+            "aircraft:nacelle:characteristic_length"
+          ],
+          [
+            "aircraft:nacelle:fineness",
+            "aircraft:nacelle:fineness"
+          ],
+          [
+            "aircraft:vertical_tail:characteristic_length",
+            "aircraft:vertical_tail:characteristic_length"
+          ],
+          [
+            "aircraft:vertical_tail:fineness",
+            "aircraft:vertical_tail:fineness"
+          ],
+          [
+            "aircraft:wing:characteristic_length",
+            "aircraft:wing:characteristic_length"
+          ],
+          [
+            "aircraft:wing:fineness",
+            "aircraft:wing:fineness"
+          ]
+        ],
+        "total_wetted_area": [
+          [
+            "aircraft:canard:wetted_area",
+            "aircraft:canard:wetted_area"
+          ],
+          [
+            "aircraft:fuselage:wetted_area",
+            "aircraft:fuselage:wetted_area"
+          ],
+          [
+            "aircraft:horizontal_tail:wetted_area",
+            "aircraft:horizontal_tail:wetted_area"
+          ],
+          [
+            "aircraft:nacelle:total_wetted_area",
+            "aircraft:nacelle:total_wetted_area"
+          ],
+          [
+            "aircraft:vertical_tail:wetted_area",
+            "aircraft:vertical_tail:wetted_area"
+          ],
+          [
+            "aircraft:wing:wetted_area",
+            "aircraft:wing:wetted_area"
+          ],
+          [
+            "aircraft:design:total_wetted_area",
+            "aircraft:design:total_wetted_area"
+          ]
+        ]
+      },
+      "linkage": [
+        [
+          "prelim.prep_geom:_Names:CROOT",
+          "wing.prep_geom:_Names:CROOT"
+        ],
+        [
+          "prelim.prep_geom:_Names:CROOTB",
+          "wing.prep_geom:_Names:CROOTB"
+        ],
+        [
+          "prelim.prep_geom:_Names:XDX",
+          "wing.prep_geom:_Names:XDX"
+        ],
+        [
+          "prelim.prep_geom:_Names:XMULT",
+          "wing.prep_geom:_Names:XMULT"
+        ],
+        [
+          "prelim.prep_geom:_Names:XMULTH",
+          "tail.prep_geom:_Names:XMULTH"
+        ],
+        [
+          "prelim.prep_geom:_Names:XMULTV",
+          "tail.prep_geom:_Names:XMULTV"
+        ],
+        [
+          "prelim.prep_geom:_Names:CROOTB",
+          "fuselage.prep_geom:_Names:CROOTB"
+        ],
+        [
+          "prelim.prep_geom:_Names:CROTVT",
+          "fuselage.prep_geom:_Names:CROTVT"
+        ],
+        [
+          "prelim.prep_geom:_Names:CRTHTB",
+          "fuselage.prep_geom:_Names:CRTHTB"
+        ],
+        [
+          "prelim.prep_geom:_Names:CROOT",
+          "characteristic_lengths.prep_geom:_Names:CROOT"
+        ]
+      ]
+    }
+  },
+  "promotions": {
+    "prep_geom": [
+      [
+        "aircraft:canard:area",
+        "aircraft:canard:area"
+      ],
+      [
+        "aircraft:canard:thickness_to_chord",
+        "aircraft:canard:thickness_to_chord"
+      ],
+      [
+        "aircraft:canard:wetted_area_scaler",
+        "aircraft:canard:wetted_area_scaler"
+      ],
+      [
+        "characteristic_lengths.prep_geom:_Names:CROOT",
+        "characteristic_lengths.prep_geom:_Names:CROOT"
+      ],
+      [
+        "aircraft:canard:area",
+        "aircraft:canard:area"
+      ],
+      [
+        "aircraft:canard:aspect_ratio",
+        "aircraft:canard:aspect_ratio"
+      ],
+      [
+        "aircraft:canard:thickness_to_chord",
+        "aircraft:canard:thickness_to_chord"
+      ],
+      [
+        "aircraft:fuselage:avg_diameter",
+        "aircraft:fuselage:avg_diameter"
+      ],
+      [
+        "aircraft:fuselage:length",
+        "aircraft:fuselage:length"
+      ],
+      [
+        "aircraft:horizontal_tail:area",
+        "aircraft:horizontal_tail:area"
+      ],
+      [
+        "aircraft:horizontal_tail:aspect_ratio",
+        "aircraft:horizontal_tail:aspect_ratio"
+      ],
+      [
+        "aircraft:horizontal_tail:thickness_to_chord",
+        "aircraft:horizontal_tail:thickness_to_chord"
+      ],
+      [
+        "aircraft:nacelle:avg_diameter",
+        "aircraft:nacelle:avg_diameter"
+      ],
+      [
+        "aircraft:nacelle:avg_length",
+        "aircraft:nacelle:avg_length"
+      ],
+      [
+        "aircraft:vertical_tail:area",
+        "aircraft:vertical_tail:area"
+      ],
+      [
+        "aircraft:vertical_tail:aspect_ratio",
+        "aircraft:vertical_tail:aspect_ratio"
+      ],
+      [
+        "aircraft:vertical_tail:thickness_to_chord",
+        "aircraft:vertical_tail:thickness_to_chord"
+      ],
+      [
+        "aircraft:wing:area",
+        "aircraft:wing:area"
+      ],
+      [
+        "aircraft:wing:aspect_ratio",
+        "aircraft:wing:aspect_ratio"
+      ],
+      [
+        "aircraft:wing:glove_and_bat",
+        "aircraft:wing:glove_and_bat"
+      ],
+      [
+        "aircraft:wing:taper_ratio",
+        "aircraft:wing:taper_ratio"
+      ],
+      [
+        "aircraft:wing:thickness_to_chord",
+        "aircraft:wing:thickness_to_chord"
+      ],
+      [
+        "fuselage.prep_geom:_Names:CROOTB",
+        "fuselage.prep_geom:_Names:CROOTB"
+      ],
+      [
+        "fuselage.prep_geom:_Names:CROTVT",
+        "fuselage.prep_geom:_Names:CROTVT"
+      ],
+      [
+        "fuselage.prep_geom:_Names:CRTHTB",
+        "fuselage.prep_geom:_Names:CRTHTB"
+      ],
+      [
+        "aircraft:fuselage:avg_diameter",
+        "aircraft:fuselage:avg_diameter"
+      ],
+      [
+        "aircraft:fuselage:length",
+        "aircraft:fuselage:length"
+      ],
+      [
+        "aircraft:fuselage:wetted_area_scaler",
+        "aircraft:fuselage:wetted_area_scaler"
+      ],
+      [
+        "aircraft:horizontal_tail:thickness_to_chord",
+        "aircraft:horizontal_tail:thickness_to_chord"
+      ],
+      [
+        "aircraft:horizontal_tail:vertical_tail_fraction",
+        "aircraft:horizontal_tail:vertical_tail_fraction"
+      ],
+      [
+        "aircraft:vertical_tail:thickness_to_chord",
+        "aircraft:vertical_tail:thickness_to_chord"
+      ],
+      [
+        "aircraft:wing:area",
+        "aircraft:wing:area"
+      ],
+      [
+        "aircraft:wing:aspect_ratio",
+        "aircraft:wing:aspect_ratio"
+      ],
+      [
+        "aircraft:wing:glove_and_bat",
+        "aircraft:wing:glove_and_bat"
+      ],
+      [
+        "aircraft:wing:thickness_to_chord",
+        "aircraft:wing:thickness_to_chord"
+      ],
+      [
+        "aircraft:fuselage:length",
+        "aircraft:fuselage:length"
+      ],
+      [
+        "aircraft:fuselage:max_height",
+        "aircraft:fuselage:max_height"
+      ],
+      [
+        "aircraft:fuselage:max_width",
+        "aircraft:fuselage:max_width"
+      ],
+      [
+        "aircraft:nacelle:avg_diameter",
+        "aircraft:nacelle:avg_diameter"
+      ],
+      [
+        "aircraft:nacelle:avg_length",
+        "aircraft:nacelle:avg_length"
+      ],
+      [
+        "aircraft:nacelle:wetted_area_scaler",
+        "aircraft:nacelle:wetted_area_scaler"
+      ],
+      [
+        "aircraft:fuselage:avg_diameter",
+        "aircraft:fuselage:avg_diameter"
+      ],
+      [
+        "aircraft:fuselage:max_width",
+        "aircraft:fuselage:max_width"
+      ],
+      [
+        "aircraft:horizontal_tail:area",
+        "aircraft:horizontal_tail:area"
+      ],
+      [
+        "aircraft:horizontal_tail:aspect_ratio",
+        "aircraft:horizontal_tail:aspect_ratio"
+      ],
+      [
+        "aircraft:horizontal_tail:taper_ratio",
+        "aircraft:horizontal_tail:taper_ratio"
+      ],
+      [
+        "aircraft:horizontal_tail:thickness_to_chord",
+        "aircraft:horizontal_tail:thickness_to_chord"
+      ],
+      [
+        "aircraft:vertical_tail:area",
+        "aircraft:vertical_tail:area"
+      ],
+      [
+        "aircraft:vertical_tail:aspect_ratio",
+        "aircraft:vertical_tail:aspect_ratio"
+      ],
+      [
+        "aircraft:vertical_tail:taper_ratio",
+        "aircraft:vertical_tail:taper_ratio"
+      ],
+      [
+        "aircraft:vertical_tail:thickness_to_chord",
+        "aircraft:vertical_tail:thickness_to_chord"
+      ],
+      [
+        "aircraft:wing:area",
+        "aircraft:wing:area"
+      ],
+      [
+        "aircraft:wing:glove_and_bat",
+        "aircraft:wing:glove_and_bat"
+      ],
+      [
+        "aircraft:wing:span",
+        "aircraft:wing:span"
+      ],
+      [
+        "aircraft:wing:taper_ratio",
+        "aircraft:wing:taper_ratio"
+      ],
+      [
+        "aircraft:wing:thickness_to_chord",
+        "aircraft:wing:thickness_to_chord"
+      ],
+      [
+        "tail.prep_geom:_Names:XMULTH",
+        "tail.prep_geom:_Names:XMULTH"
+      ],
+      [
+        "tail.prep_geom:_Names:XMULTV",
+        "tail.prep_geom:_Names:XMULTV"
+      ],
+      [
+        "aircraft:horizontal_tail:area",
+        "aircraft:horizontal_tail:area"
+      ],
+      [
+        "aircraft:horizontal_tail:vertical_tail_fraction",
+        "aircraft:horizontal_tail:vertical_tail_fraction"
+      ],
+      [
+        "aircraft:horizontal_tail:wetted_area_scaler",
+        "aircraft:horizontal_tail:wetted_area_scaler"
+      ],
+      [
+        "aircraft:vertical_tail:area",
+        "aircraft:vertical_tail:area"
+      ],
+      [
+        "aircraft:vertical_tail:wetted_area_scaler",
+        "aircraft:vertical_tail:wetted_area_scaler"
+      ],
+      [
+        "aircraft:canard:wetted_area",
+        "aircraft:canard:wetted_area"
+      ],
+      [
+        "aircraft:fuselage:wetted_area",
+        "aircraft:fuselage:wetted_area"
+      ],
+      [
+        "aircraft:horizontal_tail:wetted_area",
+        "aircraft:horizontal_tail:wetted_area"
+      ],
+      [
+        "aircraft:nacelle:total_wetted_area",
+        "aircraft:nacelle:total_wetted_area"
+      ],
+      [
+        "aircraft:vertical_tail:wetted_area",
+        "aircraft:vertical_tail:wetted_area"
+      ],
+      [
+        "aircraft:wing:wetted_area",
+        "aircraft:wing:wetted_area"
+      ],
+      [
+        "wing.prep_geom:_Names:CROOT",
+        "wing.prep_geom:_Names:CROOT"
+      ],
+      [
+        "wing.prep_geom:_Names:CROOTB",
+        "wing.prep_geom:_Names:CROOTB"
+      ],
+      [
+        "wing.prep_geom:_Names:XDX",
+        "wing.prep_geom:_Names:XDX"
+      ],
+      [
+        "wing.prep_geom:_Names:XMULT",
+        "wing.prep_geom:_Names:XMULT"
+      ],
+      [
+        "aircraft:wing:area",
+        "aircraft:wing:area"
+      ],
+      [
+        "aircraft:wing:wetted_area_scaler",
+        "aircraft:wing:wetted_area_scaler"
+      ],
+      [
+        "aircraft:wing:area",
+        "aircraft:wing:area"
+      ],
+      [
+        "aircraft:wing:glove_and_bat",
+        "aircraft:wing:glove_and_bat"
+      ],
+      [
+        "aircraft:wing:span",
+        "aircraft:wing:span"
+      ],
+      [
+        "aircraft:canard:wetted_area",
+        "aircraft:canard:wetted_area"
+      ],
+      [
+        "aircraft:canard:characteristic_length",
+        "aircraft:canard:characteristic_length"
+      ],
+      [
+        "aircraft:canard:fineness",
+        "aircraft:canard:fineness"
+      ],
+      [
+        "aircraft:fuselage:characteristic_length",
+        "aircraft:fuselage:characteristic_length"
+      ],
+      [
+        "aircraft:fuselage:fineness",
+        "aircraft:fuselage:fineness"
+      ],
+      [
+        "aircraft:horizontal_tail:characteristic_length",
+        "aircraft:horizontal_tail:characteristic_length"
+      ],
+      [
+        "aircraft:horizontal_tail:fineness",
+        "aircraft:horizontal_tail:fineness"
+      ],
+      [
+        "aircraft:nacelle:characteristic_length",
+        "aircraft:nacelle:characteristic_length"
+      ],
+      [
+        "aircraft:nacelle:fineness",
+        "aircraft:nacelle:fineness"
+      ],
+      [
+        "aircraft:vertical_tail:characteristic_length",
+        "aircraft:vertical_tail:characteristic_length"
+      ],
+      [
+        "aircraft:vertical_tail:fineness",
+        "aircraft:vertical_tail:fineness"
+      ],
+      [
+        "aircraft:wing:characteristic_length",
+        "aircraft:wing:characteristic_length"
+      ],
+      [
+        "aircraft:wing:fineness",
+        "aircraft:wing:fineness"
+      ],
+      [
+        "aircraft:fuselage:cross_section",
+        "aircraft:fuselage:cross_section"
+      ],
+      [
+        "aircraft:fuselage:diameter_to_wing_span",
+        "aircraft:fuselage:diameter_to_wing_span"
+      ],
+      [
+        "aircraft:fuselage:length_to_diameter",
+        "aircraft:fuselage:length_to_diameter"
+      ],
+      [
+        "aircraft:fuselage:wetted_area",
+        "aircraft:fuselage:wetted_area"
+      ],
+      [
+        "aircraft:fuselage:avg_diameter",
+        "aircraft:fuselage:avg_diameter"
+      ],
+      [
+        "aircraft:fuselage:planform_area",
+        "aircraft:fuselage:planform_area"
+      ],
+      [
+        "aircraft:nacelle:total_wetted_area",
+        "aircraft:nacelle:total_wetted_area"
+      ],
+      [
+        "aircraft:nacelle:wetted_area",
+        "aircraft:nacelle:wetted_area"
+      ],
+      [
+        "prelim.prep_geom:_Names:CROOT",
+        "prelim.prep_geom:_Names:CROOT"
+      ],
+      [
+        "prelim.prep_geom:_Names:CROOTB",
+        "prelim.prep_geom:_Names:CROOTB"
+      ],
+      [
+        "prelim.prep_geom:_Names:CROTM",
+        "prelim.prep_geom:_Names:CROTM"
+      ],
+      [
+        "prelim.prep_geom:_Names:CROTVT",
+        "prelim.prep_geom:_Names:CROTVT"
+      ],
+      [
+        "prelim.prep_geom:_Names:CRTHTB",
+        "prelim.prep_geom:_Names:CRTHTB"
+      ],
+      [
+        "prelim.prep_geom:_Names:SPANHT",
+        "prelim.prep_geom:_Names:SPANHT"
+      ],
+      [
+        "prelim.prep_geom:_Names:SPANVT",
+        "prelim.prep_geom:_Names:SPANVT"
+      ],
+      [
+        "prelim.prep_geom:_Names:XDX",
+        "prelim.prep_geom:_Names:XDX"
+      ],
+      [
+        "prelim.prep_geom:_Names:XMULT",
+        "prelim.prep_geom:_Names:XMULT"
+      ],
+      [
+        "prelim.prep_geom:_Names:XMULTH",
+        "prelim.prep_geom:_Names:XMULTH"
+      ],
+      [
+        "prelim.prep_geom:_Names:XMULTV",
+        "prelim.prep_geom:_Names:XMULTV"
+      ],
+      [
+        "aircraft:horizontal_tail:wetted_area",
+        "aircraft:horizontal_tail:wetted_area"
+      ],
+      [
+        "aircraft:vertical_tail:wetted_area",
+        "aircraft:vertical_tail:wetted_area"
+      ],
+      [
+        "aircraft:design:total_wetted_area",
+        "aircraft:design:total_wetted_area"
+      ],
+      [
+        "aircraft:wing:wetted_area",
+        "aircraft:wing:wetted_area"
+      ],
+      [
+        "aircraft:wing:aspect_ratio",
+        "aircraft:wing:aspect_ratio"
+      ]
+    ]
+  },
+  "linkage": []
+}

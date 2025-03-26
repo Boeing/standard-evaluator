@@ -616,4 +616,4 @@ class StandardBase(object):
         Returns:
             OptionsDictionaryUnit -- The combination of all options
         """
-        return(opt_dict_unit_merge([self.options["class_options"], self.full_options()]))
+        return(opt_dict_unit_merge([self.full_options(), self.options["class_options"]]))
