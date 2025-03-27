@@ -5,8 +5,6 @@ requires = [
     ]
 build-backend = 'setuptools.build_meta'
 
-[tool.setuptools_scm]
-
 [project]
 name = "standard_evaluator"
 description = "Project description"
@@ -26,15 +24,15 @@ dependencies = [
     "openmdao<=3.37.0",
     "om-aviary",
     "json-numpy",
-    "pydantic",
+    "pydantic==2.10.6",
     "h5py",
     "numpydantic",
 ]
 
 dynamic = ["version", "scripts"]
 
-# [tool.setuptools.dynamic]
-# version = {attr = "standard_evaluator.__version__"}
+[tool.setuptools_scm]
+version_scheme = "post-release"
 
 [project.optional-dependencies]
 test = [
