@@ -6,26 +6,9 @@ on:
       - 'v*.*.*'
 
 jobs:
-  verify-main:
-    runs-on: ubuntu-latest
-    outputs:
-      is_main: ${{ steps.verify.outputs.is_main }}
-    steps:
-      - uses: actions/checkout@v4
-      - id: verify
-        run: |
-          branch=$(git branch -r --contains $GITHUB_SHA | grep origin/main || true)
-          if [[ -n "$branch" ]]; then
-            echo "is_main=true" >> $GITHUB_OUTPUT
-          else
-            echo "is_main=false" >> $GITHUB_OUTPUT
-          fi
 
   test_publish:
-    needs: verify-main
-    if: needs.verify-main.outputs.is_main == 'true'
     runs-on: ubuntu-latest
-
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
