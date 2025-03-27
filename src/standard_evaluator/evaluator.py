@@ -23,25 +23,25 @@ class EvaluatorInfo(BaseModel):
 
     Args:
         name: The name of the evaluator.
-        variables: A list of variable objects.
-        tool: Tool used for the evaluator.
-        inputs: Input variables.
-        outputs: Output variables.
-        evaluator_identifier: Unique identifier of the evaluator.
-        version: Version of the evaluator.
-        description: Description of the evaluator.
+        class_type: Identifier
+        inputs: Input elements
+        outputs: Output elements
+        description: A description of the component. To define mathematical symbols use markdown syntax.
         cite: Listing of relevant citations that should be referenced when publishing work that uses this class.
+        tool: Name of the tool wrapped
+        evaluator_identifier: Unique identifier for the evaluator.
+        version: Version of the evaluator.
         component_type: Component type (ExplicitComponent, ImplicitComponent, Group, etc.).
         options: Additional options for the component.
     """
 
     name: str = Field(description="The name of the evaluator")
     class_type: Literal["EvaluatorInfo"] = "EvaluatorInfo"
-    inputs: List[Variable] = Field(description="Input variables")
-    outputs: List[Variable] = Field(description="Output variables")
+    inputs: List[Variable] = Field(description="Input elements")
+    outputs: List[Variable] = Field(description="Output elements")
     description: Optional[str] = Field(
         default=None,
-        description="A description of the optimization problem. To define mathematical symbols use markdown syntax.",
+        description="A description of the component. To define mathematical symbols use markdown syntax.",
     )
     cite: Optional[str] = Field(
         default=None,
