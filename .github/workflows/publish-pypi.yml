@@ -31,7 +31,7 @@ jobs:
           ls -lh dist/
           python -m pip install --quiet twine
           twine check dist/* || exit 1
-          twine upload -verbose --repository-url https://test.pypi.org/legacy/ dist/*
+          twine upload --verbose --repository-url https://test.pypi.org/legacy/ dist/*
         env:
           TWINE_USERNAME: __token__
           TWINE_PASSWORD: ${{ secrets.TEST_PYPI_API_TOKEN }}
