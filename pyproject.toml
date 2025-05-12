@@ -24,7 +24,7 @@ dependencies = [
     "openmdao<=3.37.0",
     "om-aviary",
     "json-numpy",
-    "pydantic==2.10.6",
+    "pydantic",
     "h5py",
     "numpydantic",
 ]
