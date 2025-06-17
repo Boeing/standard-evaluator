@@ -7,14 +7,21 @@ Created Nov. 14, 2024
 """
 
 import re
-from typing import List, Optional, Dict, Tuple, Union, Literal
+from typing import List, Optional, Dict, Tuple, Union, Literal, Any
 import typing
 import numpy as np
-from pydantic import BaseModel, Field, field_validator, model_validator, field_serializer
+from pydantic import (
+    BaseModel,
+    Field,
+    field_validator,
+    model_validator,
+    field_serializer,
+)
 from numpydantic import NDArray, Shape
 from standard_evaluator import unique_names
 
 MAXINT = 2**63
+
 
 # Generating names of array variables
 # We want to generate variable / response names that reflect that we have an array.
@@ -75,9 +82,7 @@ class FloatVariable(BaseModel):
         default="",
         description="A description of the variable.",
     )
-    options: Dict = Field(
-        default_factory=dict, description="Options for the variable."
-    )
+    options: Dict = Field(default_factory=dict, description="Options for the variable.")
     class_type: Literal["float"] = Field(default="float", description="Class marker")
 
     @field_validator("bounds")
@@ -115,12 +120,11 @@ class IntVariable(FloatVariable):
     )
     shift: Optional[int] = Field(
         default=0,
-        description="NumPy array with the shift values to be used for the array variable.",
+        description="Shift value to be used for this variable.",
     )
     scale: Optional[int] = Field(
         default=1,
-        description="NumPy array with the scale values to be used for the array variable. "
-        + "Cannot be zero.",
+        description="Scale value to be used for this variable." + "Cannot be zero.",
     )
     class_type: Literal["int"] = Field(default="int", description="Class marker")
 
@@ -133,6 +137,44 @@ class IntVariable(FloatVariable):
                 f"Lower bounds are larger than upper bounds: {var[0]} > {var[1]}"
             )
         return var
+
+
+class CategoricalVariable(FloatVariable):
+    default: Optional[Any] = Field(
+        default=None, description="Default value for this variable"
+    )
+    bounds: List[Any] = Field(
+        description="Values this variable or response can take on. Must be defined"
+    )
+    shift: Literal[None] = Field(
+        default=None,
+        description="Shift value to be used for this variable. Does not make sense for categorical variables",
+    )
+    scale: Literal[None] = Field(
+        default=None,
+        description="Scale value to be used for this variable. Does not make sense for categorical variables",
+    )
+    units: Optional[str] = None
+    class_type: Literal["cat"] = Field(default="cat", description="Class marker")
+
+    @field_validator("bounds")
+    def validate_bounds(cls, var):
+        """Method to overwrite the inherited method. For categorical variables bounds can be"""
+        if len(var) == 0:
+            raise ValueError(
+                f"Need to define at least one valid value for this variable"
+            )
+        return var
+
+    @model_validator(mode="after")
+    def check_default(self):
+        """Method to chek that the default value, if it is defined, is valid"""
+        bounds = self.bounds
+        default = self.default
+        if default is not None:
+            if default not in bounds:
+                raise ValueError(f"Default not in bounds: {default}")
+        return self
 
 
 class ArrayVariable(FloatVariable):
@@ -244,15 +286,18 @@ class ArrayVariable(FloatVariable):
                     )
 
         return self
-    
+
     # If the bounds are set to (-inf, inf) we don't need to store them.
-    @field_serializer('bounds')
-    def serialize_bounds(self, bounds: Tuple[
+    @field_serializer("bounds")
+    def serialize_bounds(
+        self,
+        bounds: Tuple[
             NDArray[Shape["*,..."], np.float64],
             NDArray[Shape["*,..."], np.float64],
-        ]):
+        ],
+    ):
         if np.all(np.isinf(bounds[0])) & np.all(np.isinf(bounds[0])):
-            return(None)
+            return None
         else:
             lower = bounds[0]
             upper = bounds[1]
@@ -261,10 +306,10 @@ class ArrayVariable(FloatVariable):
             if np.all(lower == lower.ravel()[0]):
                 lower = lower.ravel()[0]
             bounds = (lower, upper)
-            return(bounds)
+            return bounds
 
     # If shift is set to all zeros we don't need to save them
-    @field_serializer('shift')
+    @field_serializer("shift")
     def serialize_shift(self, shift: NDArray[Shape["*,..."], np.float64]):
         if np.all(shift == 0.0):
             return None
@@ -272,15 +317,17 @@ class ArrayVariable(FloatVariable):
             return shift
 
     # If scale is set to all ones we don't need to save them
-    @field_serializer('scale')
+    @field_serializer("scale")
     def serialize_scale(self, scale: NDArray[Shape["*,..."], np.float64]):
         if np.all(scale == 1.0):
             return None
         else:
             return scale
 
+
 # Define the Union of the different variable types. Note that we use that for responses as well
 Variable = Union[FloatVariable, IntVariable, ArrayVariable]
+
 
 class OptProblem(BaseModel):
     """

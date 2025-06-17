@@ -7,6 +7,7 @@ from standard_evaluator import EvaluatorInfo, OptProblem, MAXINT
 from standard_evaluator import (
     evaluator_info_to_opt_problem,
     opt_problem_to_evaluator_info,
+    CategoricalVariable,
 )
 
 def test_float_variable():
@@ -34,6 +35,12 @@ def test_float_variable():
     my_float_var3 = FloatVariable(name="")
     assert my_float_var3.name == ""
 
+def test_categorical_variable():
+    my_cat_var = CategoricalVariable(name="x1", bounds=["x1 = 1", 4.3, 6.5])
+    assert my_cat_var.bounds == ["x1 = 1", 4.3, 6.5]
+    with pytest.raises(ValueError):
+        # Check that is lower bound is larger than upper bound we throw an error
+        IntVariable(name="dummy", bounds=[2.0, 1.0, "ret"], default="no")
 
 def test_int_variable():
     my_int_var = IntVariable(name="dummy")
