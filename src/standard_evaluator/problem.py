@@ -326,7 +326,7 @@ class ArrayVariable(FloatVariable):
 
 
 # Define the Union of the different variable types. Note that we use that for responses as well
-Variable = Union[FloatVariable, IntVariable, ArrayVariable]
+Variable = Union[FloatVariable, IntVariable, ArrayVariable, CategoricalVariable]
 
 
 class OptProblem(BaseModel):
