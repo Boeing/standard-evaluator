@@ -2,7 +2,8 @@ import copy
 import pytest
 import pandas as pd
 import numpy as np
-from standard_evaluator import FloatVariable, IntVariable, ArrayVariable
+from pydantic import ValidationError
+from standard_evaluator import FloatVariable, IntVariable, ArrayVariable, CategoricalVariable
 from standard_evaluator import EvaluatorInfo, GroupInfo, JoinedInfo,OptProblem, MAXINT
 
 def test_evaluator_info():
@@ -245,3 +246,23 @@ def test_group():
   'promotions': {},
   }
     np.testing.assert_equal(expected, my_group.model_dump())
+  
+def test_evaluator_info_default():
+    lower_bound = np.array([[1, 2], [-np.inf, 4], [5, 4]])
+    upper_bound = np.array([[3, 4], [6, np.inf], [np.inf, 8]])
+    expected_default = np.array([[2., 3.], [6., 4.], [5., 6.]])
+    x1 = FloatVariable(name='x1', bounds=[2.,5])
+    x2 = IntVariable(name='x2', bounds=[2,5])
+    cat = CategoricalVariable(name="cat1", bounds=["x2", "f3", "f1>1"])
+    array1 = ArrayVariable(name="array1", bounds=(lower_bound, upper_bound), shape=lower_bound.shape)
+    y1 = FloatVariable(name='y1', bounds=[2.,5])
+    y2 = IntVariable(name='y2', bounds=[2,5])
+    my_prob = EvaluatorInfo(name="opt", inputs=[x1, x2, cat, array1], outputs=[y1, y2])
+    my_prob.calculate_default()
+    assert my_prob.inputs[0].default == 3.5
+    assert my_prob.inputs[1].default == 3
+    assert my_prob.inputs[2].default == "x2"
+    np.testing.assert_equal(my_prob.inputs[3].default, expected_default)
+
+    with pytest.raises(ValidationError):
+        my_prob.set_defaults({'x1': 4.0, 'x2': 'sd', 'cat1': 'f3'})

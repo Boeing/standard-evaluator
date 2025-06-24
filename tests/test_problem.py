@@ -2,6 +2,7 @@ import copy
 import pytest
 import pandas as pd
 import numpy as np
+from pydantic import ValidationError
 from standard_evaluator import FloatVariable, IntVariable, ArrayVariable
 from standard_evaluator import EvaluatorInfo, OptProblem, MAXINT
 from standard_evaluator import (
@@ -35,6 +36,32 @@ def test_float_variable():
     my_float_var3 = FloatVariable(name="")
     assert my_float_var3.name == ""
 
+def test_calculate_default_float():
+    x1 = FloatVariable(name='x1', bounds=[2.,5])
+    print(x1)
+    x1.calculate_default()
+    assert x1.default == 3.5
+    x2 = FloatVariable(name='x2', bounds=[2.,5], default=4.)
+    assert x2.default == 4.0
+    x2.calculate_default()
+    assert x2.default == 3.5
+    x3 = FloatVariable(name='x3', bounds=[2.,5], default=4.)
+    x3.calculate_default(overwrite=False)
+    assert x3.default == 4.0
+
+def test_calculate_default_cat():
+    cat = CategoricalVariable(name="cat1", bounds=["x2", "f3", "f1>1"])
+    cat.calculate_default()
+    assert cat.default == "x2"
+    cat2 = CategoricalVariable(name="cat2", bounds=["x2", "f3", "f1>1"], default="f3")
+    assert cat2.default == "f3"
+    cat2.calculate_default()
+    assert cat2.default == "x2"
+    cat3 = CategoricalVariable(name="cat3", bounds=["x2", "f3", "f1>1"], default="f3")
+    cat3.calculate_default(overwrite=False)
+    assert cat3.default == "f3"
+
+
 def test_categorical_variable():
     my_cat_var = CategoricalVariable(name="x1", bounds=["x1 = 1", 4.3, 6.5])
     assert my_cat_var.bounds == ["x1 = 1", 4.3, 6.5]
@@ -59,6 +86,17 @@ def test_int_variable():
         # Check that if scale is 0. we throw an error
         IntVariable(name="dummy", scale=0)
 
+def test_calculate_default_int():
+    x1 = IntVariable(name='x1', bounds=[2,5])
+    x1.calculate_default()
+    assert x1.default == 3
+    x2 = IntVariable(name='x2', bounds=[2,5], default=4)
+    assert x2.default == 4
+    x2.calculate_default()
+    assert x2.default == 3
+    x3 = IntVariable(name='x3', bounds=[2,5], default=4)
+    x3.calculate_default(overwrite=False)
+    assert x3.default == 4
 
 def test_array_variable():
     my_array_var = ArrayVariable(name="dummy", shape=(2, 3))
@@ -128,6 +166,24 @@ def test_array_variable():
         # Check that if any element of scale is 0. we throw an error
         ArrayVariable(name="dummy", scale=np.array([3.2, 0.0]), shape=(1, 2))
 
+def test_calculate_default_array():
+    # Example lower and upper bound arrays
+    lower_bound = np.array([[1, 2], [-np.inf, 4], [5, 4]])
+    upper_bound = np.array([[3, 4], [6, np.inf], [np.inf, 8]])
+    expected_default = np.array([[2., 3.], [6., 4.], [5., 6.]])
+    array1 = ArrayVariable(name="array1", bounds=(lower_bound, upper_bound), shape=lower_bound.shape)
+    array1.calculate_default()
+    np.testing.assert_array_equal(array1.default, expected_default)
+    # Example lower and upper bound arrays
+    default = np.array([[1.3, 2.4], [2.1, 4.6], [5.9, 4.3]])
+    array2 = ArrayVariable(name="array2", bounds=(lower_bound, upper_bound), default=default)
+    array2.calculate_default()
+    np.testing.assert_array_equal(array2.default, expected_default)
+
+    array3 = ArrayVariable(name="array3", bounds=(lower_bound, upper_bound), default=default)
+    print(array3)
+    array3.calculate_default(overwrite=False)
+    np.testing.assert_array_equal(array3.default, default)
 
 def test_opt_problem():
     with pytest.raises(ValueError):
@@ -341,3 +397,23 @@ def test_opt_problem():
         "options": {},
     }
     np.testing.assert_equal(expected, my_prob3.model_dump())
+
+def test_opt_problem_default():
+    lower_bound = np.array([[1, 2], [-np.inf, 4], [5, 4]])
+    upper_bound = np.array([[3, 4], [6, np.inf], [np.inf, 8]])
+    expected_default = np.array([[2., 3.], [6., 4.], [5., 6.]])
+    x1 = FloatVariable(name='x1', bounds=[2.,5])
+    x2 = IntVariable(name='x2', bounds=[2,5])
+    cat = CategoricalVariable(name="cat1", bounds=["x2", "f3", "f1>1"])
+    array1 = ArrayVariable(name="array1", bounds=(lower_bound, upper_bound), shape=lower_bound.shape)
+    y1 = FloatVariable(name='y1', bounds=[2.,5])
+    y2 = IntVariable(name='y2', bounds=[2,5])
+    my_prob = OptProblem(name="opt", variables=[x1, x2, cat, array1], responses=[y1, y2], objectives=['y1'], constraints=['y2'])
+    my_prob.calculate_default()
+    assert my_prob.variables[0].default == 3.5
+    assert my_prob.variables[1].default == 3
+    assert my_prob.variables[2].default == "x2"
+    np.testing.assert_equal(my_prob.variables[3].default, expected_default)
+
+    with pytest.raises(ValidationError):
+        my_prob.set_defaults({'x1': 4.0, 'x2': 'sd', 'cat1': 'f3'})

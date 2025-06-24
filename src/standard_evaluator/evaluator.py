@@ -62,6 +62,62 @@ class EvaluatorInfo(BaseModel):
         default_factory=dict, description="Additional options for the problem."
     )
 
+    def calculate_default(self, overwrite: bool = True) -> None:
+        """Calculate and set default values for all inputs.
+
+        This method iterates through the list of inputs and calls the
+        `calculate_default` method on each input to compute its default value.
+
+        Parameters
+        ----------
+        overwrite : bool
+            A flag indicating whether to overwrite existing default values. Defaults to True.
+        """
+        for input in self.inputs:
+            input.calculate_default(overwrite=overwrite)
+
+    def input_names(self) -> List[str]:
+        """Retrieve the names of all input inputs.
+
+        This method returns a list of names for all inputs defined in the
+        `inputs` attribute.
+
+        Returns
+        -------
+        List[str]
+            A list of names of the input inputs.
+        """
+        return [element.name for element in self.inputs]
+    
+    def response_names(self) -> List[str]:
+        """Retrieve the names of all outputs.
+
+        This method returns a list of names for all outputs defined in the
+        `responses` attribute.
+
+        Returns
+        -------
+        List[str]
+            A list of names of the output outputs.
+        """
+        return [element.name for element in self.responses]
+    
+    def set_defaults(self, new_defaults: dict) -> None:
+        """Set new default values for input outputs based on a provided dictionary.
+
+        This method updates the default values of the inputs in the `inputs`
+        list if their names match the keys in the `new_defaults` dictionary.
+
+        Parameters
+        ----------
+        new_defaults : dict
+            A dictionary where keys are input names and values are the new default values to set.
+        """
+        for index in range(len(self.inputs)):
+            element = self.inputs[index]
+            if element.name in new_defaults:
+                self.inputs[index].default = new_defaults[element.name]
+
     @field_validator("inputs", "outputs")
     def validate_outputs(cls, var):
         unique_names(var)
