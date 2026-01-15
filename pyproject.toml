@@ -21,7 +21,7 @@ classifiers = [
 ]
 dependencies = [
     "numpy",
-    "openmdao==3.41.0",
+    "openmdao",
     "aviary",
     "json-numpy",
     "pydantic",
