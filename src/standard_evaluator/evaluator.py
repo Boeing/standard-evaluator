@@ -13,8 +13,8 @@ import numpy as np
 from pydantic import BaseModel, Field, field_validator, model_validator
 from numpydantic import NDArray, Shape
 
-from standard_evaluator import Variable
-from standard_evaluator import unique_names
+from standard_evaluator.problem import Variable
+from standard_evaluator.utilities import unique_names
 
 
 class EvaluatorInfo(BaseModel):

@@ -1,4 +1,5 @@
-from standard_evaluator import OptProblem, EvaluatorInfo
+from standard_evaluator.problem import OptProblem
+from standard_evaluator.evaluator import EvaluatorInfo
 
 def opt_problem_to_evaluator_info(opt_prob: OptProblem) -> EvaluatorInfo:
     return EvaluatorInfo(

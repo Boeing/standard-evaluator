@@ -10,10 +10,18 @@ name = "standard_evaluator"
 description = "Project description"
 readme = "README.md"
 authors = [
-    {email = "joerg.m.gablonsky@boeing.com"},
-    # {name = "Author2", email = "email1@example.com"},
+    {name = "Joerg Gablonsky", email = "joerg.m.gablonsky@boeing.com"},
+    {name = "Mark Bennett"},
+    {name = "Micah Goldade"},
+    {name = "Nathan Pitts"},
+    {name = "Ben Link"},
+    {name = "Colt Kirkpatrick"},
+    {name = "Jeff Poskin"},
+    {name = "Anjali Prasad"},
+    {name = "Tyler Smith"},
+    {name = "Mikel Woo"},
 ]
-requires-python = ">=3.7"
+requires-python = ">=3.9"
 classifiers = [
     "Programming Language :: Python :: 3",
     "Operating System :: OS Independent",
@@ -21,12 +29,17 @@ classifiers = [
 ]
 dependencies = [
     "numpy",
+    "pandas",
+    "pydantic>=2",
+    "annotated-types",
+    "numpydantic>=1.6.9",
+    "openpyxl",
+    "dask",
+    "networkx",
     "openmdao",
     "aviary",
     "json-numpy",
-    "pydantic",
     "h5py",
-    "numpydantic>=1.6.9",
 ]
 
 dynamic = ["version", "scripts"]
@@ -35,10 +48,15 @@ dynamic = ["version", "scripts"]
 version_scheme = "post-release"
 
 [project.optional-dependencies]
+excel = [
+    "pywin32; sys_platform == 'win32'",
+]
 test = [
     "pytest",
     "pytest-cov",
     "coverage",
+    "hypothesis",
+    "numdifftools",
 ]
 dev = [
     # Copy test requirements below
