@@ -10,15 +10,22 @@ import re
 from typing import List, Optional, Dict, Tuple, Union, Literal, Any
 import typing
 import numpy as np
+import pandas as pd
 from pydantic import (
     BaseModel,
     Field,
+    PrivateAttr,
     field_validator,
     model_validator,
     field_serializer,
 )
 from numpydantic import NDArray, Shape
-from standard_evaluator import unique_names
+from standard_evaluator.utilities import unique_names
+from standard_evaluator.utilities.mapping import (
+    flatten_items_to_arrays,
+    compress_whitespace,
+    res_element_to_string,
+)
 
 MAXINT = 2**63
 
@@ -700,6 +707,20 @@ class OptProblem(BaseModel):
         default_factory=dict, description="Additional options for the problem."
     )
 
+    # Private attributes populated by _init_maps_and_partials model_validator
+    _var_map: Optional[pd.DataFrame] = PrivateAttr(default=None)
+    _res_map: Optional[pd.DataFrame] = PrivateAttr(default=None)
+    _flat_partials_res_indices: Optional[np.ndarray] = PrivateAttr(default=None)
+    _num_partials_responses: Optional[int] = PrivateAttr(default=None)
+    _grad_cols: Optional[np.ndarray] = PrivateAttr(default=None)
+    _jac_cols: Optional[np.ndarray] = PrivateAttr(default=None)
+    _num_objs_total: Optional[int] = PrivateAttr(default=None)
+    _num_cons_total: Optional[int] = PrivateAttr(default=None)
+    _free_flat_var_mask: Optional[np.ndarray] = PrivateAttr(default=None)
+    _free_flat_var_positions: Optional[np.ndarray] = PrivateAttr(default=None)
+    _num_flat_vars: Optional[int] = PrivateAttr(default=None)
+    _full_to_free_var_index: Optional[np.ndarray] = PrivateAttr(default=None)
+
     def calculate_default(self, overwrite: bool = True) -> None:
         """Calculate and set default values for all input variables.
 
@@ -845,5 +866,313 @@ class OptProblem(BaseModel):
                     raise ValueError(
                         f"{name} is defined as a constraint, but not defined as a response."
                     )
+
+        return self
+
+    def build_maps(self) -> Tuple[pd.DataFrame, pd.DataFrame]:
+        """Build flattened variable and response maps with Jacobian/gradient indexing.
+
+        This routine:
+        - Flattens model variables and responses into element-wise entries.
+        - Detects objectives and constraints using whitespace-insensitive matching
+          against ``self.objectives`` and ``self.constraints``.
+        - Marks fixed variable elements (where variable lower == upper bound).
+        - Assigns compact contiguous row indices (``jac_row``/``grad_row``) to free
+          flattened variable elements; fixed elements have ``None`` in these columns.
+        - Assigns contiguous column indices in the response map for objectives
+          (``grad_col``) and constraints (``jac_col``), with ``None`` for
+          non-applicable entries.
+
+        Returns
+        -------
+        Tuple[pd.DataFrame, pd.DataFrame]
+            A tuple ``(var_map, res_map)`` where:
+
+            - ``var_map`` columns: ``name``, ``multi``, ``flat``, ``fixed``,
+              ``jac_row``, ``grad_row``
+            - ``res_map`` columns: ``name``, ``multi``, ``flat``, ``objective``,
+              ``constraint``, ``grad_col``, ``jac_col``
+        """
+        opt_problem = self
+
+        # Build (name, shape) lists
+        vars_items = [
+            (getattr(v, "name"), getattr(v, "shape", None))
+            for v in opt_problem.variables
+        ]
+        res_items = [
+            (getattr(r, "name"), getattr(r, "shape", None))
+            for r in opt_problem.responses
+        ]
+
+        # Flatten arrays
+        var_names, var_multi_idx, var_flat_idx = flatten_items_to_arrays(vars_items)
+        res_names, res_multi_idx, res_flat_idx = flatten_items_to_arrays(res_items)
+
+        # Prepare compressed spec sets for efficient membership checks
+        raw_objectives = getattr(opt_problem, "objectives", None) or []
+        raw_constraints = getattr(opt_problem, "constraints", None) or []
+        compressed_objectives = {compress_whitespace(s) for s in raw_objectives}
+        compressed_constraints = {compress_whitespace(s) for s in raw_constraints}
+
+        # Build boolean flags using set membership
+        obj_flags: List[bool] = []
+        con_flags: List[bool] = []
+        for name, mi in zip(res_names, res_multi_idx):
+            elem_spec = res_element_to_string(name, mi)
+            compressed_elem = compress_whitespace(elem_spec)
+            obj_flags.append(compressed_elem in compressed_objectives)
+            con_flags.append(compressed_elem in compressed_constraints)
+
+        # Create DataFrames
+        var_map = pd.DataFrame({
+            "name": list(var_names),
+            "multi": list(var_multi_idx),
+            "flat": list(var_flat_idx),
+        })
+
+        res_map = pd.DataFrame({
+            "name": list(res_names),
+            "multi": list(res_multi_idx),
+            "flat": list(res_flat_idx),
+            "objective": list(np.array(obj_flags, dtype=bool)),
+            "constraint": list(np.array(con_flags, dtype=bool)),
+        })
+
+        # --- Create Jacobian indexing (rows = flattened variables, cols = flattened constraints)
+        n_vars = len(var_map)
+        objective_mask = res_map["objective"].to_numpy(dtype=bool)
+        constraint_mask = res_map["constraint"].to_numpy(dtype=bool)
+        n_objs = int(objective_mask.sum())
+        n_cons = int(constraint_mask.sum())
+
+        # Flag fixed variables: one entry per flattened element
+        fixed = []
+        for var in opt_problem.variables:
+            n_elements = len(var_map[var_map["name"] == var.name])
+            is_fixed = np.array_equal(var.bounds[0], var.bounds[1])
+            fixed.extend([is_fixed] * n_elements)
+        var_map["fixed"] = fixed
+
+        # Annotate var_map with jac/grad row index
+        var_map = var_map.copy()
+        jac_rows = [None] * n_vars
+        grad_rows = [None] * n_vars
+
+        fixed_mask = np.array(fixed, dtype=bool)
+        free_positions = np.nonzero(~fixed_mask)[0]
+        n_free = len(free_positions)
+        if n_free > 0:
+            assigned_rows = np.arange(n_free, dtype=int)
+            for pos, r in zip(free_positions, assigned_rows):
+                jac_rows[int(pos)] = int(r)
+                grad_rows[int(pos)] = int(r)
+
+        var_map["jac_row"] = pd.Series(jac_rows, dtype=object)
+        var_map["grad_row"] = pd.Series(grad_rows, dtype=object)
+
+        # Annotate res_map with jacobian column index for constraint rows; None for others
+        res_map = res_map.copy()
+        res_map["grad_col"] = None
+        res_map["jac_col"] = None
+
+        objective_positions = np.nonzero(objective_mask)[0]
+        obj_cols = np.arange(n_objs, dtype=int)
+        res_map.loc[objective_positions, "grad_col"] = obj_cols.tolist()
+
+        if n_cons > 0:
+            constraint_positions = np.nonzero(constraint_mask)[0]
+            cols = np.arange(n_cons, dtype=int)
+            res_map.loc[constraint_positions, "jac_col"] = cols.tolist()
+
+        return var_map, res_map
+
+    def _setup_partials(self) -> None:
+        """Prepare and store indices/masks used for finite-difference partial computations.
+
+        Behavior:
+        - Chooses flattened responses to differentiate as those flagged as objectives OR constraints.
+        - Builds arrays that map the selected flattened responses into gradient and jacobian columns.
+        - Computes the set of free flattened variable positions (excludes fixed elements),
+          and constructs a compact mapping from full flattened variable indices to free indices.
+        - Stores results into the pre-declared private attributes using ``object.__setattr__``.
+
+        Stored private attributes (accessible via properties):
+        - ``_flat_partials_res_indices`` : 1-D int array of flattened response indices selected for partials.
+        - ``_num_partials_responses`` : int number of selected responses.
+        - ``_grad_cols`` : 1-D int array mapping selected responses -> gradient column index or ``-1``.
+        - ``_jac_cols`` : 1-D int array mapping selected responses -> jacobian column index or ``-1``.
+        - ``_num_objs_total`` : int total number of objective flattened responses.
+        - ``_num_cons_total`` : int total number of constraint flattened responses.
+        - ``_free_flat_var_mask`` : 1-D bool array over flattened variables (``True`` => free).
+        - ``_free_flat_var_positions`` : 1-D int array of full flattened positions for free elements.
+        - ``_num_flat_vars`` : int number of free flattened variables.
+        - ``_full_to_free_var_index`` : 1-D int array mapping full flattened index -> free index or ``-1``.
+
+        Preconditions
+        -------------
+        - ``self._var_map`` and ``self._res_map`` must be present and valid.
+        - ``self._var_map`` must contain a ``fixed`` boolean column.
+        """
+        # 1) Choose which flattened responses to differentiate (objectives OR constraints)
+        partials_mask = self._res_map["objective"] | self._res_map["constraint"]
+
+        # 2) Selected flattened response indices (flat indices into full response vector)
+        flat_partials = self._res_map.loc[partials_mask, "flat"].to_numpy(dtype=int)
+        object.__setattr__(self, "_flat_partials_res_indices", flat_partials)
+        object.__setattr__(self, "_num_partials_responses", int(flat_partials.size))
+
+        # 3) Map flat response -> gradient column if objective (else None)
+        flat_to_grad_col = self._res_map.set_index("flat")["grad_col"]
+
+        # 3a) Map flat response -> jacobian column if constraint (else None)
+        flat_to_jac_col = self._res_map.set_index("flat")["jac_col"]
+
+        # 4) Selected -> grad_col mapping (int array) with -1 sentinel for non-objectives
+        selected_grad_cols_raw = flat_to_grad_col.reindex(flat_partials).to_numpy()
+        grad_cols = np.array(
+            [-1 if (o is None or (isinstance(o, float) and np.isnan(o))) else int(o)
+             for o in selected_grad_cols_raw],
+            dtype=int
+        )
+        object.__setattr__(self, "_grad_cols", grad_cols)
+
+        # 4a) Selected -> jac_col mapping (int array) with -1 sentinel for non-constraints
+        selected_jac_cols_raw = flat_to_jac_col.reindex(flat_partials).to_numpy()
+        jac_cols = np.array(
+            [-1 if (c is None or (isinstance(c, float) and np.isnan(c))) else int(c)
+             for c in selected_jac_cols_raw],
+            dtype=int
+        )
+        object.__setattr__(self, "_jac_cols", jac_cols)
+
+        # 5) Totals for Jacobian/gradient shapes
+        object.__setattr__(self, "_num_objs_total", int(self._res_map["objective"].sum()))
+        object.__setattr__(self, "_num_cons_total", int(self._res_map["constraint"].sum()))
+
+        # Full fixed mask: True for fixed elements; length == number of flattened var entries
+        full_fixed_mask = np.asarray(self._var_map["fixed"].to_numpy(dtype=bool))
+
+        # Free mask: True for free elements (the ones we WILL perturb)
+        free_mask = ~full_fixed_mask
+        object.__setattr__(self, "_free_flat_var_mask", free_mask)
+
+        # Positions (indices) in the full flattened var ordering for free elements
+        free_positions = np.nonzero(free_mask)[0].astype(int)
+        object.__setattr__(self, "_free_flat_var_positions", free_positions)
+
+        # Number of free flattened variables (compact FD axis length)
+        num_free = int(free_positions.size)
+        object.__setattr__(self, "_num_flat_vars", num_free)
+
+        # Mapping from full flattened index -> free index (or -1 for fixed)
+        full_to_free = np.full(full_fixed_mask.shape, -1, dtype=int)
+        full_to_free[free_positions] = np.arange(num_free, dtype=int)
+        object.__setattr__(self, "_full_to_free_var_index", full_to_free)
+
+    # --- Read-only properties ---
+
+    @property
+    def var_map(self) -> Optional[pd.DataFrame]:
+        """Return the flattened variable map DataFrame."""
+        return self._var_map
+
+    @property
+    def res_map(self) -> Optional[pd.DataFrame]:
+        """Return the flattened response map DataFrame."""
+        return self._res_map
+
+    @property
+    def flat_partials_res_indices(self) -> Optional[np.ndarray]:
+        """Return 1-D int array of response indices flagged as objective or constraint."""
+        return self._flat_partials_res_indices
+
+    @property
+    def num_partials_responses(self) -> Optional[int]:
+        """Return the count of selected responses for partials computation."""
+        return self._num_partials_responses
+
+    @property
+    def grad_cols(self) -> Optional[np.ndarray]:
+        """Return 1-D int array mapping selected responses to gradient column index or -1."""
+        return self._grad_cols
+
+    @property
+    def jac_cols(self) -> Optional[np.ndarray]:
+        """Return 1-D int array mapping selected responses to jacobian column index or -1."""
+        return self._jac_cols
+
+    @property
+    def num_objs_total(self) -> Optional[int]:
+        """Return the total number of objective flattened responses."""
+        return self._num_objs_total
+
+    @property
+    def num_cons_total(self) -> Optional[int]:
+        """Return the total number of constraint flattened responses."""
+        return self._num_cons_total
+
+    @property
+    def free_flat_var_mask(self) -> Optional[np.ndarray]:
+        """Return 1-D bool array over flattened variables (True => free)."""
+        return self._free_flat_var_mask
+
+    @property
+    def free_flat_var_positions(self) -> Optional[np.ndarray]:
+        """Return 1-D int array of full flattened positions for free elements."""
+        return self._free_flat_var_positions
+
+    @property
+    def num_flat_vars(self) -> Optional[int]:
+        """Return the number of free flattened variables."""
+        return self._num_flat_vars
+
+    @property
+    def full_to_free_var_index(self) -> Optional[np.ndarray]:
+        """Return 1-D int array mapping full flattened index to free index or -1."""
+        return self._full_to_free_var_index
+
+    # --- Model validator to initialize maps and partials ---
+
+    @model_validator(mode="after")
+    def _init_maps_and_partials(self):
+        """Pydantic post-validator that builds var_map/res_map and eagerly prepares partials.
+
+        This method is executed automatically by Pydantic after model construction/validation.
+        It runs after the existing ``check_problem`` validator.
+
+        Steps performed:
+        1. Call ``self.build_maps()`` to obtain ``(var_map, res_map)``.
+           Errors are wrapped in a ValueError with the problem name for context.
+        2. Attach the returned DataFrames to the instance via ``object.__setattr__``.
+        3. Call ``self._setup_partials()`` in its own try/except block so that
+           failures during partial-setup are reported separately.
+
+        Returns
+        -------
+        OptProblem
+            The model instance after initialization.
+
+        Raises
+        ------
+        ValueError
+            If build_maps or _setup_partials fails, with problem name context.
+        """
+        try:
+            vm, rm = self.build_maps()
+        except Exception as exc:
+            raise ValueError(
+                f"Failed to build var_map/res_map for OptProblem '{self.name}': {exc}"
+            ) from exc
+
+        object.__setattr__(self, "_var_map", vm)
+        object.__setattr__(self, "_res_map", rm)
+
+        try:
+            self._setup_partials()
+        except Exception as exc:
+            raise ValueError(
+                f"Failed to setup partials for OptProblem '{self.name}': {exc}"
+            ) from exc
 
         return self
