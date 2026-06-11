@@ -120,6 +120,10 @@ class TestAviaryEncoderBackwardCompat:
         assert "dtype" in result
         assert "shape" in result
 
+    @pytest.mark.skipif(
+        sys.platform != "win32",
+        reason="pathlib.WindowsPath cannot be instantiated on non-Windows systems",
+    )
     def test_aviary_encoder_handles_windows_path(self):
         """Requirement 4.1: AviaryEncoder encodes WindowsPath with __pathlib.WindowsPath__ key."""
         encoder = self._get_encoder()
