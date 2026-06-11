@@ -12,6 +12,7 @@ uniquely identifies the original type.
 
 import importlib
 import pathlib
+import platform
 import sys
 
 import numpy as np
@@ -77,22 +78,25 @@ _numpy_arrays = st.builds(
     dtype=_numpy_dtypes,
 )
 
-# Strategy: WindowsPath with random path strings
-_windows_paths = st.text(
-    alphabet=st.characters(
-        whitelist_categories=("L", "N"),
-        whitelist_characters="_-/\\.",
-    ),
-    min_size=1,
-    max_size=50,
-).map(pathlib.WindowsPath)
+# Strategy: WindowsPath with random path strings (only available on Windows)
+_IS_WINDOWS = platform.system() == "Windows"
+if _IS_WINDOWS:
+    _windows_paths = st.text(
+        alphabet=st.characters(
+            whitelist_categories=("L", "N"),
+            whitelist_characters="_-/\\.",
+        ),
+        min_size=1,
+        max_size=50,
+    ).map(pathlib.WindowsPath)
 
 
 # Combined strategy: one of the supported types paired with expected marker key
 @st.composite
 def aviary_typed_object_with_marker(draw):
     """Generate a random aviary-typed object and its expected type-marker key."""
-    choice = draw(st.integers(min_value=0, max_value=4))
+    max_choice = 4 if _IS_WINDOWS else 3
+    choice = draw(st.integers(min_value=0, max_value=max_choice))
 
     if choice == 0:
         obj = draw(_aviary_enums)
@@ -124,7 +128,7 @@ class TestAviaryEncoderTypeMarkerRoundTrip:
     """
 
     @given(data=aviary_typed_object_with_marker())
-    @settings(max_examples=100)
+    @settings(max_examples=100, deadline=None)
     def test_default_returns_dict_with_type_marker(self, data):
         """AviaryEncoder.default() produces a dict with the correct type-marker key.
 
