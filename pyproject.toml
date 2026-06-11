@@ -37,7 +37,6 @@ dependencies = [
     "dask",
     "networkx",
     "openmdao",
-    "aviary",
     "json-numpy",
     "h5py",
 ]
@@ -48,6 +47,10 @@ dynamic = ["version", "scripts"]
 version_scheme = "post-release"
 
 [project.optional-dependencies]
+aviary = [
+    "aviary",
+    "dymos",
+]
 excel = [
     "pywin32; sys_platform == 'win32'",
 ]
