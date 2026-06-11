@@ -31,5 +31,5 @@ jobs:
         python -m build
     - name: Test package with pytest
       run: |
-        pip install $(echo ./dist/*.whl)[test]
+        pip install $(echo ./dist/*.whl)[test,aviary]
         pytest
