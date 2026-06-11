@@ -25,8 +25,8 @@ def test_trigonometric():
     # Evaluate the initial guess
     test_func(initial_guess)
     # Check some specific responses
-    assert test_func.variables == ["x1", "x2"]
-    assert test_func.responses == ["f"]
+    assert test_func.inputs == ["x1", "x2"]
+    assert test_func.outputs == ["f"]
     assert initial_guess.iloc[0].f == pytest.approx(0.16357346659335475)
     assert initial_guess.iloc[1].f == pytest.approx(2.212772251402149)
 

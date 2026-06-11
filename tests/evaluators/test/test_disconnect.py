@@ -31,8 +31,8 @@ def test_disconnect():
     test_func(initial_guess)
 
     # Check some specific responses
-    assert test_func.variables == ["x", "y"]
-    assert test_func.responses == ["h", "k"]
+    assert test_func.inputs == ["x", "y"]
+    assert test_func.outputs == ["h", "k"]
     assert initial_guess.iloc[0].h == pytest.approx(-6.9)
     assert initial_guess.iloc[0].k == pytest.approx(4.5)
     assert initial_guess.iloc[1].h == pytest.approx(0.380014)

@@ -6,6 +6,7 @@ from standard_evaluator.problem import OptProblem
 from standard_evaluator.evaluators.test_evaluator import TestEvaluator
 from standard_evaluator.evaluators.abstract_evaluator import ValidInputs
 
+
 class Rosenbrock(TestEvaluator):
     """
     An example test that represents the Rosenbrock function.

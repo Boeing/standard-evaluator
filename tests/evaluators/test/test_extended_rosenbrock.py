@@ -25,8 +25,8 @@ def test_extendedrosenbrock():
     # Evaluate the initial guess
     test_func(initial_guess)
     # Check some specific responses
-    assert test_func.variables == ["x0", "x1"]
-    assert test_func.responses == ["f"]
+    assert test_func.inputs == ["x0", "x1"]
+    assert test_func.outputs == ["f"]
     assert initial_guess.iloc[0].f == pytest.approx(24.199999)
     assert initial_guess.iloc[1].f == pytest.approx(26.919999)
 

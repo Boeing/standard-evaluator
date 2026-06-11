@@ -62,7 +62,7 @@ class PyEvaluator(Evaluator):
                 incoming sites DataFrame in place.
             name: Name for identifying evaluator.
             comp_cost: Cost of running this evaluator. Defaults to 100.
-            **kwargs: Parameters sent to problem definition.
+            **kwargs: Additional keyword arguments forwarded to the base class.
         """
         super().__init__(name=name, comp_cost=comp_cost, **kwargs)
 

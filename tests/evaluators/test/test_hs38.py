@@ -27,8 +27,8 @@ def test_hs38():
     # Evaluate the initial guess
     test_func(initial_guess)
     # Check some specific responses
-    assert test_func.variables == ["x1", "x2", "x3", "x4"]
-    assert test_func.responses == ["f"]
+    assert test_func.inputs == ["x1", "x2", "x3", "x4"]
+    assert test_func.outputs == ["f"]
     assert initial_guess.iloc[0].f == pytest.approx(19192.0)
     assert initial_guess.iloc[1].f == pytest.approx(67680.58800)
 

@@ -26,8 +26,8 @@ def test_tp37():
     # Evaluate the initial guess
     test_func(initial_guess)
     # Check some specific responses
-    assert test_func.variables == ["x1", "x2", "x3"]
-    assert test_func.responses == ["y1", "y2", "y3"]
+    assert test_func.inputs == ["x1", "x2", "x3"]
+    assert test_func.outputs == ["y1", "y2", "y3"]
     assert initial_guess.iloc[0].y1 == pytest.approx(-1000.0)
     assert initial_guess.iloc[0].y2 == pytest.approx(-22.0)
     assert initial_guess.iloc[0].y3 == pytest.approx(50.0)

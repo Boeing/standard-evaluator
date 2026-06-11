@@ -36,8 +36,8 @@ def test_simplemultifi_mid():
     # Evaluate the initial guess
     test_func(initial_guess)
     # Check some specific responses
-    assert test_func.variables == ["x", "y"]
-    assert test_func.responses == ["c1", "c2", "f"]
+    assert test_func.inputs == ["x", "y"]
+    assert test_func.outputs == ["c1", "c2", "f"]
     assert initial_guess.iloc[0].f == pytest.approx(-1.0090701853872457)
     assert initial_guess.iloc[0].c1 == pytest.approx(1.990767751190167)
     assert initial_guess.iloc[0].c2 == pytest.approx(-0.9799406855860548)
@@ -82,8 +82,8 @@ def test_simplemultifi_mid_two():
     # Evaluate the initial guess
     test_func(initial_guess)
     # Check some specific responses
-    assert test_func.variables == ["x", "y"]
-    assert test_func.responses == ["c1", "c2", "f"]
+    assert test_func.inputs == ["x", "y"]
+    assert test_func.outputs == ["c1", "c2", "f"]
     assert initial_guess.iloc[0].f == pytest.approx(-1.0090701853872457)
     assert initial_guess.iloc[0].c1 == pytest.approx(1.990767751190167)
     assert initial_guess.iloc[0].c2 == pytest.approx(-0.9799406855860548)

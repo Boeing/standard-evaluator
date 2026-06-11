@@ -24,8 +24,8 @@ def test_forrester_multi_fi_hi():
     # Evaluate the initial guess
     test_func(initial_guess)
     # Check some specific responses
-    assert test_func.variables == ["x"]
-    assert test_func.responses == ["f"]
+    assert test_func.inputs == ["x"]
+    assert test_func.outputs == ["f"]
     assert initial_guess.iloc[0].f == pytest.approx(-6.018326515965059)
     assert initial_guess.iloc[1].f == pytest.approx(-0.03612711940926288)
 

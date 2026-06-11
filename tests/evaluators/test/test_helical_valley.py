@@ -36,8 +36,8 @@ def test_helicalvalley():
     # Evaluate the initial guess
     test_func(initial_guess)
     # Check some specific responses
-    assert test_func.variables == ["x1", "x2", "x3"]
-    assert test_func.responses == ["f"]
+    assert test_func.inputs == ["x1", "x2", "x3"]
+    assert test_func.outputs == ["f"]
     assert initial_guess.iloc[0].f == pytest.approx(10000.0)
     assert initial_guess.iloc[1].f == pytest.approx(2927.42)
     assert initial_guess.iloc[2].f == pytest.approx(504.635)

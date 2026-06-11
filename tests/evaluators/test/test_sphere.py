@@ -36,7 +36,7 @@ def test_sphere():
     test_func(initial_guess)
     
     # Check some specific responses
-    assert test_func.variables == ["x0", "x1", "x2"]
-    assert test_func.responses == ["f"]
+    assert test_func.inputs == ["x0", "x1", "x2"]
+    assert test_func.outputs == ["f"]
     assert initial_guess.iloc[0].f == pytest.approx(3.0)
     assert initial_guess.iloc[1].f == pytest.approx(12.0)

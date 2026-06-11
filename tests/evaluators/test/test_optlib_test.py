@@ -27,8 +27,8 @@ def test_optlibtest_initial():
     # Evaluate the initial guess
     test_func(initial_guess)
     # Check some specific responses
-    assert test_func.variables == ["x1", "x2", "x3"]
-    assert test_func.responses == ["c", "f"]
+    assert test_func.inputs == ["x1", "x2", "x3"]
+    assert test_func.outputs == ["c", "f"]
     assert initial_guess.iloc[0].f == pytest.approx(1.0)
     assert initial_guess.iloc[0].c == pytest.approx(17.757359312880716)
     assert initial_guess.iloc[1].f == pytest.approx(6.8595999)
@@ -56,8 +56,8 @@ def test_optlibtest():
     # Evaluate the initial guess
     test_func(initial_guess)
     # Check some specific responses
-    assert test_func.variables == ["x1", "x2", "x3"]
-    assert test_func.responses == ["c", "f"]
+    assert test_func.inputs == ["x1", "x2", "x3"]
+    assert test_func.outputs == ["c", "f"]
     assert initial_guess.iloc[0].f == pytest.approx(1.0)
     assert initial_guess.iloc[0].c == pytest.approx(17.757359312880716)
     assert initial_guess.iloc[1].f == pytest.approx(6.8595999999999995)

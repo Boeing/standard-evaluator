@@ -36,18 +36,18 @@ def test_cantilevered_beam_fixed_variable():
     test_func(initial_guess)
 
     # Check some specific responses
-    assert test_func.variables == ["b1", "b2", "H", "x0", "C0", "C1"]
-    assert test_func.responses == ["deflection", "stress", "volume"]
+    assert test_func.inputs == ["b1", "b2", "H", "x0", "C0", "C1"]
+    assert test_func.outputs == ["deflection", "stress", "volume"]
 
     expected = pd.DataFrame(
-        columns=test_func.responses,
+        columns=test_func.outputs,
         data=[
             [0.174828, 3642.250101, 672.0],
             [np.nan, np.nan, np.nan],
             [np.nan, np.nan, np.nan],
         ],
     )
-    pd.testing.assert_frame_equal(initial_guess[test_func.responses], expected)
+    pd.testing.assert_frame_equal(initial_guess[test_func.outputs], expected)
 
 def test_create_opt_problem():
     # Create an instance of the class that contains the _create_opt_problem method

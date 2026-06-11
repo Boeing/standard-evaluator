@@ -6,13 +6,11 @@ Created Feb. 13, 2023
 
 import numpy as np
 import pandas as pd
-import warnings
 from standard_evaluator.evaluators.abstract_evaluator import Evaluator
 from standard_evaluator.utilities.shift_scale import ShiftAndScale
 from standard_evaluator.problem import OptProblem
 from standard_evaluator.evaluator import EvaluatorInfo
 from standard_evaluator.converters import evaluator_info_to_opt_problem
-from standard_evaluator.utilities.problem_dict_utility import legacy_to_opt_problem
 
 
 class ShiftScaleEvaluator(Evaluator):
@@ -20,7 +18,7 @@ class ShiftScaleEvaluator(Evaluator):
     space and the original space for another evaluator.
     """
 
-    def __init__(self, evaluate: Evaluator, interface: EvaluatorInfo = None, opt_problem: OptProblem = None, problem: dict = None) -> None:
+    def __init__(self, evaluate: Evaluator, interface: EvaluatorInfo = None, opt_problem: OptProblem = None) -> None:
         if not isinstance(evaluate, Evaluator):
             raise TypeError(
                 f"{type(self).__name__}: eval must be an Evaluator descendant, "
@@ -36,18 +34,9 @@ class ShiftScaleEvaluator(Evaluator):
             # Convert interface to opt_problem
             final_opt_problem = evaluator_info_to_opt_problem(interface)
 
-        elif problem is not None:
-            # Issue FutureWarning if legacy bound_problem is used
-            warnings.warn(
-                "Passing 'problem' dictionary (legacy 'bound_problem') is deprecated and will be removed in a future version. Please use 'opt_problem' or 'interface' instead.",
-                FutureWarning,
-                stacklevel=2,  # points to caller's code line
-            )
-            final_opt_problem = legacy_to_opt_problem(problem_dict=problem)
-
         else:
             raise ValueError(
-                "One of 'opt_problem', 'interface', or 'problem' dictionary must be provided."
+                "One of 'opt_problem' or 'interface' must be provided."
             )
 
         # Save a pointer to the evaluator. This way if the evaluator is updated

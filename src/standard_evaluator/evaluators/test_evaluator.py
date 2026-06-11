@@ -41,8 +41,11 @@ class TestEvaluator(Evaluator):
         opt_problem = self._create_opt_problem(**kwargs)
         # Re-validate the optimization problem
         opt_problem = OptProblem(**opt_problem.model_dump())
+        # Strip keys consumed by _create_opt_problem that Evaluator doesn't accept
+        _consumed = {"num_independent", "num_dependent", "parameter_a"}
+        filtered_kwargs = {k: v for k, v in kwargs.items() if k not in _consumed}
         # Pass opt_problem to super().__init__
-        super().__init__(name, comp_cost, opt_problem=opt_problem, **kwargs)
+        super().__init__(name, comp_cost, opt_problem=opt_problem, **filtered_kwargs)
 
         # Save solution
         self._solution = self._calculate_known_solution()
@@ -66,8 +69,8 @@ class TestEvaluator(Evaluator):
                     sol = sol.to_frame().transpose()
                 # Convert lists and numpy arrays. Also catch type errors
                 else:
-                    sol = utils.create_df_from_problem(
-                        self._problem, data=sol, names=self.inputs
+                    sol = utils.create_df_from_evaluator_info(
+                        self._interface, data=sol, names=self.inputs
                     )
 
             # Make sure no inputs are missing

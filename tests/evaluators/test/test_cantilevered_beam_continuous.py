@@ -34,8 +34,8 @@ def test_cantilevered_beam_continuous():
     test_func(initial_guess)
 
     # Check some specific responses
-    assert test_func.variables == ["hc", "b1", "b2", "H"]
-    assert test_func.responses == ["deflection", "stress", "volume"]
+    assert test_func.inputs == ["hc", "b1", "b2", "H"]
+    assert test_func.outputs == ["deflection", "stress", "volume"]
     assert initial_guess.iloc[0].deflection == pytest.approx(0.16550077056507492)
     assert initial_guess.iloc[0].stress == pytest.approx(3447.932720105728)
     assert initial_guess.iloc[0].volume == pytest.approx(707.7)

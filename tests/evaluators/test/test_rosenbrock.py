@@ -35,8 +35,8 @@ def test_rosenbrock_default():
     test_func(initial_guess)
     
     # Check some specific responses
-    assert test_func.variables == ["x0", "x1"]
-    assert test_func.responses == ["f"]
+    assert test_func.inputs == ["x0", "x1"]
+    assert test_func.outputs == ["f"]
     assert initial_guess.iloc[0].f == pytest.approx(0.0)
     assert initial_guess.iloc[1].f == pytest.approx(5.0)
 
@@ -72,7 +72,7 @@ def test_rosenbrock_nind_3():
     test_func(initial_guess)
     
     # Check some specific responses
-    assert test_func.variables == ["x0", "x1", "x2"]
-    assert test_func.responses == ["f"]
+    assert test_func.inputs == ["x0", "x1", "x2"]
+    assert test_func.outputs == ["f"]
     assert initial_guess.iloc[0].f == pytest.approx(0.0)
     assert initial_guess.iloc[1].f == pytest.approx(10.0)

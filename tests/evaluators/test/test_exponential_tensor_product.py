@@ -36,8 +36,8 @@ def test_exponential_tensor_product_nind_2():
     test_func(initial_guess)
     
     # Check some specific responses
-    assert test_func.variables == ["x0", "x1"]
-    assert test_func.responses == ["f"]
+    assert test_func.inputs == ["x0", "x1"]
+    assert test_func.outputs == ["f"]
     assert initial_guess.iloc[0].f == pytest.approx(1.0)
     assert initial_guess.iloc[1].f == pytest.approx(np.exp(0.5)**2)
 
@@ -73,7 +73,7 @@ def test_exponential_tensor_product_a_2():
     test_func(initial_guess)
     
     # Check some specific responses
-    assert test_func.variables == ["x0", "x1", "x2"]
-    assert test_func.responses == ["f"]
+    assert test_func.inputs == ["x0", "x1", "x2"]
+    assert test_func.outputs == ["f"]
     assert initial_guess.iloc[0].f == pytest.approx(1.0)
     assert initial_guess.iloc[1].f == pytest.approx(np.exp(2.0*0.25)**3)

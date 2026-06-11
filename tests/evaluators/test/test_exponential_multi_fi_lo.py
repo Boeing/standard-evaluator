@@ -25,8 +25,8 @@ def test_exponential_multi_fi_lo():
     # Evaluate the initial guess
     test_func(initial_guess)
     # Check some specific responses
-    assert test_func.variables == ["x1", "x2"]
-    assert test_func.responses == ["f"]
+    assert test_func.inputs == ["x1", "x2"]
+    assert test_func.outputs == ["f"]
     assert initial_guess.iloc[0].f == pytest.approx(9.4211941)
     assert initial_guess.iloc[1].f == pytest.approx(8.0124339)
 

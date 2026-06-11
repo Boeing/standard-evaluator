@@ -77,11 +77,8 @@ class TestEvaluatorPublicProperties:
     @pytest.mark.parametrize(
         "prop_name",
         [
-            "problem",
             "opt_problem",
             "interface",
-            "variables",
-            "responses",
             "inputs",
             "outputs",
             "nind",

@@ -3,9 +3,9 @@ import pandas as pd
 import pytest
 from typing import Callable
 
-from standard_evaluator import EvaluatorInfo, ArrayVariable,FloatVariable
+from standard_evaluator import EvaluatorInfo, ArrayVariable, FloatVariable
 from standard_evaluator.evaluators import PyEvaluator
-from standard_evaluator.utilities import create_df_from_evaluator_info, unroll_data_frame_using_variables, unroll_names_using_variables, roll_data_frame_using_variables
+from standard_evaluator.utilities import create_df_from_evaluator_info, unroll_data_frame_using_variables, unroll_names_using_variables, roll_data_frame_using_variables, legacy_to_opt_problem
 
 
 class ClassEvaluator:
@@ -46,6 +46,11 @@ def problem():
         },
         "responses": {f"f{i}": {"type": "float"} for i in range(2)},
     }
+
+
+@pytest.fixture
+def opt_problem(problem):
+    return legacy_to_opt_problem(problem)
 
 
 
@@ -124,24 +129,24 @@ def vector_func() -> Callable[[pd.DataFrame], None]:
     return rolled_eval_func
     
 
-def test_init(problem: dict):
+def test_init(opt_problem):
     with pytest.raises(TypeError, match="must be a callable!"):
-        eval = PyEvaluator(72, problem=problem)
+        eval = PyEvaluator(72, opt_problem=opt_problem)
     with pytest.raises(TypeError, match="must be a callable!"):
-        eval = PyEvaluator([evaluate], problem=problem)
+        eval = PyEvaluator([evaluate], opt_problem=opt_problem)
     with pytest.raises(TypeError, match="must be a callable!"):
-        eval = PyEvaluator("evaluate", problem=problem)
+        eval = PyEvaluator("evaluate", opt_problem=opt_problem)
 
-    eval = PyEvaluator(evaluate, problem=problem)
+    eval = PyEvaluator(evaluate, opt_problem=opt_problem)
 
     assert eval._func is evaluate
 
 
 # Evaluation function is a normal python function
 def test_evaluate_function(
-    problem: dict, sites: pd.DataFrame, expected_sum: pd.DataFrame
+    problem: dict, opt_problem, sites: pd.DataFrame, expected_sum: pd.DataFrame
 ):
-    eval = PyEvaluator(evaluate, problem=problem)
+    eval = PyEvaluator(evaluate, opt_problem=opt_problem)
 
     ret = eval(sites)
 
@@ -152,13 +157,14 @@ def test_evaluate_function(
 # Evaluation function is a class method
 def test_evaluate_method(
     problem: dict,
+    opt_problem,
     sites: pd.DataFrame,
     expected_sum: pd.DataFrame,
     expected_combo: pd.DataFrame,
 ):
     # Create tester class that only adds
     tester = ClassEvaluator(["+"], list(problem["variables"]))
-    eval = PyEvaluator(tester.eval, problem=problem)
+    eval = PyEvaluator(tester.eval, opt_problem=opt_problem)
 
     # Evaluate and check sum
     sites_copy = sites.copy()
@@ -175,13 +181,14 @@ def test_evaluate_method(
 # Evaluation function is a class with a __call__ method
 def test_evaluate_class(
     problem: dict,
+    opt_problem,
     sites: pd.DataFrame,
     expected_sum: pd.DataFrame,
     expected_combo: pd.DataFrame,
 ):
     # Create tester class that only adds
     tester = ClassEvaluator(["+"], list(problem["variables"]))
-    eval = PyEvaluator(tester, problem=problem)
+    eval = PyEvaluator(tester, opt_problem=opt_problem)
 
     # Evaluate and check sum
     sites_copy = sites.copy()

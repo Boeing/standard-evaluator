@@ -27,8 +27,8 @@ def test_hs47():
     # Evaluate the initial guess
     test_func(initial_guess)
     # Check some specific responses
-    assert test_func.variables == ["x1", "x2", "x3", "x4", "x5"]
-    assert test_func.responses == ["f", "c1", "c2", "c3"]
+    assert test_func.inputs == ["x1", "x2", "x3", "x4", "x5"]
+    assert test_func.outputs == ["f", "c1", "c2", "c3"]
     assert initial_guess.iloc[0].f == pytest.approx(12.495436)
     assert initial_guess.iloc[0].c1 == pytest.approx(0.0)
     assert initial_guess.iloc[0].c2 == pytest.approx(0.0)

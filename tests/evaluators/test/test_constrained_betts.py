@@ -30,8 +30,8 @@ def test_constrained_betts():
     test_func(initial_guess)
 
     # Check some specific responses
-    assert test_func.variables == ["x1", "x2"]
-    assert test_func.responses == ["f", "c1"]
+    assert test_func.inputs == ["x1", "x2"]
+    assert test_func.outputs == ["f", "c1"]
     assert initial_guess.iloc[0].f == pytest.approx(-98.99)
     assert initial_guess.iloc[0].c1 == pytest.approx(-9.0)
     assert initial_guess.iloc[1].f == pytest.approx(-99.96)

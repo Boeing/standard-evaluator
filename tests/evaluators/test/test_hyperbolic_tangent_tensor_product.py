@@ -39,8 +39,8 @@ def test_hyperbolic_tangent_tensor_product_nind_2():
     test_func(initial_guess)
     
     # Check some specific responses
-    assert test_func.variables == ["x0", "x1"]
-    assert test_func.responses == ["f"]
+    assert test_func.inputs == ["x0", "x1"]
+    assert test_func.outputs == ["f"]
     assert initial_guess.iloc[0].f == pytest.approx(0.0)
     assert initial_guess.iloc[1].f == pytest.approx(np.tanh(0.5)**2)
     # Test that the options values are accessible
@@ -81,8 +81,8 @@ def test_hyperbolic_tangent_tensor_product_a_2():
     test_func(initial_guess)
     
     # Check some specific responses
-    assert test_func.variables == ["x0", "x1", "x2"]
-    assert test_func.responses == ["f"]
+    assert test_func.inputs == ["x0", "x1", "x2"]
+    assert test_func.outputs == ["f"]
     assert initial_guess.iloc[0].f == pytest.approx(0.0)
     assert initial_guess.iloc[1].f == pytest.approx(np.tanh(2.0*0.25)**3)
     # Test that the options values are accessible

@@ -85,7 +85,6 @@ class ExecutableEvaluator(Evaluator):
             cache_options: Options to modify caching behavior.
             logging: Enable logging of evaluated sites. Defaults to False.
             **kwargs: Additional keyword arguments forwarded to the base class.
-                Supports legacy ``problem`` dict for backward compatibility.
         """
         super().__init__(
             name=name,

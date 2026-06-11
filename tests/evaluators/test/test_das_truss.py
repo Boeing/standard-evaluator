@@ -30,8 +30,8 @@ def test_dastruss():
     # Evaluate the initial guess
     test_func(initial_guess)
     # Check some specific responses
-    assert test_func.variables == ["a0", "a1", "a2", "x", "beam_len"]
-    assert test_func.responses == [
+    assert test_func.inputs == ["a0", "a1", "a2", "x", "beam_len"]
+    assert test_func.outputs == [
         "f0",
         "f1",
         "f2",

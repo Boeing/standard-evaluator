@@ -41,7 +41,7 @@ def test_hs118():
     # Evaluate the initial guess
     test_func(initial_guess)
     # Check some specific responses
-    assert test_func.variables == [
+    assert test_func.inputs == [
         "x1",
         "x2",
         "x3",
@@ -58,7 +58,7 @@ def test_hs118():
         "x14",
         "x15",
     ]
-    assert test_func.responses == [
+    assert test_func.outputs == [
         "f",
         "c1",
         "c2",

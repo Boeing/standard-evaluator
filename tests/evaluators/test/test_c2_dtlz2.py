@@ -33,8 +33,8 @@ def test_c2_dtlz2():
     # Evaluate the initial guess
     test_func(initial_guess)
     # Check some specific responses
-    assert test_func.variables == ["x1", "x2", "x3", "x4", "x5", "x6", "x7"]
-    assert test_func.responses == ["f1", "f2", "f3"]
+    assert test_func.inputs == ["x1", "x2", "x3", "x4", "x5", "x6", "x7"]
+    assert test_func.outputs == ["f1", "f2", "f3"]
 
     assert initial_guess.iloc[0].f1 == pytest.approx(0.5000000000000001)
     assert initial_guess.iloc[0].f2 == pytest.approx(0.5000000000000001)

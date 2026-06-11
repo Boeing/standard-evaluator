@@ -60,88 +60,6 @@ def om_beam_group():
 
 
 @pytest.fixture
-def paraboloid_de_opt_problem():
-    return {
-        "variables": {
-            "x": {
-                "bounds": [-50.0, 50.0],
-                "type": "float",
-                "default": 0.0,
-                "shift": 0.0,
-                "scale": 1.0,
-            },
-            "y": {
-                "bounds": [-50.0, 50.0],
-                "type": "float",
-                "default": 0.0,
-                "shift": 0.0,
-                "scale": 1.0,
-            },
-        },
-        "responses": {
-            "parab.f_xy": {
-                "shift": 0.0,
-                "scale": 1.0,
-                "bounds": [-np.inf, np.inf],
-                "type": "float",
-            },
-            "const.g": {
-                "bounds": [0.0, 10.0],
-                "shift": 0.0,
-                "scale": 1.0,
-                "type": "float",
-            },
-        },
-        "objectives": ["parab.f_xy"],
-        "constraints": [],
-    }
-
-
-@pytest.fixture
-def paraboloid_de_problem():
-    return {
-        "variables": {
-            "x": {
-                "shift": 0.0,
-                "scale": 1.0,
-                "default": 3.0,
-                "bounds": [-np.inf, np.inf],
-                "type": "float",
-            },
-            "y": {
-                "shift": 0.0,
-                "scale": 1.0,
-                "default": -3.0,
-                "bounds": [-np.inf, np.inf],
-                "type": "float",
-            },
-        },
-        "responses": {
-            "parab.f_xy": {
-                "shift": 0.0,
-                "scale": 1.0,
-                "bounds": [-np.inf, np.inf],
-                "type": "float",
-            },
-            "const.g": {
-                "shift": 0.0,
-                "scale": 1.0,
-                "bounds": [-np.inf, np.inf],
-                "type": "float",
-            },
-            "const2.h": {
-                "shift": 0.0,
-                "scale": 1.0,
-                "bounds": [-np.inf, np.inf],
-                "type": "float",
-            },
-        },
-        'constraints': [], 
-        'objectives': []
-    }
-
-
-@pytest.fixture
 def paraboloid_lhs_sites():
     return pd.DataFrame(
         data={
@@ -297,12 +215,16 @@ def om_actuator_disc():
     return prob
 
 
-def test_paraboloid(om_paraboloid: om.Problem, paraboloid_de_opt_problem: dict):
+def test_paraboloid(om_paraboloid: om.Problem):
     my_evaluator = OpenMDAOEvaluator(om_paraboloid, scan_model=False)
     # make sure the name is as expected
     assert "OpenMDAOEvaluator" in my_evaluator.name
-    # make sure the right problem is stored in the evaluator
-    assert my_evaluator.problem == paraboloid_de_opt_problem
+    # make sure the right problem is stored in the evaluator via opt_problem
+    opt = my_evaluator.opt_problem
+    assert [v.name for v in opt.variables] == ["x", "y"]
+    assert [r.name for r in opt.responses] == ["parab.f_xy", "const.g"]
+    assert opt.objectives == ["parab.f_xy"]
+    assert opt.constraints == []
     with pytest.raises(
         ValueError,
         match="scan_model and use_defined_problem cannot both be False at the same time.",
@@ -317,7 +239,7 @@ def test_paraboloid_evaluator(
     # Get the data frame from the experiment
     exp_df = paraboloid_lhs_sites
     # Create the space for the response values
-    exp_df[my_evaluator.responses] = np.nan
+    exp_df[my_evaluator.outputs] = np.nan
     # Evaluate the sites
     my_evaluator(exp_df)
     pd.testing.assert_frame_equal(exp_df, paraboloid_lhs_sites)
@@ -330,20 +252,24 @@ def test_paraboloid_evaluator_scan(
     # Get the data frame from the experiment
     exp_df = paraboloid_lhs_sites_scan
     # Create the space for the response values
-    exp_df[my_evaluator.responses] = np.nan
+    exp_df[my_evaluator.outputs] = np.nan
     # Evaluate the sites
     my_evaluator(exp_df)
     pd.testing.assert_frame_equal(exp_df, paraboloid_lhs_sites_scan)
 
 
 def test_paraboloid_scan_defined_problem_false(
-    om_paraboloid: om.Problem, paraboloid_de_problem: dict
+    om_paraboloid: om.Problem,
 ):
     my_evaluator = OpenMDAOEvaluator(
         om_paraboloid, scan_model=True, use_defined_problem=False
     )
-    # make sure the right problem is stored in the evaluator
-    assert my_evaluator.problem == paraboloid_de_problem
+    # make sure the right problem is stored in the evaluator via opt_problem
+    opt = my_evaluator.opt_problem
+    assert sorted([v.name for v in opt.variables]) == ["x", "y"]
+    assert sorted([r.name for r in opt.responses]) == ["const.g", "const2.h", "parab.f_xy"]
+    assert opt.objectives == []
+    assert opt.constraints == []
 
 
 def test_beam_group_evaluator(om_beam_group: om.Problem):
@@ -356,4 +282,4 @@ def test_beam_group_evaluator(om_beam_group: om.Problem):
 
 def test_actuator_disk_evaluator(om_actuator_disc: om.Problem):
     my_evaluator = OpenMDAOEvaluator(om_actuator_disc, scan_model=True)
-    assert my_evaluator.variables == ["a", "Area", "rho", "Vu"]
+    assert my_evaluator.inputs == ["a", "Area", "rho", "Vu"]

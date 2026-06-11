@@ -29,8 +29,8 @@ def test_twobartruss():
     # Evaluate the initial guess
     test_func(initial_guess)
     # Check some specific responses
-    assert test_func.variables == ["Q", "S", "X1", "X2", "rho"]
-    assert test_func.responses == ["f", "g1", "g2"]
+    assert test_func.inputs == ["Q", "S", "X1", "X2", "rho"]
+    assert test_func.outputs == ["f", "g1", "g2"]
     assert initial_guess.iloc[0].f == pytest.approx(57486.67600017284)
     assert initial_guess.iloc[0].g1 == pytest.approx(-3.299482314589319e-05)
     assert initial_guess.iloc[0].g2 == pytest.approx(0.4979914049891776)

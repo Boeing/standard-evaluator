@@ -8,7 +8,7 @@ import openmdao.api as om
 import openmdao.utils.general_utils as om_utils
 import openmdao.core as om_core
 
-from standard_evaluator.utilities import problem_calculate_fields
+from standard_evaluator.utilities import problem_calculate_fields, legacy_to_opt_problem
 from standard_evaluator.evaluators.abstract_evaluator import Evaluator
 
 
@@ -58,10 +58,8 @@ class OpenMDAOEvaluator(Evaluator):
             problem = self.get_om_opt_problem()
         else:
             problem = copy.deepcopy(self._main_problem)
-        import pprint
-
-        pprint.pprint(problem)
-        super().__init__(name=name, comp_cost=comp_cost, problem=problem)
+        opt_problem = legacy_to_opt_problem(problem)
+        super().__init__(name=name, comp_cost=comp_cost, opt_problem=opt_problem)
 
     def _evaluate(self, sites: pd.DataFrame):
         """Evaluate the OpenMDAO model on all the sites defined in the DataFrame
@@ -77,7 +75,7 @@ class OpenMDAOEvaluator(Evaluator):
             # Execute the OpenMDAO model
             self.om_problem.run_model()
             # Extract all responses
-            for ele in self.responses:
+            for ele in self.outputs:
                 sites.at[ind, ele] = self.om_problem.get_val(ele)
 
     def get_om_opt_problem(self) -> dict:

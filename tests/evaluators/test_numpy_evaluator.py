@@ -1,10 +1,10 @@
 """ Testing of the optpytest classes """
-import pytest
 import pandas as pd
 import numpy as np
 
 from standard_evaluator.evaluators import NumpyEvaluator
 from standard_evaluator import EvaluatorInfo
+from standard_evaluator.utilities import create_opt_problem
 
 
 class DummyEvaluator(NumpyEvaluator):
@@ -17,17 +17,6 @@ class DummyEvaluator(NumpyEvaluator):
         """
         results = np.sum(input_data, axis=1)
         return results
-
-    def _def_problem(self, num_independent: int, num_dependent: int) -> dict:
-        """Define the problem.Might use optional arguments
-        :param num_independent: The number of independents (variables)
-        :type num_independent: int
-        :param num_dependent: The number of dependents (responses)
-        :type num_dependent: int
-        :return: Dictionary of the problem for the test function
-        :rtype: dict
-        """
-        return self._auto_problem(num_independent, num_dependent)
 
 class DummyVectorizedEvaluator(NumpyEvaluator):
     def eval_np(self, input_data: np.ndarray, names: list = None) -> np.ndarray:
@@ -46,10 +35,10 @@ class DummyVectorizedEvaluator(NumpyEvaluator):
     
 def test_numpy_evaluator():
     """Test a super simple NumpyEvaluator"""
-    test_instance = DummyEvaluator(num_independent=6, num_dependent=1)
+    test_instance = DummyEvaluator(opt_problem=create_opt_problem(6, 1))
     # initial = test_instance.initial_guess()
     initial = pd.DataFrame(data={f"x{i}": [0] for i in range(6)})
-    result = test_instance.eval_np(initial[test_instance.variables].values)
+    result = test_instance.eval_np(initial[test_instance.inputs].values)
     np.testing.assert_allclose(
         result,
         np.array([0.0]),
@@ -64,7 +53,7 @@ def test_numpy_evaluator():
     # Test using the pandas based evaluator
     test_instance(initial)
     np.testing.assert_allclose(
-        initial[test_instance.responses].values,
+        initial[test_instance.outputs].values,
         np.array([[0.0]]),
     )
 

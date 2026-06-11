@@ -27,8 +27,8 @@ def test_dasknee():
     # Evaluate the initial guess
     test_func(initial_guess)
     # Check some specific responses
-    assert test_func.variables == ["x0", "x1", "x2", "x3", "x4"]
-    assert test_func.responses == ["f0", "f1", "g0", "g1", "g2", "g3", "g4"]
+    assert test_func.inputs == ["x0", "x1", "x2", "x3", "x4"]
+    assert test_func.outputs == ["f0", "f1", "g0", "g1", "g2", "g3", "g4"]
     assert initial_guess.iloc[0].f0 == pytest.approx(0.0)
     assert initial_guess.iloc[0].f1 == pytest.approx(0.0)
     assert initial_guess.iloc[0].g0 == pytest.approx(-2.0)

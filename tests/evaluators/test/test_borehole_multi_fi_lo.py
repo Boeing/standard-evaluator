@@ -32,7 +32,7 @@ def test_borehole_multi_fi_lo():
     # Evaluate the initial guess
     test_func(initial_guess)
     # Check some specific responses
-    assert test_func.variables == [
+    assert test_func.inputs == [
         "rad_borehole",
         "rad_influence",
         "trans_upper",
@@ -42,7 +42,7 @@ def test_borehole_multi_fi_lo():
         "len_borehole",
         "hyd_con_borehole",
     ]
-    assert test_func.responses == ["water_flow_rate"]
+    assert test_func.outputs == ["water_flow_rate"]
     assert initial_guess.iloc[0].water_flow_rate == pytest.approx(68.60360708719466)
     assert initial_guess.iloc[1].water_flow_rate == pytest.approx(520.0578959207066)
 

@@ -45,7 +45,7 @@ def test_cantilevered_beam():
     test_func(initial_guess)
 
     expected = pd.DataFrame(
-        columns=test_func.responses,
+        columns=test_func.outputs,
         data=[
             [0.174828, 3642.250101, 672.0],
             [0.125804, 2830.599126, 838.8],
@@ -59,11 +59,11 @@ def test_cantilevered_beam():
         ],
     )
 
-    pd.testing.assert_frame_equal(initial_guess[test_func.responses], expected)
+    pd.testing.assert_frame_equal(initial_guess[test_func.outputs], expected)
     # Check some specific responses
     assert initial_guess.x0.dtypes == pd.Int64Dtype()
-    assert test_func.variables == ["b1", "b2", "H", "x0"]
-    assert test_func.responses == ["deflection", "stress", "volume"]
+    assert test_func.inputs == ["b1", "b2", "H", "x0"]
+    assert test_func.outputs == ["deflection", "stress", "volume"]
 
 
 def test_create_opt_problem():

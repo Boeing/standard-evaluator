@@ -5,14 +5,13 @@ Defines behavior common to all evaluators and what behaviors should be
 defined by the evaluators themselves.
 """
 
-import copy
 from abc import ABC, abstractmethod
 from typing import Any, Dict, List, Type, Union, Optional, Tuple
-import warnings
 
 import numpy as np
 import pandas as pd
 from pydantic import BaseModel, ValidationError, conint, field_validator
+from typing import Optional as _Optional
 
 import standard_evaluator as se
 
@@ -26,10 +25,7 @@ from standard_evaluator.converters import (
     evaluator_info_to_opt_problem,
 )
 from standard_evaluator.evaluator import EvaluatorInfo
-from standard_evaluator.utilities.problem_dict_utility import (
-    opt_problem_to_legacy,
-    create_opt_problem,
-)
+
 
 from standard_evaluator.utilities.mapping import (
     res_element_to_string,
@@ -43,34 +39,24 @@ class _EmptyOptions(BaseModel):
     """Default empty options model."""
     pass
 
+
 PositiveInt = conint(strict=True, gt=0)
 
+
 class ValidInputs(BaseModel):
-    num_independent: Optional[PositiveInt] = None
-    num_dependent: Optional[PositiveInt] = None
+    """Pydantic model to validate num_independent/num_dependent for TestEvaluator subclasses.
+
+    When None is passed, the value defaults to 1.
+    """
+    num_independent: _Optional[PositiveInt] = None
+    num_dependent: _Optional[PositiveInt] = None
 
     @field_validator('num_independent', 'num_dependent', mode='before')
     @classmethod
     def none_to_one(cls, v):
-
-        # If user passes None or no value, return 1
         if v is None:
             return 1
         return v
-
-
-class InputModel(BaseModel):
-    num_independent: Optional[conint(ge=0)] = None
-    num_dependent: Optional[conint(ge=0)] = None
-
-
-def validate_numbers(num_independent: int = None, num_dependent: int = None) -> bool:
-    if num_independent is None or num_dependent is None:
-        return False
-    else:
-        # Use the error checking of Pydantic.
-        InputModel(num_independent=num_independent, num_dependent=num_dependent)
-        return True
 
 
 class Evaluator(ABC):
@@ -81,23 +67,6 @@ class Evaluator(ABC):
     # ==================
     # |   Properties   |
     # ==================
-    @property
-    def problem(self) -> dict:
-        """**(readonly)** The problem defining the variables and responses.
-
-        :type: dict
-
-        Raises:
-
-            FutureWarning: This method will be removed in a future version.
-        """
-        warnings.warn(
-            "problem is deprecated and will be removed in a future version. Use either the "
-            + "opt_problem or interface methods instead instead.",
-            FutureWarning,
-        )
-        return self._problem
-
     @property
     def opt_problem(self) -> OptProblem:
         """**(readonly)** The OptProblem defining the pre-defined optimization problem.
@@ -116,38 +85,6 @@ class Evaluator(ABC):
         :type: EvaluatorInfo
         """
         return self._interface
-
-    @property
-    def variables(self) -> List[str]:
-        """**(readonly)** The variables of the problem.
-
-        :type: list[str]
-
-        Raises:
-
-            FutureWarning: This method will be removed in a future version.
-        """
-        warnings.warn(
-            "variables is deprecated and will be removed in a future version. Use the inputs method instead instead.",
-            FutureWarning,
-        )
-        return self._inputs
-
-    @property
-    def responses(self) -> List[str]:
-        """**(readonly)** The responses of the problem.
-
-        :type: list[str]
-
-        Raises:
-
-            FutureWarning: This method will be removed in a future version.
-        """
-        warnings.warn(
-            "responses is deprecated and will be removed in a future version. Use the outputs method instead instead.",
-            FutureWarning,
-        )
-        return self._outputs
 
     @property
     def inputs(self) -> List[str]:
@@ -229,13 +166,10 @@ class Evaluator(ABC):
         logging: bool = False,
         interface: EvaluatorInfo = None,
         opt_problem: OptProblem = None,
-        num_independent: int = None,
-        num_dependent: int = None,
         options: Optional[BaseModel] = None,
         **kwargs,
     ) -> None:
         """Initialize the problem and set the variables and responses.
-        Additional keyword arguments are passed to :meth:`_def_problem`.
 
         Parameters
         ----------
@@ -281,21 +215,10 @@ class Evaluator(ABC):
         elif interface is not None:
             # We defined the interface via an EvaluatorInfo instance
             self._opt_problem = evaluator_info_to_opt_problem(interface)
-        elif validate_numbers(
-            num_dependent=num_dependent, num_independent=num_independent
-        ):
-            # Create the opt_problem from the numbers of independent and dependents.
-            self._opt_problem = create_opt_problem(
-                num_independent=num_independent, num_dependent=num_dependent
-            )
-
         else:
-            # Build/store problem
-            problem = self._def_problem(**kwargs)
-            # Check that variable and response information is defined, including bounds
-            utils.check_prob(problem)
-            # Convert the problem to the EvaluatorInfo and OptProblem descriptions
-            self._opt_problem = utils.legacy_to_opt_problem(problem)
+            raise ValueError(
+                f"{type(self).__name__}: Either 'opt_problem' or 'interface' must be provided."
+            )
 
         # Calculate the defaults if they are not already given
         self._opt_problem.calculate_default(overwrite=False)
@@ -305,8 +228,6 @@ class Evaluator(ABC):
 
         # Convert the OptProblem to the interface problem
         self._interface = opt_problem_to_evaluator_info(self._opt_problem)
-        # Store the legacy problem as well
-        self._problem = opt_problem_to_legacy(self._opt_problem)
 
         self._inputs = list(utils.collect_names(self._interface.inputs))
         self._outputs = list(utils.collect_names(self._interface.outputs))
@@ -566,36 +487,10 @@ class Evaluator(ABC):
         :return: DataFrame providing the initial guess to use with an optimizer
         :rtype: pd.DataFrame
         """
-        return utils.create_df_from_problem(
-            self._problem, data=self._def_initial_guess(), names=self.inputs
-        )
-
-    def _def_problem(self, **kwargs) -> dict:
-        """Get the definition of the problem. This problem should define the
-        variables and responses of the problem along with their type and bounds.
-        Passing a dictionary to the ``problem`` argument will store that
-        dictionary as the problem.
-
-        :param kwargs: Parameters to use when defining the problem. Should be:
-
-            * ``problem`` (dict)
-
-            Passing a problem definition dictionary to this argument will use
-            this dictionary to define the problem.
-        :type kwargs: dict
-
-        :return: Problem definition of variables and responses
-        :rtype: dict
-        """
-        if "problem" in kwargs and kwargs["problem"] is not None:
-            problem = copy.deepcopy(kwargs["problem"])
-        else:
-            raise ValueError(
-                f"{type(self).__name__}: Missing or invalid "
-                + "arguments were passed for problem definition!"
-            )
-
-        return problem
+        data = self._def_initial_guess()
+        site = pd.DataFrame([data], columns=self.inputs)
+        utils.apply_types_from_evaluator_info(site, self.interface)
+        return site
 
     def _store_default_in_problem(self) -> None:
         """Store the default values in the problem dictionary if not already stored there"""

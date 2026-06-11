@@ -25,8 +25,8 @@ def test_wrkbkprb1():
     # Evaluate the initial guess
     test_func(initial_guess)
     # Check some specific responses
-    assert test_func.variables == ["x1", "x2"]
-    assert test_func.responses == ["f","c"]
+    assert test_func.inputs == ["x1", "x2"]
+    assert test_func.outputs == ["f","c"]
     assert initial_guess.iloc[0].c == pytest.approx(1.0)
     assert initial_guess.iloc[0].f == pytest.approx(4.25)
     assert initial_guess.iloc[1].c == pytest.approx(6.0)

@@ -28,107 +28,45 @@ def test_hs100():
     assert initial_guess.iloc[0]["c3"] == pytest.approx(171.0)
     assert initial_guess.iloc[0]["c4"] == pytest.approx(4.0)
 
-    assert test_func.variables == ["x1", "x2", "x3", "x4", "x5", "x6", "x7"]
+    assert test_func.inputs == ["x1", "x2", "x3", "x4", "x5", "x6", "x7"]
 
-    assert test_func.responses == ["f", "c1", "c2", "c3", "c4"]
-    common_resp = {
-        "bounds": [0.0, np.inf],
-        "scale": 0.01,
-        "shift": 0.0,
-        "type": "float",
+    assert test_func.outputs == ["f", "c1", "c2", "c3", "c4"]
+    # Verify opt_problem variables
+    opt = test_func.opt_problem
+    var_map = {v.name: v for v in opt.variables}
+    expected_vars = {
+        "x1": {"bounds": (-10.0, 10.075), "default": 1.0, "scale": 0.1, "shift": 0.0},
+        "x2": {"bounds": (-10.0, 10.075), "default": 2.0, "scale": 0.1, "shift": 0.0},
+        "x3": {"bounds": (-10.0, 10.075), "default": 0.0, "scale": 0.1, "shift": 0.0},
+        "x4": {"bounds": (-10.0, 10.075), "default": 4.0, "scale": 0.1, "shift": 0.0},
+        "x5": {"bounds": (-10.0, 10.075), "default": 0.0, "scale": 0.1, "shift": 0.0},
+        "x6": {"bounds": (-10.0, 10.075), "default": 1.0, "scale": 0.1, "shift": 0.0},
+        "x7": {"bounds": (-10.0, 10.075), "default": 1.0, "scale": 0.1, "shift": 0.0},
     }
-    expected_prob = {
-        "variables": {
-            "x1": {
-                "bounds": [-10.0, 10.075],
-                "default": 1.0,
-                "scale": 0.1,
-                "shift": 0.0,
-                "type": "float",
-            },
-            "x2": {
-                "bounds": [-10.0, 10.075],
-                "default": 2.0,
-                "scale": 0.1,
-                "shift": 0.0,
-                "type": "float",
-            },
-            "x3": {
-                "bounds": [-10.0, 10.075],
-                "default": 0.0,
-                "scale": 0.1,
-                "shift": 0.0,
-                "type": "float",
-            },
-            "x4": {
-                "bounds": [-10.0, 10.075],
-                "default": 4.0,
-                "scale": 0.1,
-                "shift": 0.0,
-                "type": "float",
-            },
-            "x5": {
-                "bounds": [-10.0, 10.075],
-                "default": 0.0,
-                "scale": 0.1,
-                "shift": 0.0,
-                "type": "float",
-            },
-            "x6": {
-                "bounds": [-10.0, 10.075],
-                "default": 1.0,
-                "scale": 0.1,
-                "shift": 0.0,
-                "type": "float",
-            },
-            "x7": {
-                "bounds": [-10.0, 10.075],
-                "default": 1.0,
-                "scale": 0.1,
-                "shift": 0.0,
-                "type": "float",
-            },
-        },
-        "responses": {
-            "f": {
-                "scale": 0.001,
-                "shift": 0.0,
-                "type": "float",
-                "bounds": [-np.inf, np.inf],
-            },
-            "c1": {
-                "bounds": [0.0, np.inf],
-                "scale": 0.001,
-                "shift": 0.0,
-                "type": "float",
-            },
-            "c2": common_resp,
-            "c3": common_resp,
-            "c4": common_resp,
-        },
-        "objectives": ["f"],
-        "constraints": ["c1", "c2", "c3", "c4"],
+    for name, expected in expected_vars.items():
+        var = var_map[name]
+        assert var.bounds == expected["bounds"]
+        assert var.default == expected["default"]
+        assert var.scale == expected["scale"]
+        assert var.shift == expected["shift"]
+
+    # Verify opt_problem responses
+    resp_map = {r.name: r for r in opt.responses}
+    expected_resps = {
+        "f": {"bounds": (-np.inf, np.inf), "scale": 0.001, "shift": 0.0},
+        "c1": {"bounds": (0.0, np.inf), "scale": 0.001, "shift": 0.0},
+        "c2": {"bounds": (0.0, np.inf), "scale": 0.01, "shift": 0.0},
+        "c3": {"bounds": (0.0, np.inf), "scale": 0.01, "shift": 0.0},
+        "c4": {"bounds": (0.0, np.inf), "scale": 0.01, "shift": 0.0},
     }
+    for name, expected in expected_resps.items():
+        resp = resp_map[name]
+        assert resp.bounds == expected["bounds"]
+        assert resp.scale == expected["scale"]
+        assert resp.shift == expected["shift"]
 
-    assert "variables" in test_func.problem
-    for var, info in test_func.problem["variables"].items():
-        assert var in expected_prob["variables"]
-        assert info["type"] == expected_prob["variables"][var]["type"]
-        assert info["bounds"] == expected_prob["variables"][var]["bounds"]
-        assert info["default"] == expected_prob["variables"][var]["default"]
-        assert info["shift"] == expected_prob["variables"][var]["shift"]
-        assert info["scale"] == expected_prob["variables"][var]["scale"]
-
-    assert "responses" in test_func.problem
-    for var, info in test_func.problem["responses"].items():
-        assert var in expected_prob["responses"]
-        assert info["type"] == expected_prob["responses"][var]["type"]
-        assert info["bounds"] == expected_prob["responses"][var]["bounds"]
-        assert info["shift"] == expected_prob["responses"][var]["shift"]
-        assert info["scale"] == expected_prob["responses"][var]["scale"]
-
-    assert test_func.problem["objectives"] == expected_prob["objectives"]
-    assert test_func.problem["constraints"] == expected_prob["constraints"]
+    assert opt.objectives == ["f"]
+    assert opt.constraints == ["c1", "c2", "c3", "c4"]
 
 
 def test_hs100_eval_np():
@@ -136,7 +74,7 @@ def test_hs100_eval_np():
     # Instantiate the test function
     test_func = HS100()
     # Get the initial guess
-    initial_guess = np.array(test_func.initial_guess()[test_func.variables])
+    initial_guess = np.array(test_func.initial_guess()[test_func.inputs])
     # Evaluate the initial guess
     result = test_func.eval_np(initial_guess)
     # Check some specific responses
@@ -168,7 +106,7 @@ def test_hs100_de_eval():
 
     # Convert the initial guess data frame into a list of list like
     # DE5 would expect. Note that we only get the variable values.
-    initial_guess_list = initial_guess[test_func.variables].to_numpy().tolist()
+    initial_guess_list = initial_guess[test_func.inputs].to_numpy().tolist()
 
     initial_guess_responses = test_func.eval_list(initial_guess_list)
 
@@ -182,7 +120,7 @@ def test_hs100_failed_call():
     test_func = HS100()
     site = pd.DataFrame(
         [[1.0, 35.0, 1.0, 3.0, 6.0, 0.7, 0.9]],
-        columns=test_func.variables,
+        columns=test_func.inputs,
         dtype="float64",
     )
     site.drop(columns=["x2"], inplace=True)
@@ -201,9 +139,9 @@ def test_powell_singular_function():
     # Check some specific responses
     assert initial_guess.iloc[0].f == pytest.approx(95.0)
 
-    assert test_func.variables == ["x1", "x2", "x3", "x4"]
+    assert test_func.inputs == ["x1", "x2", "x3", "x4"]
 
-    assert test_func.responses == ["f"]
+    assert test_func.outputs == ["f"]
 
 
 def test_no_variables_descendent():

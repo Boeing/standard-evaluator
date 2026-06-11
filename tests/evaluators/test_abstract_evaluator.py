@@ -289,8 +289,8 @@ def test_init(opt_problem: OptProblem):
         assert var_obj.default == opt_var_obj.default
 
     # Check variable and response names lists
-    assert eval.variables == [var.name for var in opt_problem.variables]
-    assert eval.responses == [resp.name for resp in opt_problem.responses]
+    assert eval.inputs == [var.name for var in opt_problem.variables]
+    assert eval.outputs == [resp.name for resp in opt_problem.responses]
 
     # Check number of independent and dependent variables
     assert eval.nind == len(opt_problem.variables)
@@ -302,10 +302,10 @@ def test_init(opt_problem: OptProblem):
     assert x1_var.default == 1.0
     assert x2_var.default == 2.3
 
-    # Test creating evaluator with explicit nind and ndep
+    # Test creating evaluator with opt_problem from create_opt_problem
     nind = 5
     ndep = 2
-    eval2 = DummyEvaluator(num_independent=nind, num_dependent=ndep)
+    eval2 = DummyEvaluator(opt_problem=se.utilities.create_opt_problem(nind, ndep))
     assert hasattr(eval2.opt_problem, "variables")
     assert hasattr(eval2.opt_problem, "responses")
     assert hasattr(eval2.opt_problem, "objectives")
