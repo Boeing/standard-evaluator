@@ -4,7 +4,21 @@ import inspect
 import typing
 
 from standard_evaluator import StandardBase
-from aviary.variable_info.variable_meta_data import _MetaData
+try:
+    from aviary.variable_info.variable_meta_data import _MetaData
+    _AVIARY_AVAILABLE = True
+except ImportError:
+    _AVIARY_AVAILABLE = False
+    _MetaData = None
+
+
+def _require_aviary():
+    """Raise ImportError if aviary is not available."""
+    if not _AVIARY_AVAILABLE:
+        raise ImportError(
+            "aviary is required for StandardEval. "
+            "Install it with: pip install standard-evaluator[aviary]"
+        )
 
 
 class StandardEval(StandardBase):
@@ -17,6 +31,7 @@ class StandardEval(StandardBase):
     def initialize(self):
         """Initialize the instance by defining that this will use `class_options`, 
         and 'metadata', and set the 'metadata' options to `_MetaData` by default."""
+        _require_aviary()
         super().initialize()
         # Define an option to set the meta data. By default it will be set to `_MetaData` from
         # Aviary
