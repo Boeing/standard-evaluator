@@ -19,8 +19,24 @@ from standard_evaluator import Variable, FloatVariable, ArrayVariable
 from standard_evaluator import GroupInfo, EvaluatorInfo, EquationInfo, JoinedInfo
 from standard_evaluator import OptProblem
 from standard_evaluator import AviaryEncoder
-from aviary.utils.aviary_values import AviaryValues
-from aviary.subsystems.propulsion.engine_deck import EngineDeck 
+
+try:
+    from aviary.utils.aviary_values import AviaryValues
+    from aviary.subsystems.propulsion.engine_deck import EngineDeck
+    _AVIARY_AVAILABLE = True
+except ImportError:
+    _AVIARY_AVAILABLE = False
+    AviaryValues = None
+    EngineDeck = None
+
+
+def _require_aviary():
+    """Raise ImportError if aviary is not available."""
+    if not _AVIARY_AVAILABLE:
+        raise ImportError(
+            "aviary is required for this functionality. "
+            "Install it with: pip install standard-evaluator[aviary]"
+        )
 
 def get_openmdao_options(om_component) -> dict:
     options = copy.deepcopy(om_component.options)
@@ -234,6 +250,7 @@ def convert_enum(local_info: dict) -> Enum:
     Returns:
         Enum -- Enum instance with the stored information
     """
+    _require_aviary()
     results_module = local_info['__enum__']['module'].split("'")[1]
     results_class = local_info['__enum__']['type'].split("'")[1]
     results_value = local_info['__enum__']['value'].split("'")[1]
@@ -264,6 +281,7 @@ def convert_engine_deck(info: dict) -> EngineDeck:
     Returns:
         EngineDeck -- EngineDeck instance with the stored information
     """
+    _require_aviary()
     local_info = copy.deepcopy(info)
     results_module = local_info[0]['__EngineDeck__']['module'].split("'")[1]
     results_class = local_info[0]['__EngineDeck__']['type'].split("'")[1]
@@ -317,6 +335,7 @@ def convert_aviary(local_av_options: dict) -> AviaryValues:
     Returns:
         AviaryValues -- AviaryValues instance with the stored information
     """
+    _require_aviary()
     # Update the dictionary
     local_av_options=convert_dict(local_av_options)
     print("final:", local_av_options)

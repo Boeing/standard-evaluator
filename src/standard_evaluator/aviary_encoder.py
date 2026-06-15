@@ -22,14 +22,39 @@ from numpydantic import NDArray, Shape
 import openmdao
 import openmdao.api as om
 from openmdao.core.constants import _ReprClass
-import dymos
 
-import aviary
-from aviary.variable_info.enums import ProblemType, EquationsOfMotion, LegacyCode
-from aviary.utils.aviary_values import AviaryValues
-from aviary.subsystems.propulsion.engine_deck import EngineDeck 
+try:
+    import dymos
+    import aviary
+    from aviary.variable_info.enums import ProblemType, EquationsOfMotion, LegacyCode
+    from aviary.utils.aviary_values import AviaryValues
+    from aviary.subsystems.propulsion.engine_deck import EngineDeck
+    _AVIARY_AVAILABLE = True
+except ImportError:
+    _AVIARY_AVAILABLE = False
+    dymos = None
+    aviary = None
+    ProblemType = None
+    EquationsOfMotion = None
+    LegacyCode = None
+    AviaryValues = None
+    EngineDeck = None
+
+
+def _require_aviary():
+    """Raise ImportError if aviary is not available."""
+    if not _AVIARY_AVAILABLE:
+        raise ImportError(
+            "aviary and dymos are required for this functionality. "
+            "Install them with: pip install standard-evaluator[aviary]"
+        )
+
 
 class AviaryEncoder(json.JSONEncoder):
+    def __init__(self, *args, **kwargs):
+        _require_aviary()
+        super().__init__(*args, **kwargs)
+
     def default(self, obj):
         if isinstance(obj, type):
             return {'__type__': str(obj)}

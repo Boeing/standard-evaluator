@@ -26,12 +26,21 @@ jobs:
           fi
         env:
           TEST_PYPI_API_TOKEN: ${{ secrets.TEST_PYPI_API_TOKEN }}
+      - name: Upload to TestPyPI (debug)
+        run: |
+          ls -lh dist/
+          python -m pip install --quiet twine
+          twine check dist/* || exit 1
+          twine upload --verbose --repository-url https://test.pypi.org/legacy/ dist/*
+        env:
+          TWINE_USERNAME: __token__
+          TWINE_PASSWORD: ${{ secrets.TEST_PYPI_API_TOKEN }}
       - name: Upload to TestPyPI
         uses: pypa/gh-action-pypi-publish@release/v1
         with:
           repository-url: https://test.pypi.org/legacy/
           password: ${{ secrets.TEST_PYPI_API_TOKEN }}
-
+          attestations: false 
 
   publish:
     needs: test_publish
