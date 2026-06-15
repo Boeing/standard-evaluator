@@ -7,7 +7,7 @@ version: 2
 updates:
   # Monitor Python dependencies in requirements.txt
   - package-ecosystem: "pip"
-    directory: "/" # Location of requirements.txt
+    directory: "/pyproject.toml" # Location of requirements.txt
     schedule:
       interval: "weekly" # Options: daily, weekly, monthly
     open-pull-requests-limit: 5
