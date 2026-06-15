@@ -39,6 +39,8 @@ dependencies = [
     "openmdao",
     "json-numpy",
     "h5py",
+    "h11>=0.16.0",
+    "urllib3>=2.6.3",
 ]
 
 dynamic = ["version", "scripts"]
@@ -82,11 +84,12 @@ docs = [
     # Additional requirements to test and dev
     "sphinx",
     "jupyter",
+    "jupyterlab>=4.5.7",
     "autodocsumm",
     "pytest-cov",
     "sphinxcontrib-mermaid",
     "sphinx-rtd-theme",
-    "jupyter_core<=5.1.0",
+    "jupyter_core",
     "myst-nb",
     
 ]
