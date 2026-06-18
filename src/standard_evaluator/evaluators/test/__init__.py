@@ -53,8 +53,8 @@ for _fname in sorted(os.listdir(_base_dir)):
         # Add class to __all__
         __all__.append(_mem_name)
 
-# Verify that all 38 expected classes were discovered
-_EXPECTED_COUNT = 38
+# Verify that all 43 expected classes were discovered
+_EXPECTED_COUNT = 43
 if len(__all__) < _EXPECTED_COUNT:
     raise ImportError(
         f"Expected at least {_EXPECTED_COUNT} test evaluator classes but only "
