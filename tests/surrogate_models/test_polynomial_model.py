@@ -68,7 +68,7 @@ def simple_bp_data_model():
         return [x**2 - y**3 + 12.0 * y * z]
 
     # Define bound problem
-    new_prob = se.utilities.create_opt_problem(num_independent=3, num_dependent=1)
+    new_prob = create_opt_problem(num_independent=3, num_dependent=1)
 
     var_names = ["x", "y", "z"]
     var_bounds = ([-1.0, 1.0], [-1.0, 1.0], [-1.0, 1.0])
@@ -173,7 +173,7 @@ def simple_multiple_response_data():
 
     sites_df = pd.DataFrame(data=total_sites, columns=column_list)  # values
 
-    new_prob = se.utilities.create_opt_problem(num_independent=2, num_dependent=2)
+    new_prob = create_opt_problem(num_independent=2, num_dependent=2)
 
     var_names = ["x", "y"]
     var_bounds = ([-1.0, 1.0], [-1.0, 1.0])

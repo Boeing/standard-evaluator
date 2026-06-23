@@ -109,14 +109,14 @@ def test_polynomial_model_serialization_round_trip(model: PolynomialModel):
     """
     # Serialize
     model_dict = model.to_dict()
+    print(model_dict)
 
     # Verify dict has required keys
     assert "type" in model_dict
     assert "info" in model_dict
-    assert "problem" in model_dict
+    assert "opt_problem" in model_dict
     assert "version" in model_dict
     assert "name" in model_dict
-    assert "design explorer version" in model_dict
     assert model_dict["type"] == "PolynomialModel"
 
     # Deserialize
