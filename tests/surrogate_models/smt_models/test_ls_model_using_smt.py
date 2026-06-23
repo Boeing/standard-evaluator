@@ -110,8 +110,8 @@ class TestLSModelPy:
             sites=sites, options=my_options, opt_problem=opt_prob
         )
 
-        assert ls_m.variables == ["x0", "x1"]
-        assert ls_m.responses == ["f"]
+        assert ls_m.inputs == ["x0", "x1"]
+        assert ls_m.outputs == ["f"]
         assert ls_m.name == "LeastSquaresApproximationModel"
 
     def test_check_use_xlimits(self, opt_prob, sites) -> None:
@@ -144,10 +144,10 @@ class TestLSModelPy:
             sites=sites, options=my_options, opt_problem=opt_prob
         )
         ls_test = ls_eval.sites.copy()
-        ls_test[ls_eval.responses] = 1.0
+        ls_test[ls_eval.outputs] = 1.0
 
         ls_eval(ls_test)
-        calculated_sites = ls_test[ls_eval.responses].to_numpy()
+        calculated_sites = ls_test[ls_eval.outputs].to_numpy()
 
         expected_sites = [
             [26.43209876],
@@ -198,7 +198,7 @@ class TestLSModelPy:
         num_sites_in_model_after_update = len(ls_update_model.sites)
 
         ls_eval_test_new = ls_update_model.sites.copy()
-        ls_eval_test_new[ls_update_model.responses] = 2.0
+        ls_eval_test_new[ls_update_model.outputs] = 2.0
         ls_update_model(ls_eval_test_new)
 
         np.testing.assert_approx_equal(ls_eval_test_new.iat[1, 2], -27.146086)
@@ -233,10 +233,10 @@ class TestLSModelPy:
             sites=multiresp_sites, options=my_options, opt_problem=multiresp_opt_prob
         )
         ls_multiresp_test = ls_multiresp_eval.sites.copy()
-        ls_multiresp_test[ls_multiresp_eval.responses] = 1.0
+        ls_multiresp_test[ls_multiresp_eval.outputs] = 1.0
         ls_multiresp_eval(ls_multiresp_test)
 
-        calculated_sites = ls_multiresp_test[ls_multiresp_eval.responses].to_numpy()
+        calculated_sites = ls_multiresp_test[ls_multiresp_eval.outputs].to_numpy()
 
         expected_sites = [
             [25.41931167, 1.90218082],
@@ -282,7 +282,7 @@ class TestLSModelPy:
         num_sites_in_model_after_update = len(ls_multiresp_update_model.sites)
 
         ls_multiresp_update_eval_test_new = ls_multiresp_update_model.sites.copy()
-        ls_multiresp_update_eval_test_new[ls_multiresp_update_model.responses] = 2.0
+        ls_multiresp_update_eval_test_new[ls_multiresp_update_model.outputs] = 2.0
         ls_multiresp_update_model(ls_multiresp_update_eval_test_new)
 
         np.testing.assert_approx_equal(
@@ -306,7 +306,7 @@ class TestLSModelPy:
             sites=sites, options=my_options, opt_problem=opt_prob
         )
         ls_var_test = ls_var_model.sites.copy()
-        ls_var_test[ls_var_model.responses] = 2.0
+        ls_var_test[ls_var_model.outputs] = 2.0
         ls_var_model(ls_var_test)
 
         with pytest.raises(NotImplementedError, match="LS does not support variances"):

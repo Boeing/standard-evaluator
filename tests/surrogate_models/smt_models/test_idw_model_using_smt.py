@@ -112,8 +112,8 @@ class TestIDWModelPy:
             sites=sites, options=my_options, opt_problem=opt_prob
         )
 
-        assert idw_m.variables == ["x0", "x1"]
-        assert idw_m.responses == ["f"]
+        assert idw_m.inputs == ["x0", "x1"]
+        assert idw_m.outputs == ["f"]
         assert idw_m.name == "InverseDistanceWeightingModel"
 
     def test_default_options(self, opt_prob, sites):
@@ -161,7 +161,7 @@ class TestIDWModelPy:
             sites=sites, options=my_options, opt_problem=opt_prob
         )
         idw_test = idw_eval.sites.copy()
-        idw_test[idw_eval.responses] = 1.0
+        idw_test[idw_eval.outputs] = 1.0
 
         idw_eval(idw_test)
 
@@ -175,7 +175,7 @@ class TestIDWModelPy:
             sites=sites, options=my_options, opt_problem=opt_prob
         )
         idw_eval_test = idw_update_model.sites.copy()
-        idw_eval_test[idw_update_model.responses] = 2.0
+        idw_eval_test[idw_update_model.outputs] = 2.0
 
         num_sites_in_model = len(idw_update_model.sites)
 
@@ -184,7 +184,7 @@ class TestIDWModelPy:
         num_sites_in_model_after_update = len(idw_update_model.sites)
 
         idw_eval_test_new = idw_update_model.sites.copy()
-        idw_eval_test_new[idw_update_model.responses] = 2.0
+        idw_eval_test_new[idw_update_model.outputs] = 2.0
         idw_update_model(idw_eval_test_new)
 
         np.testing.assert_approx_equal(
@@ -202,7 +202,7 @@ class TestIDWModelPy:
             sites=sites, options=my_options, opt_problem=opt_prob
         )
         idw_eval_test = idw_update_model.sites.copy()
-        idw_eval_test[idw_update_model.responses] = 2.0
+        idw_eval_test[idw_update_model.outputs] = 2.0
 
         num_sites_in_model = len(idw_update_model.sites)
 
@@ -211,7 +211,7 @@ class TestIDWModelPy:
         num_sites_in_model_after_update = len(idw_update_model.sites)
 
         idw_eval_test_new = idw_update_model.sites.copy()
-        idw_eval_test_new[idw_update_model.responses] = 2.0
+        idw_eval_test_new[idw_update_model.outputs] = 2.0
         idw_update_model(idw_eval_test_new)
 
         np.testing.assert_approx_equal(
@@ -244,7 +244,7 @@ class TestIDWModelPy:
             sites=multiresp_sites, options=my_options, opt_problem=multiresp_opt_prob
         )
         idw_multiresp_test = idw_multiresp_eval.sites.copy()
-        idw_multiresp_test[idw_multiresp_eval.responses] = 1.0
+        idw_multiresp_test[idw_multiresp_eval.outputs] = 1.0
         idw_multiresp_eval(idw_multiresp_test)
 
         np.testing.assert_almost_equal(
@@ -260,7 +260,7 @@ class TestIDWModelPy:
             sites=multiresp_sites, options=my_options, opt_problem=multiresp_opt_prob
         )
         idw_multiresp_update_eval_test = idw_multiresp_update_model.sites.copy()
-        idw_multiresp_update_eval_test[idw_multiresp_update_model.responses] = 2.0
+        idw_multiresp_update_eval_test[idw_multiresp_update_model.outputs] = 2.0
 
         num_sites_in_model = len(idw_multiresp_update_model.sites)
 
@@ -269,7 +269,7 @@ class TestIDWModelPy:
         num_sites_in_model_after_update = len(idw_multiresp_update_model.sites)
 
         idw_multiresp_update_eval_test_new = idw_multiresp_update_model.sites.copy()
-        idw_multiresp_update_eval_test_new[idw_multiresp_update_model.responses] = 2.0
+        idw_multiresp_update_eval_test_new[idw_multiresp_update_model.outputs] = 2.0
         idw_multiresp_update_model(idw_multiresp_update_eval_test_new)
 
         np.testing.assert_approx_equal(
@@ -291,7 +291,7 @@ class TestIDWModelPy:
             sites=multiresp_sites, options=my_options, opt_problem=multiresp_opt_prob
         )
         idw_multiresp_update_eval_test = idw_multiresp_update_model.sites.copy()
-        idw_multiresp_update_eval_test[idw_multiresp_update_model.responses] = 2.0
+        idw_multiresp_update_eval_test[idw_multiresp_update_model.outputs] = 2.0
 
         num_sites_in_model = len(idw_multiresp_update_model.sites)
 
@@ -300,7 +300,7 @@ class TestIDWModelPy:
         num_sites_in_model_after_update = len(idw_multiresp_update_model.sites)
 
         idw_multiresp_update_eval_test_new = idw_multiresp_update_model.sites.copy()
-        idw_multiresp_update_eval_test_new[idw_multiresp_update_model.responses] = 2.0
+        idw_multiresp_update_eval_test_new[idw_multiresp_update_model.outputs] = 2.0
         idw_multiresp_update_model(idw_multiresp_update_eval_test_new)
 
         np.testing.assert_approx_equal(
@@ -320,7 +320,7 @@ class TestIDWModelPy:
             sites=sites, options=my_options, opt_problem=opt_prob
         )
         idw_var_test = idw_var_model.sites.copy()
-        idw_var_test[idw_var_model.responses] = 2.0
+        idw_var_test[idw_var_model.outputs] = 2.0
         idw_var_model(idw_var_test)
 
         with pytest.raises(NotImplementedError, match="IDW does not support variances"):

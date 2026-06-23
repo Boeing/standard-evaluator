@@ -64,8 +64,8 @@ class TestRBFModelPy:
             sites=sites, options=my_options, opt_problem=opt_prob
         )
 
-        assert rbf_m.variables == ["x0", "x1"]
-        assert rbf_m.responses == ["f"]
+        assert rbf_m.inputs == ["x0", "x1"]
+        assert rbf_m.outputs == ["f"]
         assert rbf_m.name == "RadialBasisFunctionModel"
 
     def test_default_options(self, opt_prob, sites):
@@ -112,9 +112,9 @@ class TestRBFModelPy:
         )
 
         # Test target_responses
-        test_sites = multiresp_sites[rbf_eval.variables]
-        rbf_eval(test_sites, names=[rbf_eval.responses[1]])
-        assert list(test_sites) == rbf_eval.variables + [rbf_eval.responses[1]]
+        test_sites = multiresp_sites[rbf_eval.inputs]
+        rbf_eval(test_sites, names=[rbf_eval.outputs[1]])
+        assert list(test_sites) == rbf_eval.inputs + [rbf_eval.outputs[1]]
 
         expected_sites = [
             [-1.43390995, -1.88266419, -0.41548999, -0.88564682, 1.90218082],
@@ -132,7 +132,7 @@ class TestRBFModelPy:
         )
         # Test evaluation
         rbf_test = rbf_eval.sites.copy()  # copies set of sites
-        rbf_test[rbf_eval.responses] = 1.0
+        rbf_test[rbf_eval.outputs] = 1.0
 
         # reference array of sites, compare that with the calculated values using eval_np
         rbf_eval(rbf_test)
@@ -146,7 +146,7 @@ class TestRBFModelPy:
             sites=sites, options=my_options, opt_problem=opt_prob
         )
         rbf_eval_test = rbf_update_model.sites.copy()  # copies set of sites
-        rbf_eval_test[rbf_update_model.responses] = 2.0
+        rbf_eval_test[rbf_update_model.outputs] = 2.0
 
         # reference array of sites, compare that with the calculated values using eval_np
         rbf_update_model(rbf_eval_test)
@@ -154,7 +154,7 @@ class TestRBFModelPy:
 
         rbf_eval_test_new = rbf_update_model.sites.copy()  # copies set of sites
         # reference array of sites, compare that with the calculated values using eval_np
-        rbf_eval_test_new[rbf_update_model.responses] = 2.0
+        rbf_eval_test_new[rbf_update_model.outputs] = 2.0
 
         rbf_update_model(rbf_eval_test_new)
 
@@ -175,7 +175,7 @@ class TestRBFModelPy:
             sites=sites, options=my_options, opt_problem=opt_prob
         )
         rbf_rand_eval = rbf_rand_model.sites.copy()  # copies set of sites
-        rbf_rand_eval[rbf_rand_model.responses] = 1.1
+        rbf_rand_eval[rbf_rand_model.outputs] = 1.1
 
         # reference array of sites, compare that with the calculated values using eval_np
         rbf_rand_model(rbf_rand_eval)
@@ -203,7 +203,7 @@ class TestRBFModelPy:
         )
         rbf_multiresp_test = rbf_multiresp_eval.sites.copy()  # copied  set of sites
         # updating the response values of copied sites with dummy values, later check for actual values
-        rbf_multiresp_test[rbf_multiresp_eval.responses] = 1.0
+        rbf_multiresp_test[rbf_multiresp_eval.outputs] = 1.0
         # Test evaluation , reference array of sites, compare that with the calculated values using eval_np
         rbf_multiresp_eval(rbf_multiresp_test)
 
@@ -224,7 +224,7 @@ class TestRBFModelPy:
             rbf_multiresp_update_model.sites.copy()
         )  # copied  set of
         # updating the response values of copied sites with dummy values, later check for actual values
-        rbf_multiresp_update_eval_test[rbf_multiresp_update_model.responses] = 2.0
+        rbf_multiresp_update_eval_test[rbf_multiresp_update_model.outputs] = 2.0
 
         rbf_multiresp_update_model(rbf_multiresp_update_eval_test)
 
@@ -234,7 +234,7 @@ class TestRBFModelPy:
             rbf_multiresp_update_model.sites.copy()
         )  # copied set of sites
         # updating the response values of copied sites with dummy values, later check for actual values
-        rbf_multiresp_update_eval_test_new[rbf_multiresp_update_model.responses] = 2.0
+        rbf_multiresp_update_eval_test_new[rbf_multiresp_update_model.outputs] = 2.0
         rbf_multiresp_update_model(rbf_multiresp_update_eval_test_new)
 
         # numpy assertion check to reference array of sites & compare that with the calculated values of eval_np
@@ -259,7 +259,7 @@ class TestRBFModelPy:
             sites=sites, options=my_options, opt_problem=opt_prob
         )
         rbf_var_test = rbf_var_model.sites.copy()  # copies set of sites
-        rbf_var_test[rbf_var_model.responses] = 2.0
+        rbf_var_test[rbf_var_model.outputs] = 2.0
         rbf_var_model(rbf_var_test)
 
         with pytest.raises(NotImplementedError, match="RBF does not support variances"):

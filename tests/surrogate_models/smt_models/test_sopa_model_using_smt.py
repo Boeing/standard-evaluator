@@ -184,8 +184,8 @@ class TestQPModelPy:
             sites=sites, options=my_options, opt_problem=opt_prob
         )
 
-        assert smt_m.variables == ["x0", "x1"]
-        assert smt_m.responses == ["f"]
+        assert smt_m.inputs == ["x0", "x1"]
+        assert smt_m.outputs == ["f"]
         assert smt_m.name == "SecondOrderPolynomialApproximationModel"
 
     def test_default_options(self, opt_prob, sites):
@@ -235,9 +235,9 @@ class TestQPModelPy:
             sites=sopa_multiresp_sites_old, options=my_options, opt_problem=sopa_multiresp_opt_prob
         )
 
-        test_sites = sopa_multiresp_sites_old[smt_target.variables]
-        smt_target(test_sites, names=[smt_target.responses[1]])
-        assert list(test_sites) == smt_target.variables + [smt_target.responses[1]]
+        test_sites = sopa_multiresp_sites_old[smt_target.inputs]
+        smt_target(test_sites, names=[smt_target.outputs[1]])
+        assert list(test_sites) == smt_target.inputs + [smt_target.outputs[1]]
 
     def test_eval_np(self, opt_prob, sites):
         my_options = SecondOrderPolynomialApproximationModel.required_options()
@@ -246,10 +246,10 @@ class TestQPModelPy:
             sites=sites, options=my_options, opt_problem=opt_prob
         )
         smt_test = smt_eval.sites.copy()
-        smt_test[smt_eval.responses] = 1.0
+        smt_test[smt_eval.outputs] = 1.0
 
         smt_eval(smt_test)
-        calculated_sites = smt_test[smt_eval.responses].to_numpy()
+        calculated_sites = smt_test[smt_eval.outputs].to_numpy()
 
         expected_sites = [
             [37.88888888],
@@ -300,7 +300,7 @@ class TestQPModelPy:
         num_sites_in_model_after_update = len(smt_update_model.sites)
 
         smt_eval_test_new = smt_update_model.sites.copy()
-        smt_eval_test_new[smt_update_model.responses] = 2.0
+        smt_eval_test_new[smt_update_model.outputs] = 2.0
         smt_update_model(smt_eval_test_new)
 
         np.testing.assert_approx_equal(smt_eval_test_new.iat[1, 2], 67.492844)
@@ -352,10 +352,10 @@ class TestQPModelPy:
             sites=sopa_multiresp_sites_old, options=my_options, opt_problem=sopa_multiresp_opt_prob
         )
         smt_multiresp_test = smt_multiresp_eval.sites.copy()
-        smt_multiresp_test[smt_multiresp_eval.responses] = 1.0
+        smt_multiresp_test[smt_multiresp_eval.outputs] = 1.0
         smt_multiresp_eval(smt_multiresp_test)
 
-        calculated_sites = smt_multiresp_test[smt_multiresp_eval.responses].to_numpy()
+        calculated_sites = smt_multiresp_test[smt_multiresp_eval.outputs].to_numpy()
 
         expected_sites = [
             [25.41931167, 1.90218082],
@@ -407,7 +407,7 @@ class TestQPModelPy:
             smt_unique_multiresp_update_model.sites.copy()
         )
         smt_multiresp_update_eval_test_new[
-            smt_unique_multiresp_update_model.responses
+            smt_unique_multiresp_update_model.outputs
         ] = 2.0
         smt_unique_multiresp_update_model(smt_multiresp_update_eval_test_new)
 
@@ -432,7 +432,7 @@ class TestQPModelPy:
             sites=sites, options=my_options, opt_problem=opt_prob
         )
         smt_var_test = smt_var_model.sites.copy()
-        smt_var_test[smt_var_model.responses] = 2.0
+        smt_var_test[smt_var_model.outputs] = 2.0
         smt_var_model(smt_var_test)
 
         with pytest.raises(NotImplementedError, match="QP does not support variances"):

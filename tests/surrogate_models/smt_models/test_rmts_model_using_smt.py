@@ -187,8 +187,8 @@ def multi_model(
 # @pytest.mark.rmtb_evaluator
 class TestRMTBModelPy:
     def test_initialization(self, basic_model):
-        assert basic_model.variables == ["x0", "x1"]
-        assert basic_model.responses == ["f"]
+        assert basic_model.inputs == ["x0", "x1"]
+        assert basic_model.outputs == ["f"]
         assert basic_model.name == "RegularizedMinimalEnergyTensorProductBSplines"
 
     def test_default_options(self):
@@ -228,9 +228,9 @@ class TestRMTBModelPy:
 
     @pytest.mark.rmtb_evaluator
     def test_target_responses(self, multiresp_sites, multi_model):
-        test_sites = multiresp_sites[multi_model.variables]
-        multi_model(test_sites, names=[multi_model.responses[1]])
-        assert list(test_sites) == multi_model.variables + [multi_model.responses[1]]
+        test_sites = multiresp_sites[multi_model.inputs]
+        multi_model(test_sites, names=[multi_model.outputs[1]])
+        assert list(test_sites) == multi_model.inputs + [multi_model.outputs[1]]
 
     def test_eval_np_with_False_use_xlimits(self, xlimits_opt_prob, xlimits_sites):
         """
@@ -254,7 +254,7 @@ class TestRMTBModelPy:
 
     def test_eval_np(self, basic_model):
         rmtb_test = basic_model.sites.copy()
-        rmtb_test[basic_model.responses] = 1.0
+        rmtb_test[basic_model.outputs] = 1.0
 
         basic_model(rmtb_test)
 
@@ -297,7 +297,7 @@ class TestRMTBModelPy:
         num_sites_in_model_after_update = len(basic_model.sites)
 
         rmtb_eval_test_new = basic_model.sites.copy()
-        rmtb_eval_test_new[basic_model.responses] = 2.0
+        rmtb_eval_test_new[basic_model.outputs] = 2.0
         basic_model(rmtb_eval_test_new)
 
         expected_sites = [
@@ -328,7 +328,7 @@ class TestRMTBModelPy:
 
     def test_update_randomsites(self, basic_model):
         rmtb_rand_eval = basic_model.sites.copy()
-        rmtb_rand_eval[basic_model.responses] = 1.1
+        rmtb_rand_eval[basic_model.outputs] = 1.1
 
         basic_model(rmtb_rand_eval)
         random_sites = np.array(
@@ -381,7 +381,7 @@ class TestRMTBModelPy:
 
     def test_prob_variance(self, basic_model):
         rmtb_var_test = basic_model.sites.copy()
-        rmtb_var_test[basic_model.responses] = 2.0
+        rmtb_var_test[basic_model.outputs] = 2.0
         basic_model(rmtb_var_test)
 
         with pytest.raises(
