@@ -22,6 +22,7 @@ try:
         GradientEnhancedNeuralNetworksModelOptions,
     )
 except ModuleNotFoundError:
+    # Optional model module may be absent in partial/migrating installations.
     pass
 
 try:
