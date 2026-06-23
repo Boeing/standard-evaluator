@@ -293,7 +293,7 @@ def test_abstract():
 
     # Derived class is missing _def_update
     class DummyModel2(SurrogateModel):
-        def eval_np(self) -> None:
+        def eval_np(self, *args, **kwargs) -> None:
             pass
 
         def _def_to_dict(self) -> dict:
@@ -317,7 +317,7 @@ def test_abstract():
 
     # Derived class is missing _def_to_dict
     class DummyModel3(SurrogateModel):
-        def eval_np(self) -> None:
+        def eval_np(self, *args, **kwargs) -> None:
             pass
 
         def _def_update(self) -> None:
@@ -342,7 +342,7 @@ def test_abstract():
 
     # Derived class is missing _def_from_dict
     class DummyModel4(SurrogateModel):
-        def eval_np(self) -> None:
+        def eval_np(self, *args, **kwargs) -> None:
             pass
 
         def _def_update(self) -> None:
