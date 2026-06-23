@@ -239,7 +239,7 @@ class TestPolynomialModel:
         """Test different coefficient ordering options."""
         opt_problem, sites_df, evals, degree, coefs, deg_exp = simple_bp_data_model
         
-        for ordering in CoefficientOrdering:
+        for ordering in list(CoefficientOrdering):
             options = PolynomialModelOptions(
                 degree=2,
                 coefficient_ordering=ordering
