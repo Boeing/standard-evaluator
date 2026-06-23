@@ -265,7 +265,7 @@ def eval_sites():
 def test_abstract():
     # Trying to instantiate abstract class
     with pytest.raises(TypeError, match="Can't instantiate abstract class"):
-        SurrogateModel()
+        SurrogateModel(None)
 
     # Derived class is missing eval_np
     class DummyModel1(SurrogateModel):
