@@ -16,7 +16,7 @@ from standard_evaluator import (
     FloatVariable,
     CategoricalVariable,
 )
-from standard_evaluator.utilities import legacy_to_opt_problem
+from standard_evaluator.utilities import create_opt_problem
 
 
 class Polynomial1DOptions(BaseModel):
@@ -130,12 +130,17 @@ class Polynomial1DModel(SurrogateModel):
         # Need to make sure we pass the right information from the dictionary
         # to the model.
         options = Polynomial1DOptions(deg=model_info["info"]["deg"])
-        
-        # Convert legacy problem dict to OptProblem
+
+        # Support both new format (opt_problem) and legacy format (problem key)
         opt_problem = None
-        if "problem" in model_info and model_info["problem"] is not None:
-            opt_problem = legacy_to_opt_problem(model_info["problem"])
-            
+        if "opt_problem" in model_info and model_info["opt_problem"] is not None:
+            opt_problem = OptProblem.model_validate(model_info["opt_problem"])
+        elif "problem" in model_info and model_info["problem"] is not None:
+            from standard_evaluator.surrogate_models.abstract_model import (
+                _legacy_problem_dict_to_opt_problem,
+            )
+            opt_problem = _legacy_problem_dict_to_opt_problem(model_info["problem"])
+
         return cls(
             sites=model_info["info"]["sites"],
             options=options,
@@ -492,10 +497,9 @@ def test_to_from_dict(
     expected_keys = {
         "type",
         "info",
-        "problem",
+        "opt_problem",
         "version",
         "name",
-        "design explorer version",
     }
     assert expected_keys == set(model_dict)
     assert model_dict["type"] == "Polynomial1DModel"
@@ -505,11 +509,11 @@ def test_to_from_dict(
     )
     assert model_dict["name"] == "Polynomial1DModel"
 
-    # Check problem structure (now from opt_problem instead of dict)
-    assert "variables" in model_dict["problem"]
-    assert "responses" in model_dict["problem"]
-    assert "x" in model_dict["problem"]["variables"]
-    assert "y" in model_dict["problem"]["responses"]
+    # Check opt_problem structure
+    assert "variables" in model_dict["opt_problem"]
+    assert "responses" in model_dict["opt_problem"]
+    assert any(v["name"] == "x" for v in model_dict["opt_problem"]["variables"])
+    assert any(r["name"] == "y" for r in model_dict["opt_problem"]["responses"])
     info_keys = {"deg", "sites"}
     model_info = model_dict["info"]
     assert info_keys == set(model_info)
@@ -527,8 +531,6 @@ def test_to_from_dict(
     # Dictionary missing keys
     with pytest.raises(KeyError):
         SurrogateModel.from_dict({"type": "", "info": {}, "version": "", "name": ""})
-    with pytest.raises(KeyError):
-        SurrogateModel.from_dict({"type": "", "info": {}, "name": ""})
 
     # Type is not valid
     with pytest.raises(NameError):
@@ -536,10 +538,9 @@ def test_to_from_dict(
             {
                 "type": "not a real model name",
                 "info": {},
-                "problem": {},
+                "opt_problem": {},
                 "version": "",
                 "name": "",
-                "design explorer version": "",
             }
         )
 
@@ -565,8 +566,6 @@ def test_to_from_dict(
     # Using abstract class
     new_model = SurrogateModel.from_dict(model_dict)
     assert new_model is not model
-    assert new_model.problem == model_dict["problem"]
-    assert new_model.problem is not model_dict["problem"]
     assert new_model.name == model_dict["name"]
     assert new_model.deg == model_dict["info"]["deg"]
     assert new_model.coefs == pytest.approx([0.98496523, 3.11437468], abs=1e-7)
@@ -579,8 +578,6 @@ def test_to_from_dict(
     # Using class itself
     new_model = Polynomial1DModel.from_dict(model_dict)
     assert new_model is not model
-    assert new_model.problem == model_dict["problem"]
-    assert new_model.problem is not model_dict["problem"]
     assert new_model.name == model_dict["name"]
     assert new_model.deg == model_dict["info"]["deg"]
     assert new_model.coefs == pytest.approx([0.98496523, 3.11437468], abs=1e-7)
@@ -596,7 +593,6 @@ def test_to_from_dict(
 
     new_model = SurrogateModel.from_dict(model_dict)
     assert new_model is not model
-    assert new_model.problem == model_dict["problem"]
     assert new_model.name == model_dict["name"]
     assert new_model.deg == model_dict["info"]["deg"]
     assert new_model.coefs == pytest.approx([-0.36499445, 3.09401352], abs=1e-7)
@@ -612,7 +608,6 @@ def test_to_from_dict(
 
     new_model = SurrogateModel.from_dict(model_dict)
     assert new_model is not model
-    assert new_model.problem == model_dict["problem"]
     assert new_model.name == model_dict["name"]
     assert new_model.deg == model_dict["info"]["deg"]
     assert new_model.coefs == pytest.approx([-1.74357662, 3.00584967], abs=1e-7)

@@ -1,11 +1,10 @@
 import numpy as np
 import pandas as pd
 import pytest
-import warnings
 
 from standard_evaluator.surrogate_models.polynomial_model import (
-    PolynomialModel, 
-    PolynomialModelOptions, 
+    PolynomialModel,
+    PolynomialModelOptions,
     PolynomialModelParameters,
     CoefficientOrdering
 )
@@ -16,20 +15,16 @@ from standard_evaluator.evaluators.test.cantilevered_beam import CantileveredBea
 import standard_evaluator as se
 from standard_evaluator import (
     OptProblem,
-    IntVariable,
     FloatVariable,
-    CategoricalVariable,
 )
 from standard_evaluator.utilities.problem_dict_utility import (
-    create_opt_problem,legacy_to_opt_problem, opt_problem_to_legacy
+    create_opt_problem,
 )
 
 
 @pytest.fixture
 def cantilever_beam_model():
-    """Returns problem, sites"""
-
-    # Define problem
+    """Returns opt_problem, sites"""
 
     site_df = pd.DataFrame(
         data={
@@ -41,14 +36,12 @@ def cantilever_beam_model():
     )
     cb = CantileveredBeam()
     cb(site_df)
-    return opt_problem_to_legacy(cb.opt_problem), site_df
+    return cb.opt_problem, site_df
 
 
 @pytest.fixture
 def cantilever_beam_fixed_variables_model():
-    """Returns problem, sites"""
-
-    # Define problem
+    """Returns opt_problem, sites"""
 
     site_df_fv = pd.DataFrame(
         data={
@@ -62,7 +55,7 @@ def cantilever_beam_fixed_variables_model():
     )
     cbfv = CantileveredBeamFixedVariable()
     cbfv(site_df_fv)
-    return opt_problem_to_legacy(cbfv.opt_problem), site_df_fv
+    return cbfv.opt_problem, site_df_fv
 
 
 @pytest.fixture
@@ -242,31 +235,6 @@ class TestPolynomialModel:
         assert np.allclose(poly_model.coefs, coefs)
         assert np.allclose(poly_model.deg_exp, deg_exp)
     
-    def test_backward_compatibility_warnings(self, simple_bp_data_model):
-        """Test that deprecated parameters trigger appropriate warnings."""
-        opt_problem, sites_df, evals, degree, coefs, deg_exp = simple_bp_data_model
-        bp = opt_problem_to_legacy(opt_problem)
-
-        # Test deprecated parameters trigger warnings
-        with warnings.catch_warnings(record=True) as w:
-            warnings.simplefilter("always")
-            
-            poly_model = PolynomialModel(
-                sites=sites_df,
-                degree=degree,
-                coefficients=coefs,
-                degree_exponents=deg_exp,
-                problem=bp,
-            )
-            
-            # Should have deprecation warnings
-            deprecation_warnings = [warning for warning in w if issubclass(warning.category, DeprecationWarning)]
-            assert len(deprecation_warnings) >= 1
-            
-            # Check warning messages
-            warning_messages = [str(warning.message) for warning in deprecation_warnings]
-            assert any("deprecated" in msg for msg in warning_messages)
-    
     def test_coefficient_ordering_options(self, simple_bp_data_model):
         """Test different coefficient ordering options."""
         opt_problem, sites_df, evals, degree, coefs, deg_exp = simple_bp_data_model
@@ -288,24 +256,23 @@ class TestPolynomialModel:
             assert poly_model.coefs is not None
     
     def test_from_data_with_options(self, simple_bp_data_model):
-        """Test from_data method with options parameter."""
+        """Test initialization with options parameter and least-squares fitting."""
         opt_problem, sites_df, evals, degree, coefs, deg_exp = simple_bp_data_model
-        
+
         options = PolynomialModelOptions(
             degree=degree,
             coefficient_ordering=CoefficientOrdering.ASC_GRLEX
         )
-        
-        poly_model = PolynomialModel.from_data(
+
+        poly_model = PolynomialModel(
             sites=sites_df,
-            degree=degree,
             options=options,
             opt_problem=opt_problem
         )
-        
+
         assert poly_model.degree == degree
         assert poly_model.lookup_option_value("coefficient_ordering") == CoefficientOrdering.ASC_GRLEX
-        
+
         # Test evaluation still works
         variable_list = opt_problem.variable_names()
         sites_np_array = sites_df[variable_list].values
@@ -317,8 +284,6 @@ class TestPolynomialModel:
         """Test that both old and new serialization formats work."""
         opt_problem, sites_df, evals, degree, coefs, deg_exp = simple_bp_data_model
 
-        bp = opt_problem_to_legacy(opt_problem)
-        
         # Create model with new options
         options = PolynomialModelOptions(
             degree=degree,
@@ -328,16 +293,16 @@ class TestPolynomialModel:
                 degree_exponents=deg_exp.astype(np.float64)
             )
         )
-        
+
         original_model = PolynomialModel(
             sites=sites_df,
             options=options,
             opt_problem=opt_problem,
         )
-        
+
         # Test serialization
         model_dict = original_model.to_dict()
-        
+
         # Verify new format uses "options" key with nested "parameters"
         assert "options" in model_dict["info"]
         assert "degree" in model_dict["info"]["options"]
@@ -345,16 +310,17 @@ class TestPolynomialModel:
         assert "coefficients" in model_dict["info"]["options"]["parameters"]
         assert "degree_exponents" in model_dict["info"]["options"]["parameters"]
         assert "coefficient_ordering" in model_dict["info"]["options"]
-        
+
         # Test deserialization
         restored_model = PolynomialModel.from_dict(model_dict)
-        
+
         # Verify models are equivalent
         assert restored_model.degree == original_model.degree
         assert np.allclose(restored_model.coefs, original_model.coefs)
         assert np.allclose(restored_model.deg_exp, original_model.deg_exp)
-        
-        # Test old format compatibility
+
+        # Test old info format compatibility (flat keys instead of nested options,
+        # and legacy "problem" dict format as produced by old Design Explorer)
         old_format_dict = {
             "type": "PolynomialModel",
             "version": "1.0",
@@ -367,33 +333,43 @@ class TestPolynomialModel:
                 "deg_exp": deg_exp.tolist(),
                 "coefficient_ordering": "dec_grlex"
             },
-            "problem": bp,
+            "problem": {
+                "variables": {
+                    "x": {"type": "float", "bounds": [-1.0, 1.0]},
+                    "y": {"type": "float", "bounds": [-1.0, 1.0]},
+                    "z": {"type": "float", "bounds": [-1.0, 1.0]},
+                },
+                "responses": {
+                    "f": {"type": "float"},
+                },
+                "objectives": [],
+                "constraints": [],
+            },
             "name": None
         }
-        
+
         old_format_model = PolynomialModel.from_dict(old_format_dict)
         assert old_format_model.degree == degree
         assert np.allclose(old_format_model.coefs, coefs)
         assert np.allclose(old_format_model.deg_exp, deg_exp)
 
     def test_from_coefficients(self, simple_bp_data_model):
-        """Test Initialization from coefficients using deprecated parameters."""
+        """Test Initialization from coefficients using options."""
         opt_problem, sites_df, evals, degree, coefs, deg_exp = simple_bp_data_model
 
-        # Test with deprecated parameters (should trigger warnings)
-        with warnings.catch_warnings(record=True) as w:
-            warnings.simplefilter("always")
-            
-            poly_model = PolynomialModel(
-                sites=sites_df,
-                degree=degree,
-                coefficients=coefs,
-                degree_exponents=deg_exp,
-                opt_problem=opt_problem,
+        options = PolynomialModelOptions(
+            degree=degree,
+            parameters=PolynomialModelParameters(
+                coefficients=coefs.astype(np.float64),
+                degree_exponents=deg_exp.astype(np.float64)
             )
-            
-            # Should have deprecation warnings
-            assert len([warning for warning in w if issubclass(warning.category, DeprecationWarning)]) >= 1
+        )
+
+        poly_model = PolynomialModel(
+            sites=sites_df,
+            options=options,
+            opt_problem=opt_problem,
+        )
 
         # Test basics
         assert poly_model.nsites == 29
@@ -401,26 +377,16 @@ class TestPolynomialModel:
         assert poly_model.ndep == 1
 
     def test_from_data_one_ndep(self, simple_bp_data_model):
-        """Test Initialization from data using deprecated from_data method."""
+        """Test Initialization from data."""
         opt_prob, sites_df, evals, degree, coefs, deg_exp = simple_bp_data_model
 
-        bp = opt_problem_to_legacy(opt_prob)
-
-        # Test with deprecated from_data method
-        with warnings.catch_warnings(record=True) as w:
-            warnings.simplefilter("always")
-            
-            poly_model = PolynomialModel.from_data(
-                sites=sites_df, degree=degree, problem=bp
-            )
-            
-            # Should have deprecation warnings for problem parameter
-            deprecation_warnings = [warning for warning in w if issubclass(warning.category, DeprecationWarning)]
-            assert len(deprecation_warnings) >= 1
+        options = PolynomialModelOptions(degree=degree)
+        poly_model = PolynomialModel(
+            sites=sites_df, options=options, opt_problem=opt_prob
+        )
 
         # Test call
         tol = 1e-6
-
 
         # Extract variable names from OptProblem object
         variable_list = [var.name for var in opt_prob.variables]
@@ -448,24 +414,16 @@ class TestPolynomialModel:
     def test_from_data_multi_ndep(self, simple_multiple_response_data):
         """Test Initialization from data with multiple responses."""
         opt_prob, sites_df, evals, degree = simple_multiple_response_data
-        bp = opt_problem_to_legacy(opt_prob)
 
-        # Test with deprecated from_data method
-        with warnings.catch_warnings(record=True) as w:
-            warnings.simplefilter("always")
-            
-            poly_model = PolynomialModel.from_data(
-                sites=sites_df, degree=degree, problem=bp
-            )
-            
-            # Should have deprecation warnings for problem parameter
-            deprecation_warnings = [warning for warning in w if issubclass(warning.category, DeprecationWarning)]
-            assert len(deprecation_warnings) >= 1
+        options = PolynomialModelOptions(degree=degree)
+        poly_model = PolynomialModel(
+            sites=sites_df, options=options, opt_problem=opt_prob
+        )
 
         # Test call
         tol = 1e-6
         # Extract variable names from OptProblem object
-        variable_list = [var.name for var in opt_prob.variables]        
+        variable_list = [var.name for var in opt_prob.variables]
         sites_np_array = sites_df[variable_list].values
         max_res = np.max(np.abs(poly_model.eval_np(sites_np_array) - evals))
         assert max_res < tol
@@ -507,8 +465,9 @@ class TestPolynomialModel:
 
         # Initialitize
 
-        poly_model = PolynomialModel.from_data(
-            sites=sites_df, degree=degree, opt_problem=opt_prob
+        options = PolynomialModelOptions(degree=degree)
+        poly_model = PolynomialModel(
+            sites=sites_df, options=options, opt_problem=opt_prob
         )
 
         # Test call
@@ -526,13 +485,18 @@ class TestPolynomialModel:
 
         opt_prob, sites_df, evals, degree, coefs, deg_exp = simple_bp_data_model
 
-        # Initialize model
+        # Initialize model with options
+        options = PolynomialModelOptions(
+            degree=degree,
+            parameters=PolynomialModelParameters(
+                coefficients=coefs.astype(np.float64),
+                degree_exponents=deg_exp.astype(np.float64)
+            )
+        )
 
         poly_model = PolynomialModel(
             sites=sites_df,
-            degree=degree,
-            coefficients=coefs,
-            degree_exponents=deg_exp,
+            options=options,
             opt_problem=opt_prob,
         )
 
@@ -556,13 +520,18 @@ class TestPolynomialModel:
 
         opt_prob, sites_df, evals, degree, coefs, deg_exp = simple_bp_data_model
 
-        # Initialize model
+        # Initialize model with options
+        options = PolynomialModelOptions(
+            degree=degree,
+            parameters=PolynomialModelParameters(
+                coefficients=coefs.astype(np.float64),
+                degree_exponents=deg_exp.astype(np.float64)
+            )
+        )
 
         poly_model = PolynomialModel(
             sites=sites_df,
-            degree=degree,
-            coefficients=coefs,
-            degree_exponents=deg_exp,
+            options=options,
             opt_problem=opt_prob,
         )
 
@@ -603,8 +572,9 @@ class TestPolynomialModel:
 
         # Initialitize
 
-        poly_model = PolynomialModel.from_data(
-            sites=sites_df, degree=degree, opt_problem=opt_prob
+        options = PolynomialModelOptions(degree=degree)
+        poly_model = PolynomialModel(
+            sites=sites_df, options=options, opt_problem=opt_prob
         )
 
         # Define true jacobian
@@ -654,8 +624,9 @@ class TestPolynomialModel:
 
         # Initialitize
 
-        poly_model = PolynomialModel.from_data(
-            sites=sites_df, degree=degree, opt_problem=opt_prob
+        options = PolynomialModelOptions(degree=degree)
+        poly_model = PolynomialModel(
+            sites=sites_df, options=options, opt_problem=opt_prob
         )
 
         # Extract f
@@ -709,15 +680,16 @@ class TestPolynomialModel:
 
         # Initialitize
 
-        poly_model = PolynomialModel.from_data(
-            sites=sites_df, degree=degree, opt_problem=opt_prob
+        options = PolynomialModelOptions(degree=degree)
+        poly_model = PolynomialModel(
+            sites=sites_df, options=options, opt_problem=opt_prob
         )
 
         model_dict = poly_model.to_dict()
 
         assert isinstance(model_dict, dict)
 
-        key_list = ["type", "problem", "version", "info"]
+        key_list = ["type", "opt_problem", "version", "info"]
 
         for key in key_list:
             assert key in model_dict.keys()
@@ -729,13 +701,18 @@ class TestPolynomialModel:
 
         opt_prob, sites_df, evals, degree, coefs, deg_exp = simple_bp_data_model
 
-        # Initialize model
+        # Initialize model with options
+        options = PolynomialModelOptions(
+            degree=degree,
+            parameters=PolynomialModelParameters(
+                coefficients=coefs.astype(np.float64),
+                degree_exponents=deg_exp.astype(np.float64)
+            )
+        )
 
         poly_model = PolynomialModel(
             sites=sites_df,
-            degree=degree,
-            coefficients=coefs,
-            degree_exponents=deg_exp,
+            options=options,
             opt_problem=opt_prob,
         )
 
@@ -767,44 +744,17 @@ class TestPolynomialModel:
         with pytest.raises(KeyError):
             poly_model_wrong_nested_key = PolynomialModel.from_dict(model_dict)
 
-    def test_init_with_problem_dict(self, simple_bp_data_model):
-        """Test that __init__ works when given a legacy problem dict instead of opt_problem."""
-        opt_prob, sites_df, evals, degree, coefs, deg_exp = simple_bp_data_model
-
-        legacy_problem = opt_problem_to_legacy(opt_prob)
-
-        poly_model = PolynomialModel(
-            sites=sites_df,
-            degree=degree,
-            coefficients=coefs,
-            degree_exponents=deg_exp,
-            problem=legacy_problem,
-        )
-
-        assert poly_model.nsites == 29
-        assert poly_model.nind == 3
-        assert poly_model.ndep == 1
-
-    def test_no_problem_error(self, simple_bp_data_model):
-        """Test that from_data raises ValueError when neither opt_problem nor problem is given."""
-        _, sites_df, _, degree, _, _ = simple_bp_data_model
-
-        with pytest.raises(ValueError, match="Either 'opt_problem' or 'interface' must be provided"):
-            PolynomialModel.from_data(sites=sites_df, degree=degree)
-
     def test_fixed_variables_and_integers(
         self, cantilever_beam_model, cantilever_beam_fixed_variables_model
     ):
 
         cb_problem, site_df = cantilever_beam_model
-        cb_problem = legacy_to_opt_problem(cb_problem)
 
         cbfv_problem, site_df_fv = cantilever_beam_fixed_variables_model
-        cbfv_problem = legacy_to_opt_problem(cbfv_problem)
 
-        poly_model = PolynomialModel.from_data(sites=site_df, degree=3, opt_problem=cb_problem)
-        poly_fv_model = PolynomialModel.from_data(
-            sites=site_df_fv, degree=3, opt_problem=cbfv_problem
+        poly_model = PolynomialModel(sites=site_df, options=PolynomialModelOptions(degree=3), opt_problem=cb_problem)
+        poly_fv_model = PolynomialModel(
+            sites=site_df_fv, options=PolynomialModelOptions(degree=3), opt_problem=cbfv_problem
         )
 
         # The models should be the same model

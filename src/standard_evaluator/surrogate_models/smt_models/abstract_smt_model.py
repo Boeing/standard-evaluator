@@ -434,12 +434,18 @@ class AbstractSmtModel(SurrogateModel):
         SurrogateModel
             Instantiated model built from the given information.
         """
-        from standard_evaluator.utilities import legacy_to_opt_problem
-
-        problem_dict = model_info["problem"]
         info = model_info["info"]
 
-        opt_prob = legacy_to_opt_problem(problem_dict)
+        # Support both new format (opt_problem) and legacy format (problem key)
+        if "opt_problem" in model_info:
+            opt_prob = OptProblem.model_validate(model_info["opt_problem"])
+        elif "problem" in model_info:
+            from standard_evaluator.surrogate_models.abstract_model import (
+                _legacy_problem_dict_to_opt_problem,
+            )
+            opt_prob = _legacy_problem_dict_to_opt_problem(model_info["problem"])
+        else:
+            raise KeyError("model_info must contain 'opt_problem' or 'problem' key")
 
         # Extract site data
         model_name = info.get("name")

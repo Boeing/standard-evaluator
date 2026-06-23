@@ -21,16 +21,11 @@ def unique_names(var):
 
 
 from standard_evaluator.utilities.utility import (
-    apply_types,
     apply_types_from_evaluator_info,
-    create_df_from_problem,
     create_df_from_evaluator_info,
-    check_prob,
-    get_types,
     get_types_from_evaluator_info,
     concat_w_empty,
     remove_duplicates,
-    get_constant_vars,
     restrict_problem,
     get_shift_scale_value,
     update_bounds_to_optimizer_space,
@@ -38,12 +33,9 @@ from standard_evaluator.utilities.utility import (
 )
 
 from standard_evaluator.utilities.problem_dict_utility import (
-    legacy_to_opt_problem,
     collect_names,
-    opt_problem_to_legacy,
     create_opt_problem,
     create_evaluator_info,
-    problem_calculate_fields,
 )
 
 from standard_evaluator.utilities.se_arrays import (
@@ -77,23 +69,15 @@ from standard_evaluator.utilities.opt_problem_utility import (
 
 __all__ = [
     "unique_names",
-    "legacy_to_opt_problem",
     "collect_names",
-    "opt_problem_to_legacy",
     "create_opt_problem",
     "create_evaluator_info",
-    "create_df_from_problem",
     "create_df_from_evaluator_info",
-    "apply_types",
     "apply_types_from_evaluator_info",
-    "check_prob",
-    "get_types",
     "get_types_from_evaluator_info",
     "concat_w_empty",
     "ShiftAndScale",
-    "problem_calculate_fields",
     "remove_duplicates",
-    "get_constant_vars",
     "restrict_problem",
     "combine_instances",
     "get_shift_scale_value",

@@ -5,7 +5,7 @@ Created Aug. 31, 2022
 """
 
 from abc import abstractmethod
-from typing import List, Union, Dict, Tuple, Optional, Type, Any
+from typing import List, Union, Dict, Tuple, Optional, Type
 
 import numpy as np
 import pandas as pd
@@ -17,13 +17,63 @@ from standard_evaluator.evaluators import NumpyEvaluator
 from standard_evaluator.utilities import (
     apply_types_from_evaluator_info,
     remove_duplicates,
-    get_constant_vars,
-    opt_problem_to_legacy,
+    get_opt_problem_constant_vars,
 )
-import standard_evaluator.utilities as utils
 from standard_evaluator.problem import OptProblem
 from standard_evaluator.evaluator import EvaluatorInfo
-from standard_evaluator.converters import evaluator_info_to_opt_problem
+
+
+def _legacy_problem_dict_to_opt_problem(problem_dict: dict) -> OptProblem:
+    """Convert a legacy problem dictionary to an OptProblem.
+
+    This is used only for deserializing old saved models. It is not part of
+    the public API and should not be used for new code.
+
+    Args:
+        problem_dict: A legacy problem dict with structure like:
+            {"variables": {"x": {"type": "float", "bounds": [...], ...}},
+             "responses": {"y": {"type": "float", ...}}, ...}
+
+    Returns:
+        An OptProblem instance.
+    """
+    TYPE_MAPPING = {
+        "float": "float",
+        "int": "int",
+        float: "float",
+        int: "int",
+        "categorical": "cat",
+    }
+    FIELDS = ["default", "shift", "scale"]
+    full_dict = {"name": "legacy_problem"}
+    for local_type in ["variables", "responses"]:
+        local_info = []
+        for local_name, info in problem_dict[local_type].items():
+            local_dict = {"name": local_name}
+            for field in FIELDS:
+                if field in info:
+                    local_value = info[field]
+                    if isinstance(local_value, dict):
+                        if local_value["use"]:
+                            local_dict[field] = local_value["value"]
+                    else:
+                        local_dict[field] = info[field]
+            if "type" in info:
+                local_dict["class_type"] = TYPE_MAPPING[info["type"]]
+            else:
+                local_dict["class_type"] = "float"
+            if local_dict["class_type"] == "cat":
+                local_dict["bounds"] = info["bounds"]
+            else:
+                if "bounds" in info:
+                    local_dict["bounds"] = tuple(info["bounds"])
+            local_info.append(local_dict)
+        full_dict[local_type] = local_info
+    if "objectives" in problem_dict:
+        full_dict["objectives"] = problem_dict["objectives"]
+    if "constraints" in problem_dict:
+        full_dict["constraints"] = problem_dict["constraints"]
+    return OptProblem.model_validate(full_dict)
 
 
 class SurrogateModel(NumpyEvaluator):
@@ -33,14 +83,29 @@ class SurrogateModel(NumpyEvaluator):
     # ==================
     # |   Properties   |
     # ==================
+
     @property
-    def problem(self) -> dict:
-        """The problem definition as a legacy dictionary.
+    def constant_variables(self) -> Dict[int, Tuple[str, float]]:
+        """The constant variables and the values they take on.
 
         Returns:
-            dict: A dictionary representation of the optimization problem.
+            Dict[int, Tuple[str, float]]: A dict with constant variable indices
+                as keys and (name, value) tuples as values.
         """
-        return opt_problem_to_legacy(self._opt_problem)
+        return get_opt_problem_constant_vars(self._opt_problem)
+
+    @property
+    def nonconstant_variables(self) -> List[str]:
+        """The non-constant variables.
+
+        Returns:
+            List[str]: A list of the non-constant variables, in order.
+        """
+        return [
+            var
+            for var_idx, var in enumerate(self.inputs)
+            if var_idx not in self.constant_variables
+        ]
 
     @property
     def xlb(self) -> NDArray[np.float64]:
@@ -61,29 +126,6 @@ class SurrogateModel(NumpyEvaluator):
                 right corner of the bounding box.
         """
         return np.max(self.sites_input, axis=0)
-
-    @property
-    def constant_variables(self) -> Dict[int, Tuple[str, float]]:
-        """The constant variables and the values they take on.
-
-        Returns:
-            Dict[int, Tuple[str, float]]: A dict with constant variable indices
-                as keys and (name, value) tuples as values.
-        """
-        return get_constant_vars(self.problem)
-
-    @property
-    def nonconstant_variables(self) -> List[str]:
-        """The non-constant variables.
-
-        Returns:
-            List[str]: A list of the non-constant variables, in order.
-        """
-        return [
-            var
-            for var_idx, var in enumerate(self.inputs)
-            if var_idx not in self.constant_variables
-        ]
 
     @property
     def nind(self) -> int:
@@ -146,14 +188,14 @@ class SurrogateModel(NumpyEvaluator):
     # ==============
 
     def __init__(
-        self, 
-        sites: pd.DataFrame, 
+        self,
+        sites: pd.DataFrame,
         name: Optional[str] = None,
         comp_cost: float = 100,
         cache: str = None,
         cache_options: dict = None,
         logging: bool = False,
-        interface: EvaluatorInfo = None,        
+        interface: EvaluatorInfo = None,
         opt_problem: OptProblem = None,
         num_independent: int = None,
         num_dependent: int = None,
@@ -175,24 +217,23 @@ class SurrogateModel(NumpyEvaluator):
             opt_problem: OptProblem defining the optimization problem.
             num_independent: Number of independent variables.
             num_dependent: Number of dependent variables.
-            options : Pydantic model containing options for this surrogate model.
+            options: Pydantic model containing options for this surrogate model.
             **kwargs: Additional keyword arguments.
         """
-        # Initialize parent class with options
         super().__init__(
-            name=name, 
-            comp_cost=comp_cost, 
-            cache=cache, 
+            name=name,
+            comp_cost=comp_cost,
+            cache=cache,
             cache_options=cache_options,
-            logging=logging, 
-            interface=interface, 
-            opt_problem=opt_problem, 
-            num_independent=num_independent, 
-            num_dependent=num_dependent, 
+            logging=logging,
+            interface=interface,
+            opt_problem=opt_problem,
+            num_independent=num_independent,
+            num_dependent=num_dependent,
             options=options,
             **kwargs
         )
-   
+
         # ensure data is valid w.r.t. problem specification
         self.check_consistency_of_sites(sites)
 
@@ -267,7 +308,7 @@ class SurrogateModel(NumpyEvaluator):
             name_set = set(self.inputs + self.outputs)
             if not name_set.issubset(add_sites.columns):
                 raise ValueError(
-                    "Input DataFrame does not contain " + "all variables and responses!"
+                    "Input DataFrame does not contain all variables and responses!"
                 )
             # We use the passed in DataFrame
             add_sites_df = add_sites
@@ -278,8 +319,6 @@ class SurrogateModel(NumpyEvaluator):
         )
 
         # Combine the current model sites and the new model sites into a single DataFrame
-        # Note: pd.concat brings the two df together so that sites column order
-        #   goes first.
         all_sites = pd.concat([self.sites, add_sites_df])
         apply_types_from_evaluator_info(all_sites, self.interface)
 
@@ -336,8 +375,7 @@ class SurrogateModel(NumpyEvaluator):
 
         # add constants to dataframe
         constant_var_dict = self.constant_variables
-        for const_var_idx in constant_var_dict:
-            (constant_var, constant_value) = constant_var_dict[const_var_idx]
+        for const_var_idx, (constant_var, constant_value) in constant_var_dict.items():
             add_sites_df[constant_var] = constant_value
             columns.insert(const_var_idx, constant_var)
 
@@ -347,19 +385,16 @@ class SurrogateModel(NumpyEvaluator):
     def to_dict(self) -> dict:
         """Save all information necessary to rebuild the model into a dictionary.
 
-        Returns
-        -------
-        dict
-            The dictionary containing all the information needed to rebuild this
-            model.
+        Returns:
+            dict: The dictionary containing all the information needed to rebuild
+                this model.
         """
         return {
             "type": type(self).__name__,
             "info": self._def_to_dict(),
-            "problem": self.problem,
+            "opt_problem": self._opt_problem.model_dump(),
             "version": version("standard_evaluator"),
             "name": self.name,
-            "design explorer version": "Design Explorer 6",
         }
 
     @classmethod
@@ -378,11 +413,11 @@ class SurrogateModel(NumpyEvaluator):
                     'info': {
                         # Parameters needed to build model
                     },
-                    'problem': {
-                        # Dictionary defining variables and responses
+                    'opt_problem': {
+                        # OptProblem serialized via model_dump()
                     },
                     'name': 'name_of_model',
-                    'version': '6.0.0' # DE version associated with model info
+                    'version': '6.0.0'
                 }
 
         Returns
@@ -400,8 +435,7 @@ class SurrogateModel(NumpyEvaluator):
             model_info['type'] is not a valid model type.
         ValueError
             Trying to instantiate a model with information from a different
-            model. ie: Calling KrigingModel.from_dict with model information
-            that has type 'PolynomialModel'.
+            model.
         """
         # Make sure a dictionary was passed in
         if not isinstance(model_info, dict):
@@ -411,22 +445,26 @@ class SurrogateModel(NumpyEvaluator):
             )
 
         # Make sure it has the required keys
-        required_keys = {
-            "type",
-            "info",
-            "problem",
-            "name",
-            "version",
-            "design explorer version",
-        }
+        has_opt_problem = "opt_problem" in model_info
+        has_legacy_problem = "problem" in model_info
+
+        if has_opt_problem:
+            required_keys = {"type", "info", "opt_problem", "name", "version"}
+        elif has_legacy_problem:
+            required_keys = {
+                "type", "info", "problem", "name", "version",
+                "design explorer version",
+            }
+        else:
+            required_keys = {"type", "info", "opt_problem", "name", "version"}
+
         if not required_keys.issubset(model_info):
             raise KeyError(
                 "SurrogateModel: model_info is missing the following "
                 f'keys: {", ".join(required_keys.difference(model_info))}'
             )
 
-        # Function was called using the abstract class. ie
-        #   SurrogateModel.from_dict(...)
+        # Function was called using the abstract class
         if cls.__name__ == "SurrogateModel":
             # Get all available surrogate models
             children = cls.__subclasses__()
@@ -434,37 +472,28 @@ class SurrogateModel(NumpyEvaluator):
             # Check if type matches any of the model names
             for child in children:
                 if model_info["type"].lower() == child.__name__.lower():
-                    # If it does then build the model
                     instance = child._def_from_dict(model_info)
-
-                    # Break out of the loop so we don't hit the else clause
                     break
             else:
-                # Raise an error if none of the classes are the specified type
                 raise NameError(
                     f'SurrogateModel: {model_info["type"]} is not a '
                     "valid surrogate model! The valid models are:\n\n"
                     + "\n".join([child.__name__ for child in children])
                 )
 
-        # Function was called using a specific model. ie
-        #   KrigingModel.from_dict(...)
+        # Function was called using a specific model
         else:
-
-            # Check major version for backward compatibility
-            if model_info["design explorer version"] == "Design Explorer 6":
-                # Make sure the type matches the class name
-                if cls.__name__.lower() != model_info["type"].lower():
-                    raise ValueError(
-                        f"{cls.__name__}: Cannot instantiate a "
-                        f'{model_info["type"]} as a {cls.__name__}! Try using the '
-                        "SurrogateModel.from_dict method instead."
-                    )
+            # Make sure the type matches the class name
+            if cls.__name__.lower() != model_info["type"].lower():
+                raise ValueError(
+                    f"{cls.__name__}: Cannot instantiate a "
+                    f'{model_info["type"]} as a {cls.__name__}! Try using the '
+                    "SurrogateModel.from_dict method instead."
+                )
 
             # Instantiate the class with provided info
             instance = cls._def_from_dict(model_info)
 
-        # Return the newly created object
         return instance
 
     def check_consistency_of_sites(self, sites: pd.DataFrame):
@@ -478,7 +507,7 @@ class SurrogateModel(NumpyEvaluator):
             ValueError: If sites are missing input variables or fixed variable
                 values do not match their bounds.
         """
-        if not (sites, pd.DataFrame):
+        if not isinstance(sites, pd.DataFrame):
             raise TypeError(
                 "SurrogateModel: sites not given as DataFrame!"
                 f" Received a {type(sites).__name__} instead."
@@ -491,13 +520,12 @@ class SurrogateModel(NumpyEvaluator):
                     f" the input variable {var}."
                 )
 
-            [lb, ub] = self.problem["variables"][var]["bounds"]
-            if lb == ub:
-                # We have a fixed variable. Ensure the DF has the right value
-                if not all(sites[var] == lb):
-                    raise ValueError(
-                        f"SurrogateModel: site data for {var} not in the fixed value {lb}"
-                    )
+        # Check fixed variables using opt_problem bounds
+        for var_idx, (var_name, fixed_value) in self.constant_variables.items():
+            if var_name in sites and not all(sites[var_name] == fixed_value):
+                raise ValueError(
+                    f"SurrogateModel: site data for {var_name} not in the fixed value {fixed_value}"
+                )
 
     def remove_constants(self, sites: pd.DataFrame) -> NDArray[np.float64]:
         """Strip constant variables from sites and return as a float array.
@@ -510,7 +538,6 @@ class SurrogateModel(NumpyEvaluator):
         """
         self.check_consistency_of_sites(sites)
 
-        # possible responses are not in dataframe, also don't want extra
         cols = [
             var for var in self.nonconstant_variables + self.outputs if var in sites
         ]
@@ -526,10 +553,9 @@ class SurrogateModel(NumpyEvaluator):
         Raises:
             TypeError: If site_inputs is not an ndarray or has the wrong shape.
         """
-
         if not isinstance(site_inputs, np.ndarray):
             raise TypeError("SurrogateModel: Input is not an array as expected.")
-        elif np.shape(site_inputs)[1] != self.nind and len(np.shape(site_inputs)) == 2:
+        if np.shape(site_inputs)[1] != self.nind and len(np.shape(site_inputs)) == 2:
             raise TypeError(
                 f"SurrogateModel: Input array does not have the "
                 f"shape ( _," + str(self.nind) + ")."
@@ -545,11 +571,9 @@ class SurrogateModel(NumpyEvaluator):
         Returns:
             List[int]: List of indices for the requested responses.
         """
-        # If no names are defined we will return the indices of all responses
         if names is None:
             target_responses = self.outputs
         else:
-            # Use just the defined responses
             target_responses = names
 
         response_indices = [self.outputs.index(r) for r in target_responses]
@@ -589,24 +613,19 @@ class SurrogateModel(NumpyEvaluator):
     @abstractmethod
     def _def_to_dict(self) -> dict:
         """Define the information needed to rebuild the model.
-        
-        The dictionary that is returned will be assigned to the 'info' key of the model dictionary.
 
-        Returns
-        -------
-        dict
-            Dictionary containing the parameters, site data, etc. that that is
-            needed to rebuild the model.
+        The dictionary that is returned will be assigned to the 'info' key
+        of the model dictionary.
+
+        Returns:
+            dict: Dictionary containing the parameters, site data, etc.
+                needed to rebuild the model.
         """
 
     @classmethod
     @abstractmethod
-    def _def_from_dict(self, model_info: dict) -> "SurrogateModel":
+    def _def_from_dict(cls, model_info: dict) -> "SurrogateModel":
         """Define how the model gets rebuilt from the provided model information.
-
-        The ``info`` key contains parameters, site data, etc. needed to rebuild
-        the model. The ``version`` key specifies which Design Explorer version
-        generated the data, useful for backward compatibility.
 
         Args:
             model_info: Dictionary containing model information.
