@@ -269,7 +269,7 @@ def test_abstract():
 
     # Derived class is missing eval_np
     class DummyModel1(SurrogateModel):
-        def _def_update(self) -> None:
+        def _def_update(self, x, y, append) -> None:
             pass
 
         def _def_to_dict(self) -> dict:
