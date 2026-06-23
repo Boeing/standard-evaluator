@@ -269,7 +269,7 @@ def test_abstract():
 
     # Derived class is missing eval_np
     class DummyModel1(SurrogateModel):
-        def _def_update(self, x, y, append) -> None:
+        def _def_update(self, sites_input, append) -> None:
             pass
 
         def _def_to_dict(self) -> dict:
@@ -345,7 +345,7 @@ def test_abstract():
         def eval_np(self, *args, **kwargs) -> None:
             pass
 
-        def _def_update(self, x_train_np, y_train_np, is_initial) -> None:
+        def _def_update(self, x_train_np, y_train_np, is_initial, sites_input=None) -> None:
             pass
 
         def _def_to_dict(self) -> dict:
@@ -354,7 +354,7 @@ def test_abstract():
     # Check Python version
     if sys.version_info.minor < 12:
         expected_message = "Can't instantiate abstract class "
-        "DummyModel4 with abstract methods? _def_from_dict",
+        "DummyModel4 with abstract methods? _def_from_dict"
     else:
         expected_message = "Can't instantiate abstract class DummyModel4 without an implementation for abstract method '_def_from_dict'"
 
@@ -549,7 +549,7 @@ def test_to_from_dict(
         def eval_np(self, sites, names=None):
             pass
 
-        def _def_update(self, add_sites, names, outputs):
+        def _def_update(self, add_sites, names, outputs, sites_input=None):
             pass
 
         def _def_to_dict(self):

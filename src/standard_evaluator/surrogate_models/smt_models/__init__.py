@@ -31,6 +31,7 @@ try:
         InverseDistanceWeightingModelOptions,
     )
 except ModuleNotFoundError:
+    # Optional model module may be absent in partial/migrating installations.
     pass
 
 try:
@@ -39,6 +40,7 @@ try:
         LeastSquaresApproximationModelOptions,
     )
 except ModuleNotFoundError:
+    # Optional model module may be absent in partial/migrating installations.
     pass
 
 try:
@@ -47,6 +49,7 @@ try:
         RadialBasisFunctionModelOptions,
     )
 except ModuleNotFoundError:
+    # Optional model module may be absent in partial/migrating installations.
     pass
 
 try:
@@ -55,6 +58,7 @@ try:
         RegularizedMinimalEnergyTensorProductBSplinesOptions,
     )
 except ModuleNotFoundError:
+    # Optional model module may be absent in partial/migrating installations.
     pass
 
 try:
@@ -63,6 +67,7 @@ try:
         SecondOrderPolynomialApproximationModelOptions,
     )
 except ModuleNotFoundError:
+    # Optional model module may be absent in partial/migrating installations.
     pass
 
 __all__ = [
