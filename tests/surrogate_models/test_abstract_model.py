@@ -345,7 +345,7 @@ def test_abstract():
         def eval_np(self, *args, **kwargs) -> None:
             pass
 
-        def _def_update(self) -> None:
+        def _def_update(self, x_train_np, y_train_np, is_initial) -> None:
             pass
 
         def _def_to_dict(self) -> dict:
