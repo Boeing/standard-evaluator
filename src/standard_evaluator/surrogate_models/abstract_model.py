@@ -5,7 +5,7 @@ Created Aug. 31, 2022
 """
 
 from abc import abstractmethod
-from typing import List, Union, Dict, Tuple, Optional, Type
+from typing import List, Union, Dict, Tuple, Optional
 
 import numpy as np
 import pandas as pd
