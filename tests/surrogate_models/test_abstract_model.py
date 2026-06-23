@@ -549,7 +549,7 @@ def test_to_from_dict(
         def eval_np(self, sites, names=None):
             pass
 
-        def _def_update(self, add_sites):
+        def _def_update(self, add_sites, names, outputs):
             pass
 
         def _def_to_dict(self):
