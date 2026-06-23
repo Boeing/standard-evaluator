@@ -268,7 +268,7 @@ def test_abstract():
 
     # Derived class is missing eval_np
     class DummyModel1(SurrogateModel):
-        def _def_update(self, sites_input, append, iter_max) -> None:
+        def _def_update(self, sites_input, sites_output, append, iter_max) -> None:
             pass
 
         def _def_to_dict(self) -> dict:
@@ -344,7 +344,15 @@ def test_abstract():
         def eval_np(self, *args, **kwargs) -> None:
             pass
 
-        def _def_update(self, x_train_np, y_train_np, is_initial, sites_input=None, sites_output=None) -> None:
+        def _def_update(
+            self,
+            x_train_np,
+            y_train_np,
+            is_initial,
+            sites_input=None,
+            sites_output=None,
+            new_sites_number=None,
+        ) -> None:
             pass
 
         def _def_to_dict(self) -> dict:
@@ -548,7 +556,7 @@ def test_to_from_dict(
         def eval_np(self, sites, names=None):
             pass
 
-        def _def_update(self, add_sites, names, outputs, sites_input=None, sites_output=None):
+        def _def_update(self, add_sites, names, outputs, sites_input=None, sites_output=None, new_sites_number=None):
             pass
 
         def _def_to_dict(self):

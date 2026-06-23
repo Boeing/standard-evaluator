@@ -1,5 +1,3 @@
-import numpy as np
-import scipy as sp
 import pandas as pd
 import numdifftools as nd
 import pytest
