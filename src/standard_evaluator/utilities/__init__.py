@@ -70,6 +70,10 @@ from standard_evaluator.utilities.mapping import (
     res_element_to_string,
 )
 
+from standard_evaluator.utilities.opt_problem_utility import (
+    get_opt_problem_constant_vars,
+)
+
 
 __all__ = [
     "unique_names",
@@ -109,4 +113,5 @@ __all__ = [
     "flatten_items_to_arrays",
     "compress_whitespace",
     "res_element_to_string",
+    "get_opt_problem_constant_vars",
 ]

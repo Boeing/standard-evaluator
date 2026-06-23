@@ -5,6 +5,7 @@ Defines behavior common to all evaluators and what behaviors should be
 defined by the evaluators themselves.
 """
 
+import warnings
 from abc import ABC, abstractmethod
 from typing import Any, Dict, List, Type, Union, Optional, Tuple
 
@@ -100,6 +101,32 @@ class Evaluator(ABC):
 
         :type: list[str]
         """
+        return self._outputs
+
+    @property
+    def variables(self) -> List[str]:
+        """**(readonly)** The variables of the problem. Deprecated alias for inputs.
+
+        :type: list[str]
+        """
+        warnings.warn(
+            "variables is deprecated and will be removed in a future version. Use the inputs property instead.",
+            FutureWarning,
+            stacklevel=2,
+        )
+        return self._inputs
+
+    @property
+    def responses(self) -> List[str]:
+        """**(readonly)** The responses of the problem. Deprecated alias for outputs.
+
+        :type: list[str]
+        """
+        warnings.warn(
+            "responses is deprecated and will be removed in a future version. Use the outputs property instead.",
+            FutureWarning,
+            stacklevel=2,
+        )
         return self._outputs
 
     @property

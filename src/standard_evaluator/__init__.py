@@ -25,6 +25,7 @@ from .om_converter import (
 )
 from .om_converter import set_opt_problem, get_opt_problem
 from . import evaluators
+from . import surrogate_models
 
 __all__ = [
     "__version__",
@@ -67,4 +68,5 @@ __all__ = [
     "get_opt_problem",
     "set_opt_problem",
     "evaluators",
+    "surrogate_models",
 ]
