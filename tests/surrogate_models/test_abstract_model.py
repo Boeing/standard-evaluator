@@ -320,7 +320,7 @@ def test_abstract():
         def eval_np(self, *args, **kwargs) -> None:
             pass
 
-        def _def_update(self) -> None:
+        def _def_update(self, x, y, is_trained) -> None:
             pass
 
         @classmethod
