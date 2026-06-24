@@ -8,8 +8,7 @@ Property 6: SMT model serialization round-trip
 
 import numpy as np
 import pandas as pd
-import pytest
-from hypothesis import given, settings, assume
+from hypothesis import given, settings
 from hypothesis import strategies as st
 
 from standard_evaluator.problem import OptProblem, FloatVariable

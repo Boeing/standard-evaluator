@@ -11,7 +11,6 @@ original and whose eval_np output is numerically identical.
 
 import numpy as np
 import pandas as pd
-import pytest
 
 from hypothesis import given, settings, strategies as st
 from hypothesis.strategies import composite

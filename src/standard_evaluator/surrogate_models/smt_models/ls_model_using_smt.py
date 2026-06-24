@@ -1,11 +1,6 @@
 import pandas as pd
-import numdifftools as nd
-import pytest
-import os
-import dask
 
-from typing import List, Optional, Type
-from functools import partial
+from typing import Optional, Type
 
 from pydantic import BaseModel
 
@@ -16,7 +11,6 @@ from standard_evaluator.surrogate_models.smt_models.abstract_smt_model import (
 from standard_evaluator.problem import OptProblem
 from standard_evaluator.evaluator import EvaluatorInfo
 
-# from smt.surrogate_models.surrogate_model import SurrogateModel  # Note that smt also defines a SurrogateModel class that we do not want to import since it then overwrites the DE class
 from smt.surrogate_models import LS
 
 

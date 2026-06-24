@@ -1,7 +1,6 @@
 """Defining the OpenMDAO Evaluator"""
 
 import copy
-from typing import Tuple
 
 import numpy as np
 import pandas as pd

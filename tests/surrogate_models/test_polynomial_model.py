@@ -12,10 +12,6 @@ from standard_evaluator.evaluators.test.cantilevered_beam_with_fixed_variables i
     CantileveredBeamFixedVariable,
 )
 from standard_evaluator.evaluators.test.cantilevered_beam import CantileveredBeam
-from standard_evaluator import (
-    OptProblem,
-    FloatVariable,
-)
 from standard_evaluator.utilities.problem_dict_utility import (
     create_opt_problem,
 )

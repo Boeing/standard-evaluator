@@ -8,7 +8,7 @@ Property 4: PolynomialModel serialization round-trip
 
 import numpy as np
 import pandas as pd
-from hypothesis import given, settings, assume
+from hypothesis import given, settings
 from hypothesis import strategies as st
 
 from standard_evaluator.problem import OptProblem, FloatVariable

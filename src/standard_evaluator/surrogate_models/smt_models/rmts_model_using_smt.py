@@ -1,13 +1,6 @@
-import numpy as np
-import scipy as sp
 import pandas as pd
-import numdifftools as nd
-import pytest
-import os
-import dask
 
-from typing import List, Optional, Type
-from functools import partial
+from typing import Optional, Type
 
 from pydantic import BaseModel, Field
 
@@ -18,12 +11,7 @@ from standard_evaluator.surrogate_models.smt_models.abstract_smt_model import (
 from standard_evaluator.problem import OptProblem
 from standard_evaluator.evaluator import EvaluatorInfo
 
-# from smt.surrogate_models.surrogate_model import SurrogateModel  # Note that smt also defines a SurrogateModel class that we do not want to import since it then overwrites the DE class
-from smt.surrogate_models.rmts import RMTS
 from smt.surrogate_models import RMTB
-from numbers import Integral
-from smt.utils.line_search import VALID_LINE_SEARCHES
-from smt.utils.linear_solvers import VALID_SOLVERS
 
 
 class RegularizedMinimalEnergyTensorProductBSplinesOptions(AbstractSmtModelOptions):

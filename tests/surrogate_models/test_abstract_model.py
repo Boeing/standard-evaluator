@@ -11,9 +11,7 @@ from pydantic import BaseModel
 from standard_evaluator.surrogate_models import SurrogateModel
 from standard_evaluator import (
     OptProblem,
-    IntVariable,
     FloatVariable,
-    CategoricalVariable,
 )
 from standard_evaluator.utilities import create_opt_problem
 
