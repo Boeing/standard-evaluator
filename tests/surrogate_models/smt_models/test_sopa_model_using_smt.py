@@ -334,7 +334,7 @@ class TestQPModelPy:
         my_options = SecondOrderPolynomialApproximationModel.required_options()
 
         with pytest.raises(Exception) as excp:
-            smt_model = SecondOrderPolynomialApproximationModel(
+            SecondOrderPolynomialApproximationModel(
                 sites=multiresp_sites_old, options=my_options, opt_problem=multiresp_opt_prob
             )
         assert excp.type == Exception
