@@ -1,14 +1,14 @@
 """Defining the OpenMDAO Evaluator"""
 
 import copy
-from typing import Tuple
+
 import numpy as np
 import pandas as pd
 import openmdao.api as om
 import openmdao.utils.general_utils as om_utils
 import openmdao.core as om_core
 
-from standard_evaluator.utilities import problem_calculate_fields, legacy_to_opt_problem
+from standard_evaluator.problem import OptProblem, FloatVariable
 from standard_evaluator.evaluators.abstract_evaluator import Evaluator
 
 
@@ -50,15 +50,16 @@ class OpenMDAOEvaluator(Evaluator):
             )
 
         if scan_model:
-            # Capture all variables and responses that are defined in the model if we scan the model
+            # Capture all variables and responses that are defined in the model
             self._scan_model()
         else:
-            self._main_problem = None
+            self._scanned_problem = None
+
         if use_defined_problem:
-            problem = self.get_om_opt_problem()
+            opt_problem = self._get_om_opt_problem()
         else:
-            problem = copy.deepcopy(self._main_problem)
-        opt_problem = legacy_to_opt_problem(problem)
+            opt_problem = copy.deepcopy(self._scanned_problem)
+
         super().__init__(name=name, comp_cost=comp_cost, opt_problem=opt_problem)
 
     def _evaluate(self, sites: pd.DataFrame):
@@ -78,43 +79,49 @@ class OpenMDAOEvaluator(Evaluator):
             for ele in self.outputs:
                 sites.at[ind, ele] = self.om_problem.get_val(ele)
 
-    def get_om_opt_problem(self) -> dict:
-        """Convert an OpenMDAO model into a DE optimization problem
+    def _get_om_opt_problem(self) -> OptProblem:
+        """Convert an OpenMDAO model into an OptProblem.
 
         Returns:
-            dict: Return the OpenMDAO model as a De optimization dictionary.
+            OptProblem: The optimization problem derived from the OpenMDAO model.
         """
-        problem = {}
-        # Create the variable information
-        problem["variables"] = self._map_elements(
+        # Gather design variables
+        design_vars = self._map_elements(
             self.om_problem.model.get_design_vars()
         )
-        # Create the response information, which includes constraints
-        problem["responses"] = self._map_elements(self.om_problem.model.get_responses())
-        problem["objectives"] = list(self.om_problem.model.get_objectives().keys())
+        # Gather responses (includes constraints)
+        responses = self._map_elements(self.om_problem.model.get_responses())
+        objectives = list(self.om_problem.model.get_objectives().keys())
+
         # If the model has been scanned we fix any variables that have not been
         # defined, and expose all responses
-        if self.scan_model:
-            for my_type in ["variables", "responses"]:
-                for variable in self._main_problem[my_type]:
-                    if variable in problem[my_type]:
-                        continue
+        if self.scan_model and self._scanned_problem is not None:
+            scanned_vars = {v.name: v for v in self._scanned_problem.variables}
+            scanned_resps = {r.name: r for r in self._scanned_problem.responses}
+            existing_var_names = {v.name for v in design_vars}
+            existing_resp_names = {r.name for r in responses}
 
-                    problem[my_type][variable] = copy.deepcopy(
-                        self._main_problem[my_type][variable]
-                    )
-                    if my_type == "variables":
-                        problem[my_type][variable]["active"] = False
-                        problem[my_type][variable]["bounds"] = [
-                            problem[my_type][variable]["default"],
-                            problem[my_type][variable]["default"],
-                        ]
+            for var_name, var_obj in scanned_vars.items():
+                if var_name not in existing_var_names:
+                    # Fixed variable: bounds set to [default, default]
+                    fixed_var = copy.deepcopy(var_obj)
+                    fixed_var.bounds = [fixed_var.default, fixed_var.default]
+                    design_vars.append(fixed_var)
 
-        return problem_calculate_fields(problem)
+            for resp_name, resp_obj in scanned_resps.items():
+                if resp_name not in existing_resp_names:
+                    responses.append(copy.deepcopy(resp_obj))
+
+        return OptProblem(
+            name="openmdao_problem",
+            variables=design_vars,
+            responses=responses,
+            objectives=objectives,
+        )
 
     def _scan_model(self):
-        """Collect all valid variables and responses in the OpenMDAO model, and
-        save them in the internal variable _main_problem
+        """Collect all valid variables and responses in the OpenMDAO model,
+        and save them as an OptProblem in self._scanned_problem.
         """
         # Get all the inputs for all components in the model
         variables = self.om_problem.model.list_inputs(
@@ -123,11 +130,11 @@ class OpenMDAOEvaluator(Evaluator):
         outer_dict = self.om_problem.model.get_io_metadata(
             iotypes="input", metadata_keys=["tags"], return_rel_names=False
         )
-        # Check whether the model is a group. If we have a group we can use the _auto_ivc
-        # automated component to get the overall inputs.
+        # Check whether the model is a group
         is_group = isinstance(self.om_problem.model, om_core.group.Group)
-        # Store all of the variables (promoted or local only)
-        variable_dict = {}
+
+        # Store all of the variables
+        variable_dict = {}  # Use dict to deduplicate by name
         for values in variables:
             if values[0] in outer_dict:
                 if "tags" in outer_dict[values[0]]:
@@ -136,15 +143,13 @@ class OpenMDAOEvaluator(Evaluator):
             if self._check_internal(values[1]):
                 print(f"Internal variable {values[0]}")
                 continue
-            name, local_dict = self._expand_info(values[1])
+            var_obj = self._expand_info_to_variable(values[1])
             if is_group:
-                if "_auto_ivc" in self.om_problem.model.get_source(name):
-                    # We want to make sure we are only using variables that are input to the
-                    # overall model, not local variables that are linked to responses from
-                    # another component.
-                    variable_dict[name] = local_dict
+                if "_auto_ivc" in self.om_problem.model.get_source(var_obj.name):
+                    variable_dict[var_obj.name] = var_obj
             else:
-                variable_dict[name] = local_dict
+                variable_dict[var_obj.name] = var_obj
+
         # Get all outputs / responses
         res = self.om_problem.model.list_outputs(
             out_stream=None,
@@ -157,7 +162,7 @@ class OpenMDAOEvaluator(Evaluator):
         outer_dict = self.om_problem.model.get_io_metadata(
             iotypes="output", metadata_keys=["tags"], return_rel_names=False
         )
-        response_dict = {}
+        response_dict = {}  # Use dict to deduplicate by name
         for values in res:
             if values[0] in outer_dict:
                 if "tags" in outer_dict[values[0]]:
@@ -166,21 +171,25 @@ class OpenMDAOEvaluator(Evaluator):
             if self._check_internal(values[1]):
                 print(f"Internal response {values[0]}")
                 continue
-            name, local_dict = self._expand_info(values[1])
-            response_dict[name] = local_dict
-        self._main_problem = problem_calculate_fields(
-            {"variables": variable_dict, "responses": response_dict}
+            resp_obj = self._expand_info_to_variable(values[1])
+            response_dict[resp_obj.name] = resp_obj
+
+        self._scanned_problem = OptProblem(
+            name="scanned_problem",
+            variables=list(variable_dict.values()),
+            responses=list(response_dict.values()),
+            objectives=[],
         )
 
     def _check_internal(self, info: dict) -> bool:
-        """Check if this is a variable or response that is marked as internal
+        """Check if this is a variable or response that is marked as internal.
 
-        Arguments:
-            info {dict} -- The dictionary from OpenMDAO containing information
-                    about a variable or response
+        Args:
+            info: The dictionary from OpenMDAO containing information
+                about a variable or response.
 
         Returns:
-            bool -- True if this is an internal variable or response, False else
+            True if this is an internal variable or response.
         """
         internal_ele = False
         if "tags" in info:
@@ -188,21 +197,19 @@ class OpenMDAOEvaluator(Evaluator):
                 internal_ele = True
         return internal_ele
 
-    def _expand_info(self, info: dict) -> Tuple[str, dict]:
-        """Expand the information for a variable or response to save in a DE
-        problem dictionary
+    def _expand_info_to_variable(self, info: dict) -> FloatVariable:
+        """Expand the information for a variable or response to a FloatVariable.
 
         Args:
-            info (dict): The dictionary from OpenMDAO containing information
-                about a variable or response
+            info: The dictionary from OpenMDAO containing information
+                about a variable or response.
 
         Raises:
             TypeError: Currently we can only use variables or responses that
                 are not arrays.
 
         Returns:
-            dict: The DE style dictionary containing all information about the
-                variable or response.
+            A FloatVariable with the extracted information.
         """
 
         def helper(name: str) -> float:
@@ -221,44 +228,46 @@ class OpenMDAOEvaluator(Evaluator):
             return_value = None
             if name in info:
                 return_value = info[name]
-
             return return_value
 
-        local_dict = {}
-        name = info["prom_name"]
+        var_name = info["prom_name"]
         shape = info["shape"]
         if shape != (1,):
-            raise TypeError(f"Element {name} is of shape {shape}, must be (1, )")
+            raise TypeError(f"Element {var_name} is of shape {shape}, must be (1, )")
+
         ref = helper("ref")
         ref0 = helper("ref0")
         adder = helper("adder")
         scaler = helper("scaler")
         adder, scaler = om_utils.determine_adder_scaler(ref0, ref, adder, scaler)
-        local_dict["shift"] = adder
-        local_dict["scale"] = scaler
-        if "val" in info:
-            local_dict["default"] = info["val"][0]
-        local_dict["bounds"] = [-np.inf, np.inf]
-        return name, local_dict
 
-    def _map_elements(self, info: dict) -> dict:
-        """Convert information for variables and responses
-        This method converts a dictionary from OpenMDAO to a DE dictionary
+        default = info["val"][0] if "val" in info else 0.0
+
+        return FloatVariable(
+            name=var_name,
+            bounds=[-np.inf, np.inf],
+            shift=adder if adder is not None else 0.0,
+            scale=scaler if scaler is not None else 1.0,
+            default=default,
+        )
+
+    def _map_elements(self, info: dict) -> list:
+        """Convert information for variables and responses from OpenMDAO format.
 
         Args:
-            info (dict): The dictionary from OpenMDAO containing information
-                about a variable or response
+            info: The dictionary from OpenMDAO containing information
+                about variables or responses.
 
         Returns:
-            dict: The DE style dictionary containing all information about the
-                variable or response.
+            A list of FloatVariable objects.
         """
-        full_dict = {}
+        result = []
         for ele in info:
-            ele_dict = {}
+            bounds = [-np.inf, np.inf]
+            scale = 1.0
             if "lower" in info[ele]:
-                ele_dict["bounds"] = [info[ele]["lower"], info[ele]["upper"]]
+                bounds = [info[ele]["lower"], info[ele]["upper"]]
             if "scaler" in info[ele] and info[ele]["scaler"] is not None:
-                ele_dict["scale"] = info[ele]["scaler"]
-            full_dict[ele] = ele_dict
-        return full_dict
+                scale = info[ele]["scaler"]
+            result.append(FloatVariable(name=ele, bounds=bounds, scale=scale))
+        return result

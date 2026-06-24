@@ -5,7 +5,8 @@ from typing import Callable
 
 from standard_evaluator import EvaluatorInfo, ArrayVariable, FloatVariable
 from standard_evaluator.evaluators import PyEvaluator
-from standard_evaluator.utilities import create_df_from_evaluator_info, unroll_data_frame_using_variables, unroll_names_using_variables, roll_data_frame_using_variables, legacy_to_opt_problem
+from standard_evaluator.utilities import create_df_from_evaluator_info, unroll_data_frame_using_variables, unroll_names_using_variables, roll_data_frame_using_variables
+from standard_evaluator.problem import OptProblem
 
 
 class ClassEvaluator:
@@ -39,18 +40,18 @@ def evaluate(sites):
 
 
 @pytest.fixture
-def problem():
-    return {
-        "variables": {
-            f"x{i}": {"type": "float", "bounds": [-np.inf, np.inf]} for i in range(5)
-        },
-        "responses": {f"f{i}": {"type": "float"} for i in range(2)},
-    }
-
-
-@pytest.fixture
-def opt_problem(problem):
-    return legacy_to_opt_problem(problem)
+def opt_problem():
+    return OptProblem(
+        name="test_problem",
+        variables=[
+            FloatVariable(name=f"x{i}", bounds=[-float("inf"), float("inf")])
+            for i in range(5)
+        ],
+        responses=[
+            FloatVariable(name=f"f{i}") for i in range(2)
+        ],
+        objectives=[],
+    )
 
 
 
@@ -144,7 +145,7 @@ def test_init(opt_problem):
 
 # Evaluation function is a normal python function
 def test_evaluate_function(
-    problem: dict, opt_problem, sites: pd.DataFrame, expected_sum: pd.DataFrame
+    opt_problem, sites: pd.DataFrame, expected_sum: pd.DataFrame
 ):
     eval = PyEvaluator(evaluate, opt_problem=opt_problem)
 
@@ -156,14 +157,14 @@ def test_evaluate_function(
 
 # Evaluation function is a class method
 def test_evaluate_method(
-    problem: dict,
     opt_problem,
     sites: pd.DataFrame,
     expected_sum: pd.DataFrame,
     expected_combo: pd.DataFrame,
 ):
     # Create tester class that only adds
-    tester = ClassEvaluator(["+"], list(problem["variables"]))
+    variables = [f"x{i}" for i in range(5)]
+    tester = ClassEvaluator(["+"], variables)
     eval = PyEvaluator(tester.eval, opt_problem=opt_problem)
 
     # Evaluate and check sum
@@ -180,14 +181,14 @@ def test_evaluate_method(
 
 # Evaluation function is a class with a __call__ method
 def test_evaluate_class(
-    problem: dict,
     opt_problem,
     sites: pd.DataFrame,
     expected_sum: pd.DataFrame,
     expected_combo: pd.DataFrame,
 ):
     # Create tester class that only adds
-    tester = ClassEvaluator(["+"], list(problem["variables"]))
+    variables = [f"x{i}" for i in range(5)]
+    tester = ClassEvaluator(["+"], variables)
     eval = PyEvaluator(tester, opt_problem=opt_problem)
 
     # Evaluate and check sum

@@ -1,3 +1,7 @@
+---
+inclusion: auto
+---
+
 # Python Environment
 
 ## Virtual Environment

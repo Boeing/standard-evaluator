@@ -49,6 +49,9 @@ dynamic = ["version", "scripts"]
 version_scheme = "post-release"
 
 [project.optional-dependencies]
+smt = [
+    "smt>=2.10.1",
+]
 aviary = [
     "aviary",
     "dymos",

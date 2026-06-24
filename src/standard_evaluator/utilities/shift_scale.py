@@ -2,14 +2,11 @@
 
 from typing import Tuple, List
 from copy import deepcopy
-import numpy as np, warnings
+
+import numpy as np
 import pandas as pd
 
-from numbers import Number
 from standard_evaluator.problem import OptProblem, Variable
-from standard_evaluator.evaluator import EvaluatorInfo
-from standard_evaluator.converters import evaluator_info_to_opt_problem
-from standard_evaluator.utilities.problem_dict_utility import legacy_to_opt_problem
 from standard_evaluator.utilities.utility import (
     get_shift_scale_value,
     update_bounds_to_optimizer_space,
@@ -23,32 +20,17 @@ class ShiftAndScale:
     Used to get variable and response values into the same order of
     magnitude to yield better optimization results.
     """
-    def __init__(self, opt_problem: OptProblem=None, bound_prob: dict=None) -> None:
+
+    def __init__(self, opt_problem: OptProblem) -> None:
         """Initializes shift and scale values from the given optimization problem.
 
         Args:
             opt_problem: The optimization problem containing variable and response
                 definitions with shift and scale information.
-            bound_prob: Deprecated. Problem definition as a dictionary.
 
         Raises:
-            ValueError: If no variables are defined in the problem or if neither
-                opt_problem nor bound_prob is provided.
+            ValueError: If no variables are defined in the problem.
         """
-
-        if opt_problem is None:
-            if bound_prob is None:
-                raise ValueError("ShiftAndScale requires either an OptProblem or a problem dictionary (bound_prob).")
-            else:
-                warnings.warn(
-                    "The 'bound_prob' parameter is deprecated and will be removed in a future release. "
-                    "Please use 'opt_problem' instead.",
-                    FutureWarning,
-                )
-                # Convert bound_prob dict to OptProblem
-                opt_problem = legacy_to_opt_problem(bound_prob)
-
-
         # Get shift and scale values for variables and responses
         var_shift, var_scale = self._vars_to_series(opt_problem.variables)
         res_shift, res_scale = self._vars_to_series(opt_problem.responses)
@@ -85,7 +67,6 @@ class ShiftAndScale:
         if suffix:
             ret.columns += suffix
 
-        # Return result
         return ret
 
     def optimizer_to_design_space(
@@ -107,9 +88,7 @@ class ShiftAndScale:
         ret /= self.scale.loc[self.scale.index.isin(cols)]
         ret -= self.shift.loc[self.shift.index.isin(cols)]
 
-        # Return result
         return ret
-    
 
     def to_optimizer_problem(self, opt_problem: OptProblem) -> OptProblem:
         """Returns a transformed optimization problem in optimizer space.
@@ -133,7 +112,7 @@ class ShiftAndScale:
             shift_val, scale_val = get_shift_scale_value(resp)
             update_bounds_to_optimizer_space(resp, shift_val, scale_val)
 
-        return optimizer_problem    
+        return optimizer_problem
 
     def to_design_space_problem(self, opt_problem: OptProblem) -> OptProblem:
         """Returns the problem transformed back to design space.
@@ -158,8 +137,7 @@ class ShiftAndScale:
             scale_val = self.scale[resp.name]
             update_bounds_to_design_space(resp, shift_val, scale_val)
 
-        return design_space_problem    
- 
+        return design_space_problem
 
     @staticmethod
     def _vars_to_series(var_list: List[Variable]) -> Tuple[pd.Series, pd.Series]:
