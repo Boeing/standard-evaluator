@@ -726,18 +726,18 @@ class TestPolynomialModel:
 
         # check for TypeError when non-dictionary object is used with method
         with pytest.raises(TypeError):
-            poly_model_wrong_type = PolynomialModel.from_dict(3)
+            PolynomialModel.from_dict(3)
 
         # check for key error when required keys are not in model_dict
         with pytest.raises(KeyError):
-            poly_model_wrong_key = PolynomialModel.from_dict(
+            PolynomialModel.from_dict(
                 {"dummy_key": "dummy_value"}
             )
 
         # check for key error when required keys are not in model_dict['info']
         model_dict["info"] = {"dummy_key": "dummy_value"}
         with pytest.raises(KeyError):
-            poly_model_wrong_nested_key = PolynomialModel.from_dict(model_dict)
+            PolynomialModel.from_dict(model_dict)
 
     def test_fixed_variables_and_integers(
         self, cantilever_beam_model, cantilever_beam_fixed_variables_model

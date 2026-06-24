@@ -11,7 +11,6 @@ from pydantic import BaseModel
 from standard_evaluator.surrogate_models import SurrogateModel
 from standard_evaluator import (
     OptProblem,
-    FloatVariable,
 )
 from standard_evaluator.utilities import create_opt_problem
 
@@ -266,7 +265,7 @@ def test_abstract():
 
     # Derived class is missing eval_np
     class DummyModel1(SurrogateModel):
-        def _def_update(self, sites_input, sites_output, append, iter_max) -> None:
+        def _def_update(self, sites_input, sites_output, append) -> None:
             pass
 
         def _def_to_dict(self) -> dict:

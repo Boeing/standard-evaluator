@@ -15,9 +15,6 @@ import pandas as pd
 import pytest
 
 import standard_evaluator as se
-from standard_evaluator.surrogate_models.smt_models.abstract_smt_model import (
-    AbstractSmtModelOptions,
-)
 from standard_evaluator.surrogate_models.smt_models.rbf_model_using_smt import (
     RadialBasisFunctionModel,
     RadialBasisFunctionModelOptions,

@@ -8,7 +8,6 @@ from pathlib import Path
 from unittest.mock import MagicMock
 
 import numpy as np
-import pytest
 
 from standard_evaluator.surrogate_models.smt_models.abstract_smt_model import (
     AbstractSmtModelOptions,
@@ -183,7 +182,7 @@ class TestOptionsToSmtDict:
 
 # --- Property-Based Tests ---
 
-from hypothesis import given, strategies as st, settings, assume
+from hypothesis import given, strategies as st, settings
 from hypothesis.strategies import composite
 
 
