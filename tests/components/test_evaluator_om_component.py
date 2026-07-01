@@ -295,3 +295,109 @@ class TestEvaluatorExceptionPropagation:
         outputs = {"f": np.array([0.0])}
         with pytest.raises(RuntimeError, match="Intentional failure"):
             comp.compute(inputs, outputs)
+
+
+# ---------------------------------------------------------------------------
+# Requirement 7.2, 7.4 — Backward compatibility for scalar-only OptProblems
+# ---------------------------------------------------------------------------
+
+
+class TestScalarOnlyComponentBackwardCompatibility:
+    """Verify scalar-only OptProblems register identical inputs/outputs.
+
+    Requirements: 7.2, 7.4
+    """
+
+    def test_scalar_inputs_registered_correctly(self):
+        """Scalar-only OptProblem registers inputs with correct val and no shape argument."""
+        evaluator = _make_simple_evaluator()
+        prob = om.Problem()
+        prob.model.add_subsystem(
+            "comp", EvaluatorOpenMdaoComponent(evaluator), promotes=["*"]
+        )
+        prob.setup()
+
+        # Check that inputs are registered as scalars
+        comp = prob.model.comp
+        # OpenMDAO stores input metadata; check the defaults
+        x1_meta = comp.get_io_metadata(iotypes="input", metadata_keys=["val", "shape"])
+        input_meta = {
+            meta["prom_name"]: meta
+            for _, meta in x1_meta.items()
+        }
+        assert "x1" in input_meta
+        assert "x2" in input_meta
+        # Scalar inputs should have shape (1,)
+        assert input_meta["x1"]["shape"] == (1,)
+        assert input_meta["x2"]["shape"] == (1,)
+        # Check default values
+        np.testing.assert_allclose(input_meta["x1"]["val"], [1.0])
+        np.testing.assert_allclose(input_meta["x2"]["val"], [2.0])
+
+    def test_scalar_outputs_registered_correctly(self):
+        """Scalar-only OptProblem registers outputs with correct bounds and scaling."""
+        evaluator = _make_simple_evaluator()
+        prob = om.Problem()
+        prob.model.add_subsystem(
+            "comp", EvaluatorOpenMdaoComponent(evaluator), promotes=["*"]
+        )
+        prob.setup()
+
+        comp = prob.model.comp
+        output_meta = {
+            meta["prom_name"]: meta
+            for _, meta in comp.get_io_metadata(
+                iotypes="output", metadata_keys=["val", "shape"]
+            ).items()
+        }
+        assert "f" in output_meta
+        # Scalar output should have shape (1,)
+        assert output_meta["f"]["shape"] == (1,)
+
+    def test_scalar_compute_produces_correct_output(self):
+        """Scalar-only component compute produces identical results."""
+        evaluator = _make_simple_evaluator()
+        prob = om.Problem()
+        prob.model.add_subsystem(
+            "comp", EvaluatorOpenMdaoComponent(evaluator), promotes=["*"]
+        )
+        prob.setup()
+        prob.set_val("x1", 3.0)
+        prob.set_val("x2", 4.0)
+        prob.run_model()
+
+        # f = x1 + x2 = 7.0
+        np.testing.assert_allclose(prob.get_val("f"), 7.0)
+
+    def test_no_new_mandatory_constructor_params(self):
+        """EvaluatorOpenMdaoComponent still works with just the evaluator argument.
+
+        Requirements: 7.4
+        """
+        evaluator = _make_simple_evaluator()
+        # This should work with just the single positional argument
+        comp = EvaluatorOpenMdaoComponent(evaluator)
+        assert comp is not None
+        assert comp.eval is not None
+
+    def test_scalar_only_with_hs100_evaluator(self):
+        """Full scalar-only backward compat using HS100 (a real evaluator with scaling)."""
+        evaluator = HS100()
+        prob = om.Problem()
+        prob.model.add_subsystem(
+            "comp", EvaluatorOpenMdaoComponent(evaluator), promotes=["*"]
+        )
+        prob.setup()
+
+        # Set initial guess
+        prob.set_val("x1", 1.0)
+        prob.set_val("x2", 2.0)
+        prob.set_val("x3", 0.0)
+        prob.set_val("x4", 4.0)
+        prob.set_val("x5", 0.0)
+        prob.set_val("x6", 1.0)
+        prob.set_val("x7", 1.0)
+        prob.run_model()
+
+        # HS100 known value at initial guess: f(1,2,0,4,0,1,1) = 714
+        np.testing.assert_allclose(prob.get_val("f"), 714.0, rtol=1e-10)

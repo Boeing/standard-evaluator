@@ -8,7 +8,7 @@ import openmdao.api as om
 import openmdao.utils.general_utils as om_utils
 import openmdao.core as om_core
 
-from standard_evaluator.problem import OptProblem, FloatVariable
+from standard_evaluator.problem import OptProblem, FloatVariable, ArrayVariable
 from standard_evaluator.evaluators.abstract_evaluator import Evaluator
 
 
@@ -68,16 +68,31 @@ class OpenMDAOEvaluator(Evaluator):
         Args:
             sites (pd.DataFrame): Sites to be evaluated. Will be updated in this method.
         """
+        # Build lookup dicts for variable and response types
+        var_lookup = {v.name: v for v in self.opt_problem.variables}
+        resp_lookup = {r.name: r for r in self.opt_problem.responses}
+
         # Iterate over all sites in the data frame
         for ind in range(len(sites)):
             # Set the values of all the variables
             for ele in self.inputs:
-                self.om_problem.set_val(ele, sites.iloc[ind][ele])
+                value = sites.iloc[ind][ele]
+                if ele in var_lookup and isinstance(var_lookup[ele], ArrayVariable):
+                    # ArrayVariable: pass the full NumPy array
+                    self.om_problem.set_val(ele, np.asarray(value))
+                else:
+                    # FloatVariable: pass the scalar value
+                    self.om_problem.set_val(ele, value)
             # Execute the OpenMDAO model
             self.om_problem.run_model()
             # Extract all responses
             for ele in self.outputs:
-                sites.at[ind, ele] = self.om_problem.get_val(ele)
+                if ele in resp_lookup and isinstance(resp_lookup[ele], ArrayVariable):
+                    # ArrayVariable: store full NumPy array without flattening
+                    sites.at[ind, ele] = self.om_problem.get_val(ele)
+                else:
+                    # FloatVariable: store scalar value
+                    sites.at[ind, ele] = self.om_problem.get_val(ele)
 
     def _get_om_opt_problem(self) -> OptProblem:
         """Convert an OpenMDAO model into an OptProblem.
@@ -197,22 +212,19 @@ class OpenMDAOEvaluator(Evaluator):
                 internal_ele = True
         return internal_ele
 
-    def _expand_info_to_variable(self, info: dict) -> FloatVariable:
-        """Expand the information for a variable or response to a FloatVariable.
+    def _expand_info_to_variable(self, info: dict):
+        """Expand the information for a variable or response to a FloatVariable or ArrayVariable.
 
         Args:
             info: The dictionary from OpenMDAO containing information
                 about a variable or response.
 
-        Raises:
-            TypeError: Currently we can only use variables or responses that
-                are not arrays.
-
         Returns:
-            A FloatVariable with the extracted information.
+            A FloatVariable (for scalar shape (1,)) or ArrayVariable (for other shapes)
+            with the extracted information.
         """
 
-        def helper(name: str) -> float:
+        def helper(name: str):
             """Helper routine to return the info for a name, or none if not defined
 
             Parameters
@@ -222,8 +234,7 @@ class OpenMDAOEvaluator(Evaluator):
 
             Returns
             -------
-            float
-                Value of the dictionary or None if not defined
+            Value of the dictionary or None if not defined
             """
             return_value = None
             if name in info:
@@ -232,24 +243,53 @@ class OpenMDAOEvaluator(Evaluator):
 
         var_name = info["prom_name"]
         shape = info["shape"]
+        units = helper("units")
+
         if shape != (1,):
-            raise TypeError(f"Element {var_name} is of shape {shape}, must be (1, )")
+            # Array variable path
+            ref = helper("ref")
+            ref0 = helper("ref0")
+            adder = helper("adder")
+            scaler = helper("scaler")
 
-        ref = helper("ref")
-        ref0 = helper("ref0")
-        adder = helper("adder")
-        scaler = helper("scaler")
-        adder, scaler = om_utils.determine_adder_scaler(ref0, ref, adder, scaler)
+            # Only compute scaling if at least one scaling metadata is present
+            if ref is not None or ref0 is not None or adder is not None or scaler is not None:
+                adder, scaler = om_utils.determine_adder_scaler(ref0, ref, adder, scaler)
+                shift = adder if adder is not None else 0.0
+                scale = scaler if scaler is not None else 1.0
+            else:
+                shift = 0.0
+                scale = 1.0
 
-        default = info["val"][0] if "val" in info else 0.0
+            default = info["val"] if "val" in info else np.zeros(shape)
 
-        return FloatVariable(
-            name=var_name,
-            bounds=[-np.inf, np.inf],
-            shift=adder if adder is not None else 0.0,
-            scale=scaler if scaler is not None else 1.0,
-            default=default,
-        )
+            return ArrayVariable(
+                name=var_name,
+                shape=shape,
+                bounds=(-np.inf, np.inf),
+                shift=shift,
+                scale=scale,
+                default=default,
+                units=units,
+            )
+        else:
+            # Scalar variable path
+            ref = helper("ref")
+            ref0 = helper("ref0")
+            adder = helper("adder")
+            scaler = helper("scaler")
+            adder, scaler = om_utils.determine_adder_scaler(ref0, ref, adder, scaler)
+
+            default = info["val"][0] if "val" in info else 0.0
+
+            return FloatVariable(
+                name=var_name,
+                bounds=[-np.inf, np.inf],
+                shift=adder if adder is not None else 0.0,
+                scale=scaler if scaler is not None else 1.0,
+                default=default,
+                units=units,
+            )
 
     def _map_elements(self, info: dict) -> list:
         """Convert information for variables and responses from OpenMDAO format.
@@ -259,15 +299,65 @@ class OpenMDAOEvaluator(Evaluator):
                 about variables or responses.
 
         Returns:
-            A list of FloatVariable objects.
+            A list of FloatVariable or ArrayVariable objects.
         """
         result = []
         for ele in info:
-            bounds = [-np.inf, np.inf]
-            scale = 1.0
-            if "lower" in info[ele]:
-                bounds = [info[ele]["lower"], info[ele]["upper"]]
-            if "scaler" in info[ele] and info[ele]["scaler"] is not None:
-                scale = info[ele]["scaler"]
-            result.append(FloatVariable(name=ele, bounds=bounds, scale=scale))
+            meta = info[ele]
+            size = meta.get("size", 1)
+
+            # Determine bounds, defaulting independently
+            lower = meta.get("lower", -np.inf)
+            upper = meta.get("upper", np.inf)
+            if lower is None:
+                lower = -np.inf
+            if upper is None:
+                upper = np.inf
+
+            # Determine units
+            units = meta.get("units", None)
+
+            if size > 1:
+                # Array variable
+                shape = meta.get("shape", (size,))
+                scale = meta.get("scaler", 1.0)
+                if scale is None:
+                    scale = 1.0
+                shift = meta.get("adder", 0.0)
+                if shift is None:
+                    shift = 0.0
+
+                # Ensure bounds are float64 arrays if they are ndarrays
+                if isinstance(lower, np.ndarray):
+                    lower = lower.astype(np.float64)
+                if isinstance(upper, np.ndarray):
+                    upper = upper.astype(np.float64)
+
+                result.append(
+                    ArrayVariable(
+                        name=ele,
+                        shape=shape,
+                        bounds=(lower, upper),
+                        scale=scale,
+                        shift=shift,
+                        units=units,
+                    )
+                )
+            else:
+                # Scalar variable
+                scale = meta.get("scaler", 1.0)
+                if scale is None:
+                    scale = 1.0
+
+                result.append(
+                    FloatVariable(
+                        name=ele,
+                        bounds=[
+                            float(lower) if not isinstance(lower, float) else lower,
+                            float(upper) if not isinstance(upper, float) else upper,
+                        ],
+                        scale=scale,
+                        units=units,
+                    )
+                )
         return result

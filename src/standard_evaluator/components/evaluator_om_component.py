@@ -7,6 +7,7 @@ import pandas as pd
 import openmdao.api as om
 
 from standard_evaluator.evaluators.abstract_evaluator import Evaluator
+from standard_evaluator.problem import ArrayVariable
 from standard_evaluator.surrogate_models.abstract_model import SurrogateModel
 
 EVALUATOR_OPTION_NAME = "evaluator_options"
@@ -89,47 +90,119 @@ class EvaluatorOpenMdaoComponent(om.ExplicitComponent):
 
         # Set all inputs from variables
         for var in opt_problem.variables:
-            # Determine default value
-            if var.default is not None:
-                default_value = var.default
-            else:
-                # Calculate midpoint from bounds
-                lower, upper = var.bounds
-                default_value = (lower + upper) / 2.0
+            if isinstance(var, ArrayVariable):
+                # ArrayVariable: compute val from default or midpoint of bounds
+                if var.default is not None:
+                    val = var.default
+                else:
+                    lower, upper = var.bounds
+                    val = (lower + upper) / 2.0
 
-            self.add_input(var.name, val=default_value)
+                kwargs = {"shape": var.shape, "val": val}
+                if var.units is not None:
+                    kwargs["units"] = var.units
+                self.add_input(var.name, **kwargs)
+            else:
+                # FloatVariable: preserve existing logic
+                if var.default is not None:
+                    default_value = var.default
+                else:
+                    # Calculate midpoint from bounds
+                    lower, upper = var.bounds
+                    default_value = (lower + upper) / 2.0
+
+                kwargs = {"val": default_value}
+                if var.units is not None:
+                    kwargs["units"] = var.units
+                self.add_input(var.name, **kwargs)
 
         # Set all outputs from responses
         for resp in opt_problem.responses:
-            # Determine bounds
-            lower, upper = resp.bounds[0], resp.bounds[1]
+            if isinstance(resp, ArrayVariable):
+                # ArrayVariable: shaped output with array-aware bounds and scaling
+                val = np.zeros(resp.shape)
 
-            # Convert infinite bounds to None for OpenMDAO
-            if not np.isfinite(lower):
-                lower = None
-            if not np.isfinite(upper):
-                upper = None
+                kwargs = {"shape": resp.shape, "val": val}
 
-            # Calculate ref0 and ref from shift and scale
-            shift = resp.shift if resp.shift is not None else 0.0
-            scale = resp.scale if resp.scale is not None else 1.0
+                # Determine lower bound
+                lower_bound = np.asarray(resp.bounds[0])
+                if np.all(np.isneginf(lower_bound)):
+                    pass  # omit lower
+                elif np.all(lower_bound == lower_bound.flat[0]):
+                    kwargs["lower"] = float(lower_bound.flat[0])
+                else:
+                    kwargs["lower"] = lower_bound
 
-            if scale == 0.0:
-                raise ValueError(
-                    f"Response {resp.name} has a scale value of 0.0"
+                # Determine upper bound
+                upper_bound = np.asarray(resp.bounds[1])
+                if np.all(np.isposinf(upper_bound)):
+                    pass  # omit upper
+                elif np.all(upper_bound == upper_bound.flat[0]):
+                    kwargs["upper"] = float(upper_bound.flat[0])
+                else:
+                    kwargs["upper"] = upper_bound
+
+                # Compute ref0/ref from shift/scale if non-default
+                shift = resp.shift if resp.shift is not None else 0.0
+                scale = resp.scale if resp.scale is not None else 1.0
+                shift_arr = np.asarray(shift)
+                scale_arr = np.asarray(scale)
+
+                if np.any(scale_arr == 0.0):
+                    raise ValueError(
+                        f"Response '{resp.name}' has a scale element equal to "
+                        f"zero, which causes division by zero in OpenMDAO "
+                        f"normalization."
+                    )
+
+                is_default_scaling = (
+                    np.all(shift_arr == 0.0) and np.all(scale_arr == 1.0)
                 )
+                if not is_default_scaling:
+                    ref0 = -shift_arr
+                    ref = (1.0 / scale_arr) + ref0
+                    kwargs["ref0"] = ref0
+                    kwargs["ref"] = ref
 
-            ref0 = -shift
-            ref = (1.0 / scale) + ref0
+                # Pass units if not None
+                if resp.units is not None:
+                    kwargs["units"] = resp.units
 
-            self.add_output(
-                resp.name,
-                lower=lower,
-                upper=upper,
-                ref0=ref0,
-                ref=ref,
-                val=0.0,
-            )
+                self.add_output(resp.name, **kwargs)
+            else:
+                # FloatVariable: preserve existing logic with units support
+                lower, upper = resp.bounds[0], resp.bounds[1]
+
+                # Convert infinite bounds to None for OpenMDAO
+                if not np.isfinite(lower):
+                    lower = None
+                if not np.isfinite(upper):
+                    upper = None
+
+                # Calculate ref0 and ref from shift and scale
+                shift = resp.shift if resp.shift is not None else 0.0
+                scale = resp.scale if resp.scale is not None else 1.0
+
+                if scale == 0.0:
+                    raise ValueError(
+                        f"Response {resp.name} has a scale value of 0.0"
+                    )
+
+                ref0 = -shift
+                ref = (1.0 / scale) + ref0
+
+                kwargs = {
+                    "lower": lower,
+                    "upper": upper,
+                    "ref0": ref0,
+                    "ref": ref,
+                    "val": 0.0,
+                }
+
+                if resp.units is not None:
+                    kwargs["units"] = resp.units
+
+                self.add_output(resp.name, **kwargs)
 
     def compute(
         self,
@@ -157,15 +230,35 @@ class EvaluatorOpenMdaoComponent(om.ExplicitComponent):
         if discrete_outputs is not None:
             raise ValueError("At this point we do not yet support discrete outputs")
 
+        # Build a lookup of variable types by name
+        var_by_name = {
+            v.name: v for v in self.eval.opt_problem.variables
+        }
+        resp_by_name = {
+            r.name: r for r in self.eval.opt_problem.responses
+        }
+
         # Build input dictionary from OpenMDAO inputs
         input_dict = {}
-        for var in self.eval.inputs:
-            input_dict[var] = inputs[var]
+        for var_name in self.eval.inputs:
+            var = var_by_name[var_name]
+            if isinstance(var, ArrayVariable):
+                # Wrap in a list so pandas places the array as a single cell
+                input_dict[var_name] = [inputs[var_name]]
+            else:
+                # FloatVariable: scalar value
+                input_dict[var_name] = inputs[var_name]
 
         # Create the DataFrame and evaluate
         data_frame = pd.DataFrame(data=input_dict)
         self.eval(data_frame)
 
         # Extract responses to outputs
-        for response in self.eval.outputs:
-            outputs[response] = data_frame[response].iloc[0]
+        for resp_name in self.eval.outputs:
+            resp = resp_by_name[resp_name]
+            if isinstance(resp, ArrayVariable):
+                # ArrayVariable: assign full NumPy array from DataFrame cell
+                outputs[resp_name] = data_frame[resp_name].iloc[0]
+            else:
+                # FloatVariable: assign scalar value
+                outputs[resp_name] = data_frame[resp_name].iloc[0]
