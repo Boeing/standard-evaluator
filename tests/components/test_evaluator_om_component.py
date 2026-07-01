@@ -18,8 +18,7 @@ from standard_evaluator.components.evaluator_om_component import (
     EvaluatorOpenMdaoComponent as DirectImport,
 )
 from standard_evaluator.evaluators.abstract_evaluator import Evaluator
-from standard_evaluator.surrogate_models.abstract_model import SurrogateModel
-from standard_evaluator.problem import OptProblem, FloatVariable
+from standard_evaluator.problem import FloatVariable
 from standard_evaluator.evaluators.test import HS100
 import standard_evaluator as se
 
@@ -125,9 +124,7 @@ class TestImportResolution:
 
     def test_in_all_list(self):
         """EvaluatorOpenMdaoComponent is in __all__."""
-        import standard_evaluator.components as comp_pkg
-
-        assert "EvaluatorOpenMdaoComponent" in comp_pkg.__all__
+        assert EvaluatorOpenMdaoComponent.__name__ in se.components.__all__
 
 
 # ---------------------------------------------------------------------------

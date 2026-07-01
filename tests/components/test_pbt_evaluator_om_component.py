@@ -6,8 +6,6 @@ wrapper across a range of inputs and evaluator configurations.
 # Feature: openmdao-component-migration
 """
 
-import copy
-
 import numpy as np
 import pandas as pd
 import pytest
@@ -16,7 +14,6 @@ import openmdao.api as om
 from hypothesis import given, settings, assume
 from hypothesis import strategies as st
 
-import standard_evaluator as se
 from standard_evaluator.components import EvaluatorOpenMdaoComponent
 from standard_evaluator.evaluators.abstract_evaluator import Evaluator
 from standard_evaluator.evaluators.test import (
