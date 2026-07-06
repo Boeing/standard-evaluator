@@ -103,7 +103,7 @@ class Rosenbrock(TestEvaluator):
 
         new_prob.description = \
         """
-        The Rosenbrock function is a continuou, nonlinear, and non-convex function used in optimization.
+        The Rosenbrock function is a continuous, nonlinear, and non-convex function used in optimization.
         It is given by
                         sum_{i=1}^{n-1} ((x_{i+1}-x_i^2)^2 + (x_i-1)^2)
                         -2 <= x_i <= 2 for i = 1,...,n.

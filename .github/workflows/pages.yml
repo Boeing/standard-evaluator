@@ -1,10 +1,12 @@
-name: Deploy to GitHub Pages
+name: Documentation
 
 on:
   push:
-    branches: [ "main" ]
-
-  # Allows you to run this workflow manually from the Actions tab
+    branches: [ "main", "dev" ]
+    tags:
+      - 'v*.*.*'
+  pull_request:
+    branches: [ "main", "dev" ]
   workflow_dispatch:
 
 permissions:
@@ -12,23 +14,17 @@ permissions:
   pages: write
   id-token: write
 
-# Allow only one concurrent deployment
 concurrency:
-  group: "pages"
-  cancel-in-progress: false
+  group: "pages-${{ github.ref }}"
+  cancel-in-progress: true
 
 jobs:
-  deploy:
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
+  build:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
-        uses: actions/checkout@v6
+      - uses: actions/checkout@v7
 
-      - name: Setup Python
-        uses: actions/setup-python@v6
+      - uses: actions/setup-python@v6
         with:
           python-version: "3.11"
 
@@ -37,20 +33,32 @@ jobs:
           python -m pip install --upgrade pip
           pip install .[docs]
 
-      - name: Setup Pages
-        uses: actions/configure-pages@v6
-
       - name: Build documentation
         run: |
           cd docs
           python -m sphinx -b html source ./_html
 
+      - name: Upload docs artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: docs-html
+          path: docs/_html
+          retention-days: 7
 
-      - name: Upload artifact
+      - name: Upload Pages artifact
+        if: startsWith(github.ref, 'refs/tags/v')
         uses: actions/upload-pages-artifact@v5
         with:
-          path: 'docs/_html'
+          path: docs/_html
 
+  deploy:
+    if: startsWith(github.ref, 'refs/tags/v')
+    needs: build
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    steps:
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v5

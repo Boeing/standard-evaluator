@@ -35,9 +35,18 @@ docs/source/demos/.ipynb_checkpoints/*
 #docs/source/demos/demo_group.json
 #docs/source/demos/demo_group_NASA.json
 #docs/source/demos/state.h5
-#docs/source/demos/optproblem*.json
+docs/source/demos/optproblem*.json
 docs/_html
 docs/jupyter_execute
 
 scripts/
 __main__*
+test_nb*_out/
+test_notebook_code*_out/
+problem_out/
+experimenting/*.h5
+experimenting/*.html
+experimenting/assembly.json
+docs/build/
+docs/source/.cache/
+*.db

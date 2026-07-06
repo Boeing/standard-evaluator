@@ -273,13 +273,113 @@ def test_paraboloid_scan_defined_problem_false(
 
 
 def test_beam_group_evaluator(om_beam_group: om.Problem):
-    with pytest.raises(
-        TypeError,
-        match="Element h is of shape",
-    ):
-        OpenMDAOEvaluator(om_beam_group, scan_model=True)
+    from standard_evaluator.problem import ArrayVariable
+
+    # The beam group model has array-shaped variables; it should no longer raise TypeError
+    my_evaluator = OpenMDAOEvaluator(om_beam_group, scan_model=True)
+    opt = my_evaluator.opt_problem
+    # Verify the evaluator was created successfully (no TypeError raised)
+    assert opt is not None
+    # The scanned problem should contain ArrayVariable instances for array-shaped vars
+    scanned = my_evaluator._scanned_problem
+    h_scanned = [v for v in scanned.variables if v.name == "h"]
+    assert len(h_scanned) == 1
+    assert isinstance(h_scanned[0], ArrayVariable)
 
 
 def test_actuator_disk_evaluator(om_actuator_disc: om.Problem):
     my_evaluator = OpenMDAOEvaluator(om_actuator_disc, scan_model=True)
     assert my_evaluator.inputs == ["a", "Area", "rho", "Vu"]
+
+
+# ---------------------------------------------------------------------------
+# Requirement 7.1, 7.3, 7.4 — Backward compatibility for scalar-only models
+# ---------------------------------------------------------------------------
+
+
+class TestScalarOnlyBackwardCompatibility:
+    """Verify scalar-only models produce identical FloatVariable instances and evaluation output.
+
+    Requirements: 7.1, 7.2, 7.3, 7.4
+    """
+
+    def test_scalar_model_produces_only_float_variables(self, om_paraboloid: om.Problem):
+        """Scalar-only model scanning produces only FloatVariable instances (not ArrayVariable)."""
+        from standard_evaluator.problem import FloatVariable, ArrayVariable
+
+        evaluator = OpenMDAOEvaluator(om_paraboloid, scan_model=True)
+        opt = evaluator.opt_problem
+
+        for var in opt.variables:
+            assert isinstance(var, FloatVariable), (
+                f"Variable {var.name} should be FloatVariable"
+            )
+            assert not isinstance(var, ArrayVariable), (
+                f"Variable {var.name} should not be ArrayVariable"
+            )
+
+        for resp in opt.responses:
+            assert isinstance(resp, FloatVariable), (
+                f"Response {resp.name} should be FloatVariable"
+            )
+            assert not isinstance(resp, ArrayVariable), (
+                f"Response {resp.name} should not be ArrayVariable"
+            )
+
+    def test_scalar_model_variable_bounds_defaults_scaling(self, om_paraboloid: om.Problem):
+        """Scalar-only model variables have correct bounds, defaults, and scaling."""
+        evaluator = OpenMDAOEvaluator(om_paraboloid, scan_model=False)
+        opt = evaluator.opt_problem
+
+        # Design vars from the paraboloid fixture: x in [-50, 50], y in [-50, 50]
+        var_dict = {v.name: v for v in opt.variables}
+        assert "x" in var_dict
+        assert "y" in var_dict
+
+        x_var = var_dict["x"]
+        assert x_var.bounds[0] == -50.0
+        assert x_var.bounds[1] == 50.0
+
+        y_var = var_dict["y"]
+        assert y_var.bounds[0] == -50.0
+        assert y_var.bounds[1] == 50.0
+
+    def test_scalar_model_evaluation_produces_correct_output(
+        self, om_paraboloid: om.Problem, paraboloid_lhs_sites: pd.DataFrame
+    ):
+        """Evaluation of scalar-only model produces identical DataFrame values."""
+        evaluator = OpenMDAOEvaluator(om_paraboloid, scan_model=False)
+
+        # Copy the input sites
+        exp_df = paraboloid_lhs_sites.copy()
+        # Set outputs to NaN to be filled by evaluation
+        exp_df[evaluator.outputs] = np.nan
+        evaluator(exp_df)
+
+        # Compare against expected values
+        pd.testing.assert_frame_equal(exp_df, paraboloid_lhs_sites)
+
+    def test_no_new_mandatory_constructor_params(self, om_paraboloid: om.Problem):
+        """OpenMDAOEvaluator still works with just the om_problem argument.
+
+        Requirements: 7.4
+        """
+        # This should work with just the single positional argument
+        evaluator = OpenMDAOEvaluator(om_paraboloid)
+        assert evaluator is not None
+        assert evaluator.opt_problem is not None
+
+    def test_scanned_problem_scalar_variables_are_float(self, om_paraboloid: om.Problem):
+        """When scanning a scalar-only model, _scanned_problem contains only FloatVariable."""
+        from standard_evaluator.problem import FloatVariable, ArrayVariable
+
+        evaluator = OpenMDAOEvaluator(om_paraboloid, scan_model=True)
+        scanned = evaluator._scanned_problem
+
+        for var in scanned.variables:
+            assert isinstance(var, FloatVariable)
+            assert not isinstance(var, ArrayVariable)
+
+        for resp in scanned.responses:
+            assert isinstance(resp, FloatVariable)
+            assert not isinstance(resp, ArrayVariable)
