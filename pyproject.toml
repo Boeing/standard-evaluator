@@ -65,6 +65,9 @@ test = [
     "coverage",
     "hypothesis",
     "numdifftools",
+    "nbformat",
+    "nbconvert",
+    "ipykernel",
 ]
 dev = [
     # Copy test requirements below
