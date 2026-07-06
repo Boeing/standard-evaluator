@@ -65,6 +65,9 @@ test = [
     "coverage",
     "hypothesis",
     "numdifftools",
+    "nbformat",
+    "nbconvert",
+    "ipykernel",
 ]
 dev = [
     # Copy test requirements below
@@ -94,12 +97,16 @@ docs = [
     "sphinx-rtd-theme",
     "jupyter_core",
     "myst-nb",
-    
+    "smt>=2.10.1",
 ]
 
 [tool.pytest.ini_options]
 testpaths = "tests"
 minversion = "6.0"
+markers = [
+    "integration: marks tests as integration tests (may be slow)",
+    "slow: marks tests as slow (deselect with '-m \"not slow\"')",
+]
 # log_cli_level = "INFO"
 # log_cli_format = "%(asctime)s [%(levelname)8s] %(message)s (%(filename)s:%(lineno)s)"
 # log_cli_date_format = "%Y-%m-%d %H:%M:%S"
