@@ -25,6 +25,7 @@ BASE_NOTEBOOKS = [
     "array_variables.ipynb",
     "benchmark_problems.ipynb",
     "evaluator_interface.ipynb",
+    "surrogate_replacement_workflow.ipynb",
 ]
 
 # Notebooks requiring optional dependencies

@@ -11,6 +11,7 @@ The documents in this section show demos of the standard evaluator.
    group_creation_NASA
    group_manipulation
    group_reading
+   surrogate_replacement_workflow
    evaluator_hierarchy
    surrogate_models
    openmdao_component
