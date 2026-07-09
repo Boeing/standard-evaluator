@@ -1,11 +1,23 @@
 # Standard Evaluator
 
-A Python library providing a common API for defining, wrapping, and composing analysis codes and surrogate models. Originally developed under NASA Contract 80GRC023CA045.
+Standard Evaluator is an open-source Python library (published on PyPI as `standard-evaluator`) that provides a common API for defining, wrapping, and composing analysis codes and surrogate models. It was initially developed under NASA Contract 80GRC023CA045, and has been expanded since then.
+
+**Documentation**: https://boeing.github.io/standard-evaluator/
+
+The library has three main purposes:
+
+1. **Common Evaluator API** — Expose analysis capabilities and surrogate models through a unified interface. End-users interact via Pandas DataFrames; developers can use a simplified NumPy-focused interface (`eval_np`, `eval_list`).
+
+2. **Integration Framework Bridge** — Expose all evaluators to integration frameworks like OpenMDAO. The architecture is designed to support additional integration frameworks in the future.
+
+3. **Assembly Serialization** — Capture the structure of assemblies of analyses in Pydantic classes or JSON files, and rebuild those assemblies from the stored information. Currently supports OpenMDAO; designed for future multi-framework support.
+
+Note that user of the library are responsible for installing the third party open source components and for complying with the terms and conditions of the respective open source licenses governing the third party open source components.
 
 ## Documentation
 
 Full documentation with demos and API reference is available at:
-https://mattermost.web.boeing.com/devhub/pl/spseni331tg19epgei6eot1stw
+https://boeing.github.io/standard-evaluator/
 
 ## Installation
 
