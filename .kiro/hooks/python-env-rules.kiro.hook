@@ -1,0 +1,13 @@
+{
+  "enabled": true,
+  "name": "Enforce Python Environment Rules",
+  "description": "Reminds the agent before every spec task execution to use .venv\\Scripts\\python.exe for all Python commands — never bare python, pytest, or pip.",
+  "version": "1",
+  "when": {
+    "type": "preTaskExecution"
+  },
+  "then": {
+    "type": "askAgent",
+    "prompt": "MANDATORY: For ALL Python commands in this task, you MUST use `.venv\\Scripts\\python.exe` as the interpreter. Never use bare `python`, `pytest`, `pip`, or `python3`. Examples: `.venv\\Scripts\\python.exe -m pytest tests/` for tests, `.venv\\Scripts\\python.exe -m pip install ...` for installs, `.venv\\Scripts\\python.exe script.py` for scripts. Do NOT activate the venv — it doesn't persist across commands. This is a Windows cmd environment."
+  }
+}
