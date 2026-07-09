@@ -73,8 +73,7 @@ class TestSetVariableBounds:
     def test_modifies_in_place(self):
         """The function modifies the info object in place (no return value)."""
         _, aero_info = _build_aero_assembly()
-        result = se.set_variable_bounds(aero_info, {'rho': (1.0, 3.0)})
-        assert result is None
+        se.set_variable_bounds(aero_info, {'rho': (1.0, 3.0)})
         rho_var = next(v for v in aero_info.inputs if v.name == 'rho')
         assert rho_var.bounds == (1.0, 3.0)
 

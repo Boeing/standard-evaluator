@@ -148,7 +148,6 @@ class TestReplaceGroupWorkflow:
         """The surrogate produces the same drag value as the original model."""
         prob = _build_original_problem()
         info = se.get_interface(prob.model)
-        state = se.get_state(prob, info)
 
         prob_replace = _build_surrogate_problem()
         surrogate_info = se.get_interface(prob_replace.model)
