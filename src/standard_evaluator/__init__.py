@@ -24,6 +24,7 @@ from .om_converter import (
     save_assembly,
 )
 from .om_converter import set_opt_problem, get_opt_problem
+from .om_converter import set_variable_bounds, build_opt_problem
 from . import evaluators
 from . import surrogate_models
 
@@ -67,6 +68,8 @@ __all__ = [
     "convert_om_var",
     "get_opt_problem",
     "set_opt_problem",
+    "set_variable_bounds",
+    "build_opt_problem",
     "evaluators",
     "surrogate_models",
 ]

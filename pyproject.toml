@@ -98,6 +98,8 @@ docs = [
     "jupyter_core",
     "myst-nb",
     "smt>=2.10.1",
+    "aviary",
+    "dymos",
 ]
 
 [tool.pytest.ini_options]
