@@ -21,6 +21,7 @@ class OpenMDAOEvaluator(Evaluator):
         comp_cost: float = 100,
         scan_model: bool = True,
         use_defined_problem: bool = True,
+        opt_problem: OptProblem = None,
     ) -> None:
         """Initialize the evaluator, saving relevant information
 
@@ -33,34 +34,42 @@ class OpenMDAOEvaluator(Evaluator):
             use_defined_problem (bool, optional): Flag to decide whether or not
                 to use the optimization problem defined in the OpenMDAO model.
                 Defaults to True.
+            opt_problem (OptProblem, optional): An explicitly provided
+                OptProblem. When supplied, scan_model and use_defined_problem
+                are ignored and this problem is used directly. Defaults to None.
 
         Raises:
             ValueError: Scan_model and use_defined_problem cannot both be false
-                at the same time.
+                at the same time (when opt_problem is not provided).
         """
         # Save the OpenMDAO model
         self.om_problem = om_prob
         name = om_prob._name
         self.scan_model = scan_model
 
-        if not scan_model and not use_defined_problem:
-            raise ValueError(
-                "scan_model and use_defined_problem cannot both "
-                "be False at the same time."
-            )
-
-        if scan_model:
-            # Capture all variables and responses that are defined in the model
-            self._scan_model()
-        else:
+        if opt_problem is not None:
+            # Use the explicitly provided OptProblem directly
             self._scanned_problem = None
-
-        if use_defined_problem:
-            opt_problem = self._get_om_opt_problem()
+            resolved_problem = opt_problem
         else:
-            opt_problem = copy.deepcopy(self._scanned_problem)
+            if not scan_model and not use_defined_problem:
+                raise ValueError(
+                    "scan_model and use_defined_problem cannot both "
+                    "be False at the same time."
+                )
 
-        super().__init__(name=name, comp_cost=comp_cost, opt_problem=opt_problem)
+            if scan_model:
+                # Capture all variables and responses that are defined in the model
+                self._scan_model()
+            else:
+                self._scanned_problem = None
+
+            if use_defined_problem:
+                resolved_problem = self._get_om_opt_problem()
+            else:
+                resolved_problem = copy.deepcopy(self._scanned_problem)
+
+        super().__init__(name=name, comp_cost=comp_cost, opt_problem=resolved_problem)
 
     def _evaluate(self, sites: pd.DataFrame):
         """Evaluate the OpenMDAO model on all the sites defined in the DataFrame

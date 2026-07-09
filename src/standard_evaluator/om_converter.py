@@ -73,8 +73,9 @@ def get_linkages(om_group: om.Group):
     # TODO Allow linkage between elements
     linkage = []
     for key, value in om_group._manual_connections.items():
-        if (value[1] is not None) | (value[2] is not None):
-            print(f"Indexing used: {key}, {value}, {type(value[0])}, {type(value[1])}, {type(value[2])}")
+        if len(value) > 2:
+            if (value[1] is not None) | (value[2] is not None):
+                print(f"Indexing used: {key}, {value}, {type(value[0])}, {type(value[1])}, {type(value[2])}")
         linkage.append((value[0], key))
     return linkage
 
@@ -115,12 +116,15 @@ def get_external_names(om_component) -> dict:
         local_dict = om_component.get_io_metadata(return_rel_names=False, iotypes=element_type)
         external_names = set()
         for key, value in local_dict.items():
-            if not "_auto_ivc" in value['prom_name']:
-                name = value['prom_name']
-                if not name in external_names:
-                    var_info = convert_om_var(value)
-                    external_names.add(value['prom_name'])
-                    local_list.append(var_info)
+            if "_auto_ivc" in key or "_auto_ivc" in value['prom_name']:
+                # Skip auto-IVC variables — they are internal to OpenMDAO and should
+                # not appear in the interface description of a component/group.
+                continue
+            name = value['prom_name']
+            if not name in external_names:
+                var_info = convert_om_var(value)
+                external_names.add(value['prom_name'])
+                local_list.append(var_info)
         info[element_type] = list(external_names)
         info[f"{element_type}_vars"] = local_list
     return info
@@ -361,7 +365,11 @@ def create_openmdao_options(info_dict: dict) -> dict:
             else:
                 del_avairy = True
         else:
-            local_dict[name] = info['val']
+            # Convert list values to tuples (JSON serialization turns tuples into lists)
+            if isinstance(info['val'], list):
+                local_dict[name] = tuple(info['val'])
+            else:
+                local_dict[name] = info['val']
     if del_avairy:
         del(local_dict['aviary_options'])
     return local_dict
@@ -427,7 +435,22 @@ def clean_promotions(proms: list, name: str) -> list:
     # component does promote the name (i.e. ('a', 'a')) and the other does not
     clean_proms = [key for key, value in grouped_tuples.items() if len(value) > 1]
     clean_proms = clean_proms + [value[0] for key, value in grouped_tuples.items() if len(value) == 1]
-    return(clean_proms)
+
+    # Filter out no-op promotions: ('var', 'name.var') where `name` is the
+    # subsystem name. These are equivalent to not promoting (the variable is
+    # already accessible as name.var without explicit promotion). Keeping them
+    # creates dotted promoted names that trigger an infinite loop in
+    # OpenMDAO >= 3.43's conn_graph.add_auto_ivc_nodes.
+    filtered = []
+    prefix = name + '.'
+    for prom in clean_proms:
+        if isinstance(prom, tuple):
+            local_name, target_name = prom
+            if target_name == prefix + local_name:
+                # This is a no-op promotion — drop it
+                continue
+        filtered.append(prom)
+    return filtered
 
 def add_group(comp_info: JoinedInfo) -> oms.System:
     if comp_info.class_type == 'EquationInfo':
@@ -623,3 +646,80 @@ def set_opt_problem(om_problem: om.Problem, opt_problem: OptProblem, run_setup: 
     if run_setup:
         om_problem.setup()
         om_problem.final_setup()
+
+
+def set_variable_bounds(info: JoinedInfo, bounds: typing.Dict[str, Tuple[float, float]]) -> None:
+    """Set bounds on the input variables of a JoinedInfo interface description.
+
+    This modifies the info in place. Only variables whose names match keys in the
+    bounds dictionary are updated; others are left unchanged.
+
+    Arguments:
+        info {JoinedInfo} -- The interface description to update.
+        bounds {dict} -- Dictionary mapping variable names to (lower, upper) tuples.
+
+    Example:
+        >>> set_variable_bounds(aero_info, {'rho': (0.5, 2.0), 'v': (10, 100)})
+    """
+    for var in info.inputs:
+        if var.name in bounds:
+            var.bounds = bounds[var.name]
+
+
+def build_opt_problem(info: JoinedInfo, om_prob: om.Problem = None) -> OptProblem:
+    """Build an OptProblem from a JoinedInfo interface description.
+
+    Creates an OptProblem where the info's inputs become variables and the
+    info's outputs become responses. Bounds, units, defaults, and scaling
+    from the Variable objects are preserved.
+
+    Variables and responses tagged as 'internal' (via the options['tags'] field)
+    are excluded since they represent intermediate values not meant to be
+    externally set or observed.
+
+    When an OpenMDAO Problem is provided, inputs that are driven by another
+    component within the model (i.e., their source is NOT _auto_ivc) are also
+    excluded from the variables list, since they are internal connections
+    rather than free inputs.
+
+    Arguments:
+        info {JoinedInfo} -- The interface description to convert.
+        om_prob {om.Problem, optional} -- A setup'd OpenMDAO Problem. When
+            provided, used to determine which inputs are true free variables
+            vs internal connections. Defaults to None.
+
+    Returns:
+        OptProblem -- An optimization problem with variables and responses
+            derived from the interface description.
+    """
+    def _is_internal(var) -> bool:
+        """Check if a variable has the 'internal' tag."""
+        tags = var.options.get('tags', set())
+        if isinstance(tags, set):
+            return 'internal' in tags
+        elif isinstance(tags, (list, tuple)):
+            return 'internal' in tags
+        return False
+
+    def _is_free_input(var) -> bool:
+        """Check if an input is a free variable (sourced by auto_ivc)."""
+        if om_prob is None:
+            # Without a live problem, we can't check — assume it's free
+            return True
+        try:
+            source = om_prob.model.get_source(var.name)
+            return "_auto_ivc" in source
+        except (KeyError, RuntimeError):
+            # Variable not found in the model — skip it
+            return False
+
+    variables = [
+        copy.deepcopy(v) for v in info.inputs
+        if not _is_internal(v) and _is_free_input(v)
+    ]
+    responses = [copy.deepcopy(v) for v in info.outputs if not _is_internal(v)]
+    return OptProblem(
+        name=info.name or "from_interface",
+        variables=variables,
+        responses=responses,
+    )
