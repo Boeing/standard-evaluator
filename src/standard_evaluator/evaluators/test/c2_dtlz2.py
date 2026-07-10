@@ -114,39 +114,33 @@ class C2_DTLZ2(TestEvaluator):
         new_prob.constraints = []
 
         # Define th description of the problem
-        new_prob.description = r"""$$
-General DTLZ2 Problem Formulation
+        new_prob.description = r"""General DTLZ2 Problem Formulation
 
-For $M$ objectives and $n$ decision variables, where $k = n - M + 1$, the problem is:
+For M objectives and n decision variables, where k = n - M + 1, the problem is:
 
 $$
 \begin{aligned}
 \text{Minimize } & f_1(\mathbf{x}) = (1 + g(\mathbf{x}_M)) \prod_{i=1}^{M-1} \cos\left(x_i \frac{\pi}{2}\right) \\
 \text{Minimize } & f_2(\mathbf{x}) = (1 + g(\mathbf{x}_M)) \left(\prod_{i=1}^{M-2} \cos\left(x_i \frac{\pi}{2}\right)\right) \sin\left(x_{M-1} \frac{\pi}{2}\right) \\
-\text{Minimize } & f_3(\mathbf{x}) = (1 + g(\mathbf{x}_M)) \left(\prod_{i=1}^{M-3} \cos\left(x_i \frac{\pi}{2}\right)\right) \sin\left(x_{M-2} \frac{\pi}{2}\right) \\
 & \vdots \\
 \text{Minimize } & f_{M-1}(\mathbf{x}) = (1 + g(\mathbf{x}_M)) \cos\left(x_1 \frac{\pi}{2}\right) \sin\left(x_2 \frac{\pi}{2}\right) \\
 \text{Minimize } & f_M(\mathbf{x}) = (1 + g(\mathbf{x}_M)) \sin\left(x_1 \frac{\pi}{2}\right)
 \end{aligned}
 $$
 
-where
+where:
 
 $$
 g(\mathbf{x}_M) = \sum_{x_i \in \mathbf{x}_M} (x_i - 0.5)^2
 $$
 
-and
+- x = (x_1, x_2, ..., x_n), with x_i in [0, 1] for all i
+- x_M = (x_M, x_{M+1}, ..., x_n)
 
-- $\mathbf{x} = (x_1, x_2, \ldots, x_n)$,
-- $\mathbf{x}_M = (x_M, x_{M+1}, \ldots, x_n)$,
-- $x_i \in [0,1]$ for all $i$.
-
-The Pareto-optimal front corresponds to $g(\mathbf{x}_M) = 0$, i.e., $x_i = 0.5$ for all $i \in \{M, \ldots, n\}$, and the objective vectors lie on the unit hypersphere:
+The Pareto-optimal front corresponds to g(x_M) = 0, i.e., x_i = 0.5 for all i in {M, ..., n}, and the objective vectors lie on the unit hypersphere:
 
 $$
 \sum_{m=1}^M f_m^2 = 1
-$$
 $$"""
         # Define the citation
         new_prob.cite = "Deb, K., Thiele, L., Laumanns, M., & Zitzler, E. (2002). Scalable test problems for evolutionary multiobjective optimization. Evolutionary multiobjective optimization, 105-145."

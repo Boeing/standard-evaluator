@@ -7,63 +7,33 @@ import standard_evaluator as se
 
 
 class ConstrainedBetts(TestEvaluator):
-    """Implement the linearly constrained Betts function defined as
+    r"""Linearly constrained Betts function.
 
-    min f(x) = 0.01 * x1^2 + x2^2 - 100
+    .. math::
+        \begin{aligned}
+            \min\quad & f(x) = 0.01 x_1^2 + x_2^2 - 100 \\[1em]
+            \text{s.t.}\quad & 10 x_1 - x_2 \geq 10 \\
+            & 2 \leq x_1 \leq 50 \\
+            & -50 \leq x_2 \leq 50
+        \end{aligned}
 
-    s.t.
+    Known optimal solution:
 
-    10 * x1 - x2 >= 10
-    2 <= x1 <= 50
-    -50 <= x2 <= 50
+    .. math::
+        x^* = (2, 0), \quad f(x^*) = -99.96
 
-    This function has an optimal solution of
-
-    x* = (2, 0), f(x*) = -99.96
-
-    verified using the unopy optimizer (Uno v2.7.3, IPOPT preset).
+    Verified using the unopy optimizer (Uno v2.7.3, IPOPT preset).
     See ``experimenting/solve_constrained_betts_with_unopy.ipynb`` for the
     full verification workflow.
 
-    The initial point x0 = (-1, -1) is infeasible (violates variable bounds
-    and the linear constraint).
+    Initial point (infeasible):
+
+    .. math::
+        x_0 = (-1, -1)
     """
 
     def _create_opt_problem(self) -> OptProblem:
-        """
-        Creates a linearly constrained optimization problem based on the Betts function.
-
-        This method initializes an optimization problem with two independent variables and two dependent variables.
-        It sets up the variable names, bounds, default values, response names, and their respective bounds.
-        The objective function and constraints are defined according to the specifications of the Betts function.
-
-        The optimization problem is defined as follows:
-
-        - Objective: Minimize the function
-        $$
-        f(x) = 0.01 \cdot x_1^2 + x_2^2 - 100
-        $$
-
-        - Subject to the constraints:
-        $$
-        10 \cdot x_1 - x_2 \geq 10
-        $$
-        $$
-        2 \leq x_1 \leq 50
-        $$
-        $$
-        -50 \leq x_2 \leq 50
-        $$
-
-        The optimal solution for this problem is:
-        $$
-        x^* = (2, 0)
-        $$
-
-        An infeasible initial point is defined as:
-        $$
-        x_0 = (-1, -1)
-        $$
+        r"""Create the linearly constrained Betts optimization problem.
 
         Returns:
             OptProblem: An instance of the OptProblem class representing the defined optimization problem.
@@ -99,23 +69,28 @@ class ConstrainedBetts(TestEvaluator):
         new_prob.constraints = ["c1"]
 
         # Define the description of the problem
-        new_prob.description = """Implement the linearly constrained Betts function defined as
+        new_prob.description = r"""Linearly constrained Betts function:
 
-    min f(x) = 0.01 * x1^2 + x2^2 - 100
+$$
+\begin{aligned}
+    \min\quad & f(x) = 0.01 x_1^2 + x_2^2 - 100 \\[1em]
+    \text{s.t.}\quad & 10 x_1 - x_2 \geq 10 \\
+    & 2 \leq x_1 \leq 50 \\
+    & -50 \leq x_2 \leq 50
+\end{aligned}
+$$
 
-    s.t.
+Known optimal solution:
 
-    10 * x1 - x2 >= 10
-    2 <= x1 <= 50
-    -50 <= x2 <= 50
+$$
+x^* = (2, 0), \quad f(x^*) = -99.96
+$$
 
-    This function has an optimal solution of
+Initial point (infeasible):
 
-    x* = (2, 0)
-
-    and an infeasible initial point
-
-    x0 = (-1, -1)"""
+$$
+x_0 = (-1, -1)
+$$"""
         # Define the citation
         new_prob.cite = ""
         return new_prob

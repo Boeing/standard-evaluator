@@ -97,8 +97,7 @@ def test_create_opt_problem():
         ), f"Response bounds do not match for response {resp}: {resp.bounds} != {expected_bounds}"
 
     # Check the description
-    expected_description = """\
-The SphereEvaluator class is a multiobjective test problem.  It models a hyperellipsoid in
+    expected_description = """The SphereEvaluator class is a multiobjective test problem.  It models a hyperellipsoid in
 n-dimensional space, centered at an arbitrary point and extending to the coordinate
 planes on each axis, although an optional offset may be used as well.  The default bounds
 on the object are the interior and surface of the hyperellipsoid, hence a multiobjective

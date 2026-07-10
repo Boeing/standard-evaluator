@@ -127,8 +127,7 @@ def test_create_opt_problem():
         resp.bounds = local_bounds
 
     # Check the description
-    expected_description = """\
-Cantilevered Beam with Fixed Variables Example Evaluator
+    expected_description = """Cantilevered Beam with Fixed Variables Example Evaluator
 
 This example initializes an optimization problem with six design variables,
 three responses, and specific objectives and constraints related to the

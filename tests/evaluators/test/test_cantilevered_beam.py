@@ -142,7 +142,7 @@ def test_create_opt_problem():
     ), f"Expected scales {expected_scales}, got {actual_scales}"
 
     # Check the description
-    expected_description = r"""Cantilevered Beam Example Evaluator
+    expected_description = """Cantilevered Beam Example Evaluator
 
 The problem has four design variables with types as follows:
 

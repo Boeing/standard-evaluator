@@ -42,11 +42,11 @@ class HS47(TestEvaluator):
         $$
         - **Constraints**: The problem includes three equality constraints:
         $$
-        \begin{align}
+        \begin{aligned}
             c_1 &= x_1 + x_2^2 + x_3^3 - 3 = 0\\
             c_2 &= x_2 - x_3^2 + x_4 - 1 = 0\\
             c_3 &= x_1x_5 - 1 = 0
-        \end{align}
+        \end{aligned}
         $$
         - **Initial Guess**: The initial point for the optimization is set to:
         $$

@@ -110,8 +110,7 @@ def test_create_opt_problem():
         ), f"Response bounds do not match for response {resp}: {resp.scale} !=  {expected_scales}"
 
         # Define the description of the problem
-        expected_description = """\
-Cantilevered Beam Example Evaluator with only continuous variables
+        expected_description = """Cantilevered Beam Example Evaluator with only continuous variables
 
 This example is making the first variable (x0) double instead of integer, so it
 is a relaxation of the CantileveredBeam example.
