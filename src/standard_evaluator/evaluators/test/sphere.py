@@ -8,8 +8,12 @@ from standard_evaluator.evaluators.abstract_evaluator import ValidInputs
 
 
 class Sphere(TestEvaluator):
-    """
-    An example test that represents the sphere function.
+    r"""The sphere function is quadratic, continuous, and convex. It is given by:
+
+    .. math::
+        f(\mathbf{x}) = \sum_{i=1}^n x_i^2
+
+    with :math:`-10 \leq x_i \leq 10` for :math:`i = 1,\ldots,n`.
     """
 
     def __init__(
@@ -97,21 +101,17 @@ class Sphere(TestEvaluator):
 
         # Define the description of the problem
 
-        new_prob.description = \
-        """
-        The sphere function is quadratic, continuous, and convex. It is given by
-                        sum_{i=1}^n x_i^2
-                        -10 <= x_i <= 10 for i = 1,...,n.
-        """
+        new_prob.description = r"""The sphere function is quadratic, continuous, and convex. It is given by:
+
+$$
+f(\mathbf{x}) = \sum_{i=1}^n x_i^2
+$$
+
+| -10 <= x_i <= 10 for i = 1,...,n."""
 
         # Define the citation
 
-        new_prob.cite = \
-        """
-        Mohamed Amine Bouhlel, John T. Hwang, Nathalie Bartoli, Rémi Lafage, Joseph 
-        Morlier and Joaquim R. R. A. Martins, A Python surrogate modeling 
-        framework with derivatives, Advances in Engineering Software (2019).
-        """
+        new_prob.cite = "Mohamed Amine Bouhlel, John T. Hwang, Nathalie Bartoli, Rémi Lafage, Joseph Morlier and Joaquim R. R. A. Martins, A Python surrogate modeling framework with derivatives, Advances in Engineering Software (2019)."
 
         return new_prob
     

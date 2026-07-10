@@ -106,22 +106,20 @@ def test_create_opt_problem():
     ), f"Expected initial guess {expected_initial_guess}, got {actual_initial_guess}"
 
     # Check the description
-    expected_description = r"""$$
-The example can be found in the Optlib 6.2 manual on page 308.
+    expected_description = r"""The example can be found in the Optlib 6.2 manual on page 308.
 The example can be found in the SOCS 7.1 manual on page 625.
 
 .. math::
-    \begin{align}
+    \begin{aligned}
         \min\quad & f = (x_1 - 1)^2 + (x_1 - x_2)^2 + (x_2 - x_3)^4\\[1em]
         \text{s.t.}\quad & c = x_1(1 + x_2^2) + x_3^4 - 4 - 3\sqrt{2} = 0
-    \end{align}
+    \end{aligned}
 
 The optimal solution in the SOCS manual is
 
 x* = [1.104859034205678, 1.196674180655277, 1.535262258200661]
 
-with f = 0.032568200256415, c = 1.253397385880817e-010    
-$$"""
+with f = 0.032568200256415, c = 1.253397385880817e-010"""
     assert (
         opt_problem.description.strip() == expected_description.strip()
     ), "Description does not match expected value"

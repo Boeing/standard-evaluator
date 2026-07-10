@@ -102,8 +102,7 @@ def test_create_opt_problem():
         ), f"Response bounds do not match for response {resp}: {resp.scale} != {expected_scales}"
 
     # Check the description
-    expected_description = r"""$$
-Implement the Rosenbrock Post Office problem, with derivatives
+    expected_description = """Implement the Rosenbrock Post Office problem, with derivatives
     minimize y1 subject to
 
     0 <= x(i) <= 42, i=1,...,3
@@ -114,8 +113,7 @@ Implement the Rosenbrock Post Office problem, with derivatives
 
     x* = ( 0.24000000E+02 0.12000000E+02 0.12000000E+02 )
 
-    at x* (y1, y2, y3) = (-3456.0, 0.0, 72.0)
-$$"""
+    at x* (y1, y2, y3) = (-3456.0, 0.0, 72.0)"""
     assert (
         opt_problem.description.strip() == expected_description.strip()
     ), "Description does not match expected value"

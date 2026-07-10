@@ -142,66 +142,64 @@ def test_create_opt_problem():
     ), f"Expected scales {expected_scales}, got {actual_scales}"
 
     # Check the description
-    expected_description = r"""$$
-Cantilevered Beam Example Evaluator
+    expected_description = """Cantilevered Beam Example Evaluator
 
-    The problem has four design variables with types as follows:
+The problem has four design variables with types as follows:
 
-    - x0 - integer
-    - x1 - double
-    - x2 - double
-    - x3 - double
+- x0 - integer
+- x1 - double
+- x2 - double
+- x3 - double
 
-    There are three responses:
+There are three responses:
 
-    - volume
-    - stress
-    - deflection
+- volume
+- stress
+- deflection
 
-    .. note:: The source for this instantiation of this evaluator is
-        a white paper from `Red Cedar Technology <http://www.redcedartech.com>`_
-        called *"SHERPA - An Efficient and Robust Optimization/Search
-        Algorithm"*.
+.. note:: The source for this instantiation of this evaluator is
+    a white paper from `Red Cedar Technology <http://www.redcedartech.com>`_
+    called *"SHERPA - An Efficient and Robust Optimization/Search
+    Algorithm"*.
 
-    ::
+::
 
-        |<------ b1 ------>|
-         __________________
-        |                  |
-        |                  | h1
-        |_____        _____|
-              |      |
-              |      |
-              |<-b2->|   H - 2 * h1
-              |      |
-         _____|      |_____
-        |                  |
-        |                  | h1
-        |__________________|
+    |<------ b1 ------>|
+     __________________
+    |                  |
+    |                  | h1
+    |_____        _____|
+          |      |
+          |      |
+          |<-b2->|   H - 2 * h1
+          |      |
+     _____|      |_____
+    |                  |
+    |                  | h1
+    |__________________|
 
-    - x0 -> h1 in [0.1, 1.0] (accessed by indicies [1, 2, 3, 4, 5, 6, 7, 8] into
-      a lookup table { .1, .25, .35, .5, .65, .75, .9, 1.0 } in this domain)
-    - x1 -> b1 in [2.0, 12.0]
-    - x2 -> b2 in [0.1, 2.0]
-    - x3 -> H  in [3.0, 7.0]
+- x0 -> h1 in [0.1, 1.0] (accessed by indicies [1, 2, 3, 4, 5, 6, 7, 8] into
+  a lookup table { .1, .25, .35, .5, .65, .75, .9, 1.0 } in this domain)
+- x1 -> b1 in [2.0, 12.0]
+- x2 -> b2 in [0.1, 2.0]
+- x3 -> H  in [3.0, 7.0]
 
-    |
+|
 
-    - W = Load (hard coded to 1000 pounds)
-    - E = Modulus of Elasticity (hard coded to 1.0e7 psi)
-    - L = length (hard coded to 60 inches)
-    - Z = I / z (section modulus of the cross-section of the beam)
-    - z = H / 2 (Distance from neutral axis to extreme fiber (edge))
-    - I = Moment of Inertia (of cross section about neutral axis)    
+- W = Load (hard coded to 1000 pounds)
+- E = Modulus of Elasticity (hard coded to 1.0e7 psi)
+- L = length (hard coded to 60 inches)
+- Z = I / z (section modulus of the cross-section of the beam)
+- z = H / 2 (Distance from neutral axis to extreme fiber (edge))
+- I = Moment of Inertia (of cross section about neutral axis)
 
-    I = (1/12) * ((H - 2 * h1) * b2 ^ 3) + (1/12) * (b1 * h1 ^ 3) + (1/12) * (b1 * h1 ^ 3) + b1 * h1 * ((H - h1) / 2 ) ^ 2 + b1 * h1 * ((H - h1) / 2) ^ 2
-    = (1/12) * ((H - 2 * h1) * b2 ^ 3) + 2 * (b1 * h1 ^ 3)) + (b1 * h1 *(H - h1) ^ 2) / 2
-
-    V = (2 * b1 * h1 + b2 * (H - 2 * h1)) * L
-    stress(x) = W *(L - x) / Z = W * (L - x) * z / I = W * (L - x) * H / (2 * I)
-    max stress = stress(0) = W * L * H / (2 * I)
-    deflection = W * L ^ 3 / (3 * E * I)
-    $$"""
+| I = (1/12) * ((H - 2 * h1) * b2 ^ 3) + (1/12) * (b1 * h1 ^ 3) + (1/12) * (b1 * h1 ^ 3) + b1 * h1 * ((H - h1) / 2 ) ^ 2 + b1 * h1 * ((H - h1) / 2) ^ 2
+| = (1/12) * ((H - 2 * h1) * b2 ^ 3) + 2 * (b1 * h1 ^ 3)) + (b1 * h1 *(H - h1) ^ 2) / 2
+|
+| V = (2 * b1 * h1 + b2 * (H - 2 * h1)) * L
+| stress(x) = W *(L - x) / Z = W * (L - x) * z / I = W * (L - x) * H / (2 * I)
+| max stress = stress(0) = W * L * H / (2 * I)
+| deflection = W * L ^ 3 / (3 * E * I)"""
     assert (
         opt_problem.description.strip() == expected_description.strip()
     ), "Description does not match expected value"
@@ -212,7 +210,6 @@ Cantilevered Beam Example Evaluator
         opt_problem.cite == expected_citation
     ), f"Expected citation '{expected_citation}', got '{opt_problem.cite}'"
 
-    # Test to check response values of evaluated initial guess
     test_func = CantileveredBeam()
     initial_guess_df = test_func.initial_guess()
 

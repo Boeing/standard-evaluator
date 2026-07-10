@@ -87,8 +87,7 @@ class WrkBkPrb1(TestEvaluator):
         new_prob.constraints = ["c"]
 
         # Define th description of the problem
-        new_prob.description = r"""$$
-work book problem 1 from the SOCS user's guide page 23
+        new_prob.description = r"""work book problem 1 from the SOCS user's guide page 23
 
     minimize f(x1, x2)
 
@@ -104,8 +103,7 @@ work book problem 1 from the SOCS user's guide page 23
 
     :math:`f(x_1, x_2) = x_1^2 + x_2^2 + \ln(c)`
 
-    x0 = (0.5, 2.0)
-$$"""
+    x0 = (0.5, 2.0)"""
         # Define the citation
         new_prob.cite = 'Beiqing Huang and Xiaoping Du, "A robust design method using variable transformation and Gauss-Hermite integration," *International Journal for Numerical Methods in Engineering*, Int. J. Numer. Meth. Engng 2006; 66:1841-1858.'
         return new_prob

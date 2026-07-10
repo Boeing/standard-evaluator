@@ -106,8 +106,7 @@ def test_create_opt_problem():
         ), f"Response bounds do not match for response {resp}: {resp.bounds} != {expected_bounds}"
 
     # Check the description
-    expected_description = r"""$$
-The Two Bar Truss evaluator. This evaluator is a concrete class which inherits
+    expected_description = """The Two Bar Truss evaluator. This evaluator is a concrete class which inherits
     from the abstract DE::Evaluator class.  This is to be used as an example
     for deriving Design Explorer Evaluators and for testing future optimization
     methods.
@@ -131,8 +130,7 @@ The Two Bar Truss evaluator. This evaluator is a concrete class which inherits
        - g2, double, strength 2
 
     The objective of the design is to minimize the weight of the two-bar truss subject to
-    the two strength constraints about the axial stress in each bar.
-$$"""
+    the two strength constraints about the axial stress in each bar."""
     assert (
         opt_problem.description.strip() == expected_description.strip()
     ), "Description does not match expected value"

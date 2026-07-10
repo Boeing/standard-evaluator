@@ -107,11 +107,9 @@ def test_create_opt_problem():
         ), f"response bounds do not match for response {resp}: {resp.bounds} != {expected_bounds}"
 
     # Check the description
-    expected_description = r"""$$
-Source code for a simple multifidelity problem capturing the common information.
+    expected_description = """Source code for a simple multifidelity problem capturing the common information.
 author: Mark Abramson (Joe Simonis invented the test problem)
-date Jun 12, 2015
-$$"""
+date Jun 12, 2015"""
     assert (
         opt_problem.description.strip() == expected_description.strip()
     ), "Description does not match expected value"

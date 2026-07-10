@@ -111,8 +111,7 @@ def test_create_opt_problem():
     ), f"Expected scales {expected_scales}, got {actual_scales}"
 
     # Check the description
-    expected_description = r"""$$
-This is a truss optimization problem.  As a more realistic mid-sized problem
+    expected_description = r"""This is a truss optimization problem.  As a more realistic mid-sized problem
 the objectives can be combined in various ways to explore problems of different
 dimension.  Any stress response which is not included as an objective should
 be included in a maximum stress constraint (g4-g6).
@@ -200,8 +199,7 @@ where
 
 Starting Point
     - x           = 0.50*D            (Center of space)
-    - a0, a1, a2  = 1.9
-$$"""
+    - a0, a1, a2  = 1.9"""
     assert (
         opt_problem.description.strip() == expected_description.strip()
     ), "Description does not match expected value"

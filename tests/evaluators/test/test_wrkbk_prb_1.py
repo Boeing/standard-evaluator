@@ -96,8 +96,7 @@ def test_create_opt_problem():
         ), f"Response bounds do not match for response {resp}: {resp.bounds} != {expected_bounds}"
 
     # Check the description
-    expected_description = r"""$$
-work book problem 1 from the SOCS user's guide page 23
+    expected_description = r"""work book problem 1 from the SOCS user's guide page 23
 
     minimize f(x1, x2)
 
@@ -113,8 +112,7 @@ work book problem 1 from the SOCS user's guide page 23
 
     :math:`f(x_1, x_2) = x_1^2 + x_2^2 + \ln(c)`
 
-    x0 = (0.5, 2.0)
-$$"""
+    x0 = (0.5, 2.0)"""
     assert (
         opt_problem.description.strip() == expected_description.strip()
     ), "Description does not match expected value"

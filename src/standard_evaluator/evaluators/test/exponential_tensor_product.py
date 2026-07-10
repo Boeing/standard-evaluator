@@ -9,8 +9,13 @@ from standard_evaluator.evaluators.abstract_evaluator import ValidInputs
 
 
 class ExponentialTensorProduct(TestEvaluator):
-    """
-    An example test that represents the exponential tensor product function.
+    r"""The exponential tensor product function approximates a step function which
+    causes oscillation with some surrogate models. It is given by:
+
+    .. math::
+        f(\mathbf{x}) = \prod_{i=1}^n \exp(a \cdot x_i)
+
+    with :math:`-1 \leq x_i \leq 1` for :math:`i = 1,\ldots,n`.
     """
 
 
@@ -104,22 +109,17 @@ class ExponentialTensorProduct(TestEvaluator):
 
         # Define the description of the problem
 
-        new_prob.description = \
-        """
-        The tensor product function approximates a step function which causes oscillation with some surrogate
-        models. It is given by
-                        prod_{i=1}^n exp(a*x_i)
-                        -1 <= x_i <= 1 for i = 1,...,n.
-        """
+        new_prob.description = r"""The exponential tensor product function approximates a step function which causes oscillation with some surrogate models. It is given by:
+
+$$
+f(\mathbf{x}) = \prod_{i=1}^n \exp(a \cdot x_i)
+$$
+
+| -1 <= x_i <= 1 for i = 1,...,n."""
 
         # Define the citation
 
-        new_prob.cite = \
-        """
-        Mohamed Amine Bouhlel, John T. Hwang, Nathalie Bartoli, Rémi Lafage, Joseph 
-        Morlier and Joaquim R. R. A. Martins, A Python surrogate modeling 
-        framework with derivatives, Advances in Engineering Software (2019).
-        """
+        new_prob.cite = "Mohamed Amine Bouhlel, John T. Hwang, Nathalie Bartoli, Rémi Lafage, Joseph Morlier and Joaquim R. R. A. Martins, A Python surrogate modeling framework with derivatives, Advances in Engineering Software (2019)."
 
         return new_prob
     

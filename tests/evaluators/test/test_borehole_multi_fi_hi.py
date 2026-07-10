@@ -136,22 +136,22 @@ def test_create_opt_problem():
         ), f"Variable bounds do not match for variable {resp}: {resp.units} != {expected_resp_unit}"
 
     # Check the description
-    expected_description = r"""$$
-The Borehole function models water flow through a borehole. Its simplicity and quick evaluation makes it a
-commonly used function for testing a wide variety of methods in computer experiments.
-The response is water flow rate in  𝑚3/𝑦𝑟 .
+    expected_description = """The Borehole function models water flow through a borehole. Its simplicity and quick evaluation makes it a commonly used function for testing a wide variety of methods in computer experiments. The response is water flow rate in :math:`m^3/yr`.
 
-Input Domain
+Input Domain:
 
-Radius of borehole ( 𝑚 ) -  𝑟𝑤∈[0.05,0.15]
-Radius of influence ( 𝑚 ) -  𝑟∈[100,50000]
-Transmissivity of upper aquifier ( 𝑚2/𝑦𝑟 ) -  𝑇𝑢∈[63070,115600]
-Potentiometric head of upper aquifier ( 𝑚 ) -  𝐻𝑢∈[990,1110]
-Transmissivity of lower aquifier ( 𝑚2/𝑦𝑟 ) -  𝑇𝑙∈[63.1,116]
-Potentiometric head of lower aquifier ( 𝑚 ) -  𝐻𝑙∈[700,820]
-Length of borehole ( 𝑚 ) -  𝐿∈[1120,1680]
-Hydraulic conductivity of borehole ( 𝑚/𝑦𝑟 ) -  𝐾𝑤∈[9855,12045]       
-$$"""
+====================================================  ================
+Variable Description                                  Bounds
+====================================================  ================
+Radius of borehole (m) — :math:`r_w`                 [0.05, 0.15]
+Radius of influence (m) — :math:`r`                  [100, 50000]
+Transmissivity of upper aquifer (m²/yr) — :math:`T_u`  [63070, 115600]
+Potentiometric head of upper aquifer (m) — :math:`H_u`  [990, 1110]
+Transmissivity of lower aquifer (m²/yr) — :math:`T_l`  [63.1, 116]
+Potentiometric head of lower aquifer (m) — :math:`H_l`  [700, 820]
+Length of borehole (m) — :math:`L`                    [1120, 1680]
+Hydraulic conductivity of borehole (m/yr) — :math:`K_w`  [9855, 12045]
+====================================================  ================"""
     assert (
         opt_problem.description.strip() == expected_description.strip()
     ), "Description does not match expected value"
