@@ -202,13 +202,13 @@ remain within specified limits.
 - z = H / 2 (Distance from neutral axis to extreme fiber (edge))
 - I = Moment of Inertia (of cross section about neutral axis)
 
-I = (1/12) * ((H - 2 * h1) * b2 ^ 3) + (1/12) * (b1 * h1 ^ 3) + (1/12) * (b1 * h1 ^ 3) + b1 * h1 * ((H - h1) / 2 ) ^ 2 + b1 * h1 * ((H - h1) / 2) ^ 2
-= (1/12) * ((H - 2 * h1) * b2 ^ 3) + 2 * (b1 * h1 ^ 3)) + (b1 * h1 *(H - h1) ^ 2) / 2
-
-V = (2 * b1 * h1 + b2 * (H - 2 * h1)) * L
-stress(x) = W *(L - x) / Z = W * (L - x) * z / I = W * (L - x) * H / (2 * I)
-max stress = stress(0) = W * L * H / (2 * I)
-deflection = W * L ^ 3 / (3 * E * I)"""
+| I = (1/12) * ((H - 2 * h1) * b2 ^ 3) + (1/12) * (b1 * h1 ^ 3) + (1/12) * (b1 * h1 ^ 3) + b1 * h1 * ((H - h1) / 2 ) ^ 2 + b1 * h1 * ((H - h1) / 2) ^ 2
+| = (1/12) * ((H - 2 * h1) * b2 ^ 3) + 2 * (b1 * h1 ^ 3)) + (b1 * h1 *(H - h1) ^ 2) / 2
+|
+| V = (2 * b1 * h1 + b2 * (H - 2 * h1)) * L
+| stress(x) = W *(L - x) / Z = W * (L - x) * z / I = W * (L - x) * H / (2 * I)
+| max stress = stress(0) = W * L * H / (2 * I)
+| deflection = W * L ^ 3 / (3 * E * I)"""
         # Define the citation
         new_prob.cite = 'The source for this instantiation of this evaluator is a white paper from `Red Cedar Technology <http://www.redcedartech.com>`_ called *"SHERPA - An Efficient and Robust Optimization/Search Algorithm"*.'
         return new_prob

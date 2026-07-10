@@ -60,7 +60,7 @@ class ExponentialMultiFiBase(TestEvaluator):
 
         # Define th description of the problem
         new_prob.description = """This function is a two-dimensional example which occurs several times in the
-    literature on computer experiments."""
+literature on computer experiments."""
         # Define the citation
         new_prob.cite = ""
         return new_prob

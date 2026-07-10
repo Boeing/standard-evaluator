@@ -193,13 +193,13 @@ There are three responses:
 - z = H / 2 (Distance from neutral axis to extreme fiber (edge))
 - I = Moment of Inertia (of cross section about neutral axis)
 
-I = (1/12) * ((H - 2 * h1) * b2 ^ 3) + (1/12) * (b1 * h1 ^ 3) + (1/12) * (b1 * h1 ^ 3) + b1 * h1 * ((H - h1) / 2 ) ^ 2 + b1 * h1 * ((H - h1) / 2) ^ 2
-= (1/12) * ((H - 2 * h1) * b2 ^ 3) + 2 * (b1 * h1 ^ 3)) + (b1 * h1 *(H - h1) ^ 2) / 2
-
-V = (2 * b1 * h1 + b2 * (H - 2 * h1)) * L
-stress(x) = W *(L - x) / Z = W * (L - x) * z / I = W * (L - x) * H / (2 * I)
-max stress = stress(0) = W * L * H / (2 * I)
-deflection = W * L ^ 3 / (3 * E * I)"""
+| I = (1/12) * ((H - 2 * h1) * b2 ^ 3) + (1/12) * (b1 * h1 ^ 3) + (1/12) * (b1 * h1 ^ 3) + b1 * h1 * ((H - h1) / 2 ) ^ 2 + b1 * h1 * ((H - h1) / 2) ^ 2
+| = (1/12) * ((H - 2 * h1) * b2 ^ 3) + 2 * (b1 * h1 ^ 3)) + (b1 * h1 *(H - h1) ^ 2) / 2
+|
+| V = (2 * b1 * h1 + b2 * (H - 2 * h1)) * L
+| stress(x) = W *(L - x) / Z = W * (L - x) * z / I = W * (L - x) * H / (2 * I)
+| max stress = stress(0) = W * L * H / (2 * I)
+| deflection = W * L ^ 3 / (3 * E * I)"""
     assert (
         opt_problem.description.strip() == expected_description.strip()
     ), "Description does not match expected value"
@@ -210,7 +210,6 @@ deflection = W * L ^ 3 / (3 * E * I)"""
         opt_problem.cite == expected_citation
     ), f"Expected citation '{expected_citation}', got '{opt_problem.cite}'"
 
-    # Test to check response values of evaluated initial guess
     test_func = CantileveredBeam()
     initial_guess_df = test_func.initial_guess()
 

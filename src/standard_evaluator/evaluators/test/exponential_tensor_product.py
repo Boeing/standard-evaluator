@@ -105,12 +105,10 @@ class ExponentialTensorProduct(TestEvaluator):
         # Define the description of the problem
 
         new_prob.description = \
-        """
-        The tensor product function approximates a step function which causes oscillation with some surrogate
-        models. It is given by
-                        prod_{i=1}^n exp(a*x_i)
-                        -1 <= x_i <= 1 for i = 1,...,n.
-        """
+        """The tensor product function approximates a step function which causes oscillation with some surrogate
+models. It is given by
+$$\\prod_{i=1}^n \\exp(a \\cdot x_i)$$
+| -1 <= x_i <= 1 for i = 1,...,n."""
 
         # Define the citation
 

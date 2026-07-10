@@ -81,7 +81,7 @@ def test_create_opt_problem():
 
     # Check the description
     expected_description = """This function is a two-dimensional example which occurs several times in the
-    literature on computer experiments."""
+literature on computer experiments."""
     assert (
         opt_problem.description.strip() == expected_description.strip()
     ), "Description does not match expected value"
