@@ -83,8 +83,7 @@ def test_create_opt_problem():
     ), f"Expected initial guess {expected_initial_guess}, got {actual_initial_guess}"
 
     # Check the description
-    expected_description = r"""$$
-The Extended Rosenbrock function.
+    expected_description = r"""The Extended Rosenbrock function.
 
 This evaluator is an example function from
 "Numerical Methods for Unconstrained Optimization and
@@ -94,8 +93,7 @@ The problem has two independent variables, :math:`x_0` and :math:`x_1` and
 a single response:
 
 .. math::
-    f(x_0, x_1) = \left[10*\left(x_1-x_0^2\right)\right]^2 + (1-x_0)^2        
-$$"""
+    f(x_0, x_1) = \left[10*\left(x_1-x_0^2\right)\right]^2 + (1-x_0)^2"""
     assert (
         opt_problem.description.strip() == expected_description.strip()
     ), "Description does not match expected value"

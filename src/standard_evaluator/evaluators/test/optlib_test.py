@@ -91,8 +91,7 @@ class OptlibTest(TestEvaluator):
         new_prob.constraints = ["c"]
 
         # Define th description of the problem
-        new_prob.description = r"""$$
-The example can be found in the Optlib 6.2 manual on page 308.
+        new_prob.description = r"""The example can be found in the Optlib 6.2 manual on page 308.
 The example can be found in the SOCS 7.1 manual on page 625.
 
 .. math::
@@ -105,8 +104,7 @@ The optimal solution in the SOCS manual is
 
 x* = [1.104859034205678, 1.196674180655277, 1.535262258200661]
 
-with f = 0.032568200256415, c = 1.253397385880817e-010    
-$$"""
+with f = 0.032568200256415, c = 1.253397385880817e-010"""
         # Define the citation
         new_prob.cite = ""
         return new_prob

@@ -97,7 +97,10 @@ def test_hs47_create_opt_problem():
 \end{align}
 $$
 
-The initial point is given by: $$x_0 = (2.0,~ \sqrt{2.0},~ -1.0,~ 2.0 - \sqrt{2.0},~ 0.5)$$
+The initial point is given by:
+
+$$
+x_0 = (2.0,~ \sqrt{2.0},~ -1.0,~ 2.0 - \sqrt{2.0},~ 0.5)
 $$"""
     assert (
         opt_problem.description.strip() == expected_description.strip()

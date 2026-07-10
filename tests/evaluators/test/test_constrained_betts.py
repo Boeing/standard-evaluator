@@ -94,8 +94,7 @@ def test_create_opt_problem():
     ), f"Expected constraints {expected_constraints}, got {opt_problem.constraints}"
 
     # Check the description
-    expected_description = r"""$$
-Implement the linearly constrained Betts function defined as
+    expected_description = """Implement the linearly constrained Betts function defined as
 
     min f(x) = 0.01 * x1^2 + x2^2 - 100
 
@@ -111,8 +110,7 @@ Implement the linearly constrained Betts function defined as
 
     and an infeasible initial point
 
-    x0 = (-1, -1)
-$$"""
+    x0 = (-1, -1)"""
     assert (
         opt_problem.description.strip() == expected_description.strip()
     ), "Description does not match expected value"

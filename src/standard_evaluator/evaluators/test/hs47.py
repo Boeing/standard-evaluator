@@ -94,7 +94,10 @@ class HS47(TestEvaluator):
 \end{align}
 $$
 
-The initial point is given by: $$x_0 = (2.0,~ \sqrt{2.0},~ -1.0,~ 2.0 - \sqrt{2.0},~ 0.5)$$
+The initial point is given by:
+
+$$
+x_0 = (2.0,~ \sqrt{2.0},~ -1.0,~ 2.0 - \sqrt{2.0},~ 0.5)
 $$"""
         # Define the citation
         new_prob.cite = 'Hock, Willi, and Klaus Schittkowski. "Test examples for nonlinear programming codes." Journal of optimization theory and applications 30 (1980): 127-129.'

@@ -139,75 +139,76 @@ class CantileveredBeamFixedVariable(CantileveredBeam):
         new_prob.constraints = ["volume", "stress", "deflection"]
 
         # Define the description of the problem
-        new_prob.description = r"""$$
+        new_prob.description = """\
 Cantilevered Beam with Fixed Variables Example Evaluator
 
-    This example initializes an optimization problem with six design variables, 
-    three responses, and specific objectives and constraints related to the 
-    structural analysis of a cantilevered beam. The design variables include 
-    both float and integer types, with defined bounds and default values.
+This example initializes an optimization problem with six design variables,
+three responses, and specific objectives and constraints related to the
+structural analysis of a cantilevered beam. The design variables include
+both float and integer types, with defined bounds and default values.
 
-    The problem has 6 design variables with types as follows:
-    - b1: Width of the first section of the beam (double)
-    - b2: Width of the second section of the beam (double)
-    - H: Height of the beam (double)
-    - x0: An integer variable
-    - C0: A fixed float variable
-    - C1: A fixed integer variable
+The problem has 6 design variables with types as follows:
 
-    There are three responses:
-    - deflection
-    - stress
-    - volume
+- b1: Width of the first section of the beam (double)
+- b2: Width of the second section of the beam (double)
+- H: Height of the beam (double)
+- x0: An integer variable
+- C0: A fixed float variable
+- C1: A fixed integer variable
 
-    The objectives and constraints for the optimization problem are set to 
-    minimize the volume while ensuring that the stress and deflection 
-    remain within specified limits.
+There are three responses:
 
-    .. note:: The source for this instantiation of this evaluator is
-        a white paper from `Red Cedar Technology <http://www.redcedartech.com>`_
-        called *"SHERPA - An Efficient and Robust Optimization/Search
-        Algorithm"*.
+- deflection
+- stress
+- volume
 
-    ::
+The objectives and constraints for the optimization problem are set to
+minimize the volume while ensuring that the stress and deflection
+remain within specified limits.
 
-        |<------ b1 ------>|
-         __________________
-        |                  |
-        |                  | h1
-        |_____        _____|
-              |      |
-              |      |
-              |<-b2->|   H - 2 * h1
-              |      |
-         _____|      |_____
-        |                  |
-        |                  | h1
-        |__________________|
+.. note:: The source for this instantiation of this evaluator is
+    a white paper from `Red Cedar Technology <http://www.redcedartech.com>`_
+    called *"SHERPA - An Efficient and Robust Optimization/Search
+    Algorithm"*.
 
-    - x0 -> h1 in [0.1, 1.0] (accessed by indicies [1, 2, 3, 4, 5, 6, 7, 8] into
-      a lookup table { .1, .25, .35, .5, .65, .75, .9, 1.0 } in this domain)
-    - x1 -> b1 in [2.0, 12.0]
-    - x2 -> b2 in [0.1, 2.0]
-    - x3 -> H  in [3.0, 7.0]
+::
 
-    |
+    |<------ b1 ------>|
+     __________________
+    |                  |
+    |                  | h1
+    |_____        _____|
+          |      |
+          |      |
+          |<-b2->|   H - 2 * h1
+          |      |
+     _____|      |_____
+    |                  |
+    |                  | h1
+    |__________________|
 
-    - W = Load (hard coded to 1000 pounds)
-    - E = Modulus of Elasticity (hard coded to 1.0e7 psi)
-    - L = length (hard coded to 60 inches)
-    - Z = I / z (section modulus of the cross-section of the beam)
-    - z = H / 2 (Distance from neutral axis to extreme fiber (edge))
-    - I = Moment of Inertia (of cross section about neutral axis)
+- x0 -> h1 in [0.1, 1.0] (accessed by indicies [1, 2, 3, 4, 5, 6, 7, 8] into
+  a lookup table { .1, .25, .35, .5, .65, .75, .9, 1.0 } in this domain)
+- x1 -> b1 in [2.0, 12.0]
+- x2 -> b2 in [0.1, 2.0]
+- x3 -> H  in [3.0, 7.0]
 
-    I = (1/12) * ((H - 2 * h1) * b2 ^ 3) + (1/12) * (b1 * h1 ^ 3) + (1/12) * (b1 * h1 ^ 3) + b1 * h1 * ((H - h1) / 2 ) ^ 2 + b1 * h1 * ((H - h1) / 2) ^ 2
-    = (1/12) * ((H - 2 * h1) * b2 ^ 3) + 2 * (b1 * h1 ^ 3)) + (b1 * h1 *(H - h1) ^ 2) / 2
+|
 
-    V = (2 * b1 * h1 + b2 * (H - 2 * h1)) * L
-    stress(x) = W *(L - x) / Z = W * (L - x) * z / I = W * (L - x) * H / (2 * I)
-    max stress = stress(0) = W * L * H / (2 * I)
-    deflection = W * L ^ 3 / (3 * E * I)      
-$$"""
+- W = Load (hard coded to 1000 pounds)
+- E = Modulus of Elasticity (hard coded to 1.0e7 psi)
+- L = length (hard coded to 60 inches)
+- Z = I / z (section modulus of the cross-section of the beam)
+- z = H / 2 (Distance from neutral axis to extreme fiber (edge))
+- I = Moment of Inertia (of cross section about neutral axis)
+
+I = (1/12) * ((H - 2 * h1) * b2 ^ 3) + (1/12) * (b1 * h1 ^ 3) + (1/12) * (b1 * h1 ^ 3) + b1 * h1 * ((H - h1) / 2 ) ^ 2 + b1 * h1 * ((H - h1) / 2) ^ 2
+= (1/12) * ((H - 2 * h1) * b2 ^ 3) + 2 * (b1 * h1 ^ 3)) + (b1 * h1 *(H - h1) ^ 2) / 2
+
+V = (2 * b1 * h1 + b2 * (H - 2 * h1)) * L
+stress(x) = W *(L - x) / Z = W * (L - x) * z / I = W * (L - x) * H / (2 * I)
+max stress = stress(0) = W * L * H / (2 * I)
+deflection = W * L ^ 3 / (3 * E * I)"""
         # Define the citation
         new_prob.cite = 'The source for this instantiation of this evaluator is a white paper from `Red Cedar Technology <http://www.redcedartech.com>`_ called *"SHERPA - An Efficient and Robust Optimization/Search Algorithm"*.'
         return new_prob

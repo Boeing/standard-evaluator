@@ -184,12 +184,17 @@ class FormatClass(AutoSummClassDocumenter):
         self._render_test_info_table(test_info, source_name)
 
     def _render_description(self, description, source_name):
-        """Render the opt_problem.description as a formatted RST block.
+        """Render the opt_problem.description as formatted RST blocks.
 
-        If the description is wrapped in $$ delimiters (starts AND ends with $$),
-        it is rendered inside a .. math:: directive. Otherwise it is rendered as
-        plain paragraph text.
+        Splits the description on $$ boundaries. Text outside $$ pairs is
+        rendered as plain RST paragraphs. Text inside $$ pairs is rendered
+        inside .. math:: directives.
+
+        Args:
+            description: The stripped description string from opt_problem.
+            source_name: The Sphinx source name for add_line calls.
         """
+        # Emit heading
         self.add_line('|', source_name)
         self.add_line('', source_name)
         self.add_line('.. rst-class:: title', source_name)
@@ -197,20 +202,34 @@ class FormatClass(AutoSummClassDocumenter):
         self.add_line('**Problem Description**', source_name)
         self.add_line('', source_name)
 
-        # Check if content is wrapped in $$ delimiters (LaTeX math block)
-        if description.startswith('$$') and description.endswith('$$'):
-            # Strip $$ and render as math directive
-            math_content = description[2:-2].strip()
-            self.add_line('.. math::', source_name)
-            self.add_line('', source_name)
-            for line in math_content.split('\n'):
-                self.add_line('   ' + line, source_name)
-        else:
-            # Plain text description — render as paragraph
-            for line in description.split('\n'):
-                self.add_line(line, source_name)
+        # Split description into segments on $$ boundaries
+        segments = description.split('$$')
 
-        self.add_line('', source_name)
+        # After split('$$'):
+        # - Even indices (0, 2, 4...) are TEXT segments
+        # - Odd indices (1, 3, 5...) are MATH segments
+        # This works regardless of whether the string starts with $$
+        # (if it does, segment[0] is empty and gets skipped)
+
+        for i, segment in enumerate(segments):
+            content = segment.strip()
+            if not content:
+                continue
+
+            is_math = (i % 2 == 1)  # odd indices are always math
+
+            if is_math:
+                # Render as .. math:: directive
+                self.add_line('.. math::', source_name)
+                self.add_line('', source_name)
+                for line in content.split('\n'):
+                    self.add_line('   ' + line, source_name)
+                self.add_line('', source_name)
+            else:
+                # Render as plain RST paragraph
+                for line in content.split('\n'):
+                    self.add_line(line, source_name)
+                self.add_line('', source_name)
 
     def _render_citation(self, cite, source_name):
         """Render the opt_problem.cite as a styled admonition block."""

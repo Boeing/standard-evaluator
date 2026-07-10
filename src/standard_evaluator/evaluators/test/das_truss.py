@@ -200,8 +200,7 @@ class DasTruss(TestEvaluator):
         new_prob.constraints = ["g0", "g1", "g2", "g3"]
 
         # Define th description of the problem
-        new_prob.description = r"""$$
-This is a truss optimization problem.  As a more realistic mid-sized problem,
+        new_prob.description = r"""This is a truss optimization problem.  As a more realistic mid-sized problem,
 the objectives can be combined in various ways to explore problems of different
 dimension.  Any stress response which is not included as an objective should
 be included in a maximum stress constraint (g4-g6).
@@ -297,8 +296,7 @@ where
 
 Starting Point
     - x           = 0.50*D            (Center of space)
-    - a0, a1, a2  = 1.9
-$$"""
+    - a0, a1, a2  = 1.9"""
         # Define the citation
         new_prob.cite = "Das (1997) Nonlinear multicriteria optimization and robust optimality.  Ph.D. Thesis, Dept. of Computational and Applied Mathematics, Rice University, Houston, TX."
         return new_prob

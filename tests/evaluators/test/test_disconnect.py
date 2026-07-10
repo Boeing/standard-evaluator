@@ -97,7 +97,7 @@ def test_create_opt_problem():
         ), f"Response bounds do not match for response {resp}: {resp.bounds} != {expected_bounds}"
 
     # Check the description
-    expected_description = r"""$$
+    expected_description = """\
 The SphereEvaluator class is a multiobjective test problem.  It models a hyperellipsoid in
 n-dimensional space, centered at an arbitrary point and extending to the coordinate
 planes on each axis, although an optional offset may be used as well.  The default bounds
@@ -109,8 +109,7 @@ asserting that a point x is <= center and that the constraint value is equal to 
 toleance).
 
 For example, a center of [2, 5, 1] with an offset of [1, 2, 3] would have minima at [1, 7, 4],
-[3, 2, 4], and [3, 7, 1].
-$$"""
+[3, 2, 4], and [3, 7, 1]."""
     assert (
         opt_problem.description.strip() == expected_description.strip()
     ), "Description does not match expected value"

@@ -75,8 +75,7 @@ def test_create_opt_problem():
     ), f"Expected initial guess {expected_initial_guess}, got {actual_initial_guess}"
 
     # Check the description
-    expected_description = r"""$$
-The Extended Powell Singular function.
+    expected_description = r"""The Extended Powell Singular function.
 
     This function comes from
     "Numerical Methods for Unconstrained Optimization and
@@ -94,8 +93,7 @@ The Extended Powell Singular function.
     The initial guess provided for this problem is
 
     .. math::
-        f(3, -1, 0, 1) = 95
-$$"""
+        f(3, -1, 0, 1) = 95"""
 
     assert (
         opt_problem.description.strip() == expected_description.strip()

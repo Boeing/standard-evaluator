@@ -93,7 +93,7 @@ def test_create_opt_problem():
     ), f"Expected scales {expected_scales}, got {actual_scales}"
 
     # Check the description
-    expected_description = r"""$$     
+    expected_description = r"""$$
 \begin{align}
     \min\quad & f = f_1^2 + f_2^2 + x_3^2\\[1em]
     \text{where}\quad & \theta = \begin{cases}
@@ -101,7 +101,7 @@ def test_create_opt_problem():
         \frac{\arctan(x_2/x_1)}{2\pi} + 0.5 & x_1 < 0
     \end{cases}\\
     & f_1 = 10(x_3 - 10\theta)\\
-    & f_2 = 10(\sqrt{x_1^2 + x_2^2} -
+    & f_2 = 10(\sqrt{x_1^2 + x_2^2} - 1)
 \end{align}
 $$"""
 

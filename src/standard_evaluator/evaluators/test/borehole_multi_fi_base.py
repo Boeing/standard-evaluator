@@ -100,8 +100,7 @@ class BoreholeMultiFiBase(TestEvaluator):
         new_prob.constraints = []
 
         # Define th description of the problem
-        new_prob.description = r"""$$
-The Borehole function models water flow through a borehole. Its simplicity and quick evaluation makes it a
+        new_prob.description = """The Borehole function models water flow through a borehole. Its simplicity and quick evaluation makes it a
 commonly used function for testing a wide variety of methods in computer experiments.
 The response is water flow rate in  𝑚3/𝑦𝑟 .
 
@@ -114,8 +113,7 @@ Potentiometric head of upper aquifier ( 𝑚 ) -  𝐻𝑢∈[990,1110]
 Transmissivity of lower aquifier ( 𝑚2/𝑦𝑟 ) -  𝑇𝑙∈[63.1,116]
 Potentiometric head of lower aquifier ( 𝑚 ) -  𝐻𝑙∈[700,820]
 Length of borehole ( 𝑚 ) -  𝐿∈[1120,1680]
-Hydraulic conductivity of borehole ( 𝑚/𝑦𝑟 ) -  𝐾𝑤∈[9855,12045]       
-$$"""
+Hydraulic conductivity of borehole ( 𝑚/𝑦𝑟 ) -  𝐾𝑤∈[9855,12045]"""
         # Define the citation
         new_prob.cite = ""
         return new_prob

@@ -99,8 +99,7 @@ class ConstrainedBetts(TestEvaluator):
         new_prob.constraints = ["c1"]
 
         # Define the description of the problem
-        new_prob.description = r"""$$
-Implement the linearly constrained Betts function defined as
+        new_prob.description = """Implement the linearly constrained Betts function defined as
 
     min f(x) = 0.01 * x1^2 + x2^2 - 100
 
@@ -116,8 +115,7 @@ Implement the linearly constrained Betts function defined as
 
     and an infeasible initial point
 
-    x0 = (-1, -1)
-$$"""
+    x0 = (-1, -1)"""
         # Define the citation
         new_prob.cite = ""
         return new_prob

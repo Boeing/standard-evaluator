@@ -96,8 +96,7 @@ f(x0) = 19192.0
 
 x* = (1.0, 1.0, 1.0, 1.0)
 
-f(x*) = 0.0
-$$"""
+f(x*) = 0.0"""
     assert (
         opt_problem.description.strip() == expected_description.strip()
     ), "Description does not match expected format"

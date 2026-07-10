@@ -85,8 +85,7 @@ class PowellSingularFunction(TestEvaluator):
         new_prob.constraints = []
 
         # Define th description of the problem
-        new_prob.description = r"""$$
-The Extended Powell Singular function.
+        new_prob.description = r"""The Extended Powell Singular function.
 
     This function comes from
     "Numerical Methods for Unconstrained Optimization and
@@ -104,8 +103,7 @@ The Extended Powell Singular function.
     The initial guess provided for this problem is
 
     .. math::
-        f(3, -1, 0, 1) = 95
-$$"""
+        f(3, -1, 0, 1) = 95"""
         # Define the citation
         new_prob.cite = "J.E. Dennis Jr. and R.B. Schnabel, 'Numerical Methods for Unconstrained Optimization and Nonlinear Equations'"
         return new_prob

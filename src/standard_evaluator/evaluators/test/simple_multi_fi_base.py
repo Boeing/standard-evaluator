@@ -72,11 +72,9 @@ class SimpleMultiFiBase(TestEvaluator):
         new_prob.constraints = ["c1", "c2"]
 
         # Define th description of the problem
-        new_prob.description = r"""$$
-Source code for a simple multifidelity problem capturing the common information.
+        new_prob.description = """Source code for a simple multifidelity problem capturing the common information.
 author: Mark Abramson (Joe Simonis invented the test problem)
-date Jun 12, 2015
-$$"""
+date Jun 12, 2015"""
         # Define the citation
         new_prob.cite = ""
 

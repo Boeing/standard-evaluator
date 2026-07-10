@@ -98,33 +98,37 @@ class CantileveredBeamContinuous(TestEvaluator):
         new_prob.constraints = ["volume", "stress", "deflection"]
 
         # Define the description of the problem
-        new_prob.description = r"""$$
-        Cantilevered Beam Example Evaluator with only continuous variables
-            This example is making the first variable (x0) double instead of integer, so it
-            is a relaxation of the CantileveredBeam example.
+        new_prob.description = """\
+Cantilevered Beam Example Evaluator with only continuous variables
 
-            The problem has four design variables with types as follows:
-                - hc: Height of the cantilever beam (double)
-                - b1: Width of the first section of the beam (double)
-                - b2: Width of the second section of the beam (double)
-                - H: Height of the beam (double)
+This example is making the first variable (x0) double instead of integer, so it
+is a relaxation of the CantileveredBeam example.
 
-            There are three responses:
-                - deflection: The deflection of the beam (bounded between 0.0 and 0.1)
-                - stress: The stress experienced by the beam (bounded between 0.0 and 5000.0)
-                - volume: The volume of the beam (bounded between 0.0 and 1200.0)
+The problem has four design variables with types as follows:
 
-            Objectives:
-                - Minimize the volume of the beam.
+- hc: Height of the cantilever beam (double)
+- b1: Width of the first section of the beam (double)
+- b2: Width of the second section of the beam (double)
+- H: Height of the beam (double)
 
-            Constraints:
-                - The volume, stress, and deflection of the beam must meet specified limits.
+There are three responses:
 
-            .. note:: The source for this instantiation of this evaluator is
-                a white paper from `Red Cedar Technology <http://www.redcedartech.com>`_
-                called *"SHERPA - An Efficient and Robust Optimization/Search
-                Algorithm"*.
-        $$"""
+- deflection: The deflection of the beam (bounded between 0.0 and 0.1)
+- stress: The stress experienced by the beam (bounded between 0.0 and 5000.0)
+- volume: The volume of the beam (bounded between 0.0 and 1200.0)
+
+Objectives:
+
+- Minimize the volume of the beam.
+
+Constraints:
+
+- The volume, stress, and deflection of the beam must meet specified limits.
+
+.. note:: The source for this instantiation of this evaluator is
+    a white paper from `Red Cedar Technology <http://www.redcedartech.com>`_
+    called *"SHERPA - An Efficient and Robust Optimization/Search
+    Algorithm"*."""
 
         # Define the citation
         new_prob.cite = 'The source for this instantiation of this evaluator is a white paper from `Red Cedar Technology <http://www.redcedartech.com>`_ called *"SHERPA - An Efficient and Robust Optimization/Search Algorithm"*.'

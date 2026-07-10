@@ -100,8 +100,7 @@ f(x0) = 19192.0
 
 x* = (1.0, 1.0, 1.0, 1.0)
 
-f(x*) = 0.0
-$$"""
+f(x*) = 0.0"""
         # Define the citation
         new_prob.cite = 'Hock, Willi, and Klaus Schittkowski. "Test examples for nonlinear programming codes." Journal of optimization theory and applications 30 (1980): 127-129.'
         return new_prob

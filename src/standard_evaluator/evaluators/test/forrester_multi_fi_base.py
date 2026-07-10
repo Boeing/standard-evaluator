@@ -100,8 +100,7 @@ class ForresterMultiFiBase(TestEvaluator):
         new_prob.constraints = []
 
         # Define the description of the problem
-        new_prob.description = r"""$$
-Multifidelity analysis occurs when different analysis or simulation codes predict the same
+        new_prob.description = """Multifidelity analysis occurs when different analysis or simulation codes predict the same
 response. Often in engineering different analysis codes are distinguished by their
 computational complexity and accuracy, for example, a quick calculation may be done using
 empirical equations while an expensive calculation may be cone using finite element analysis.
@@ -111,8 +110,7 @@ leverages all collected data.
 
 One method for accomplishing is to construct a correction model of the form
 
-𝑦ℎ=𝑍𝜌𝑦𝑙+𝑍𝑑
-$$"""
+𝑦ℎ=𝑍𝜌𝑦𝑙+𝑍𝑑"""
         # Define the citation
         new_prob.cite = ""
         

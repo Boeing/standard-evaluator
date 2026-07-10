@@ -92,8 +92,7 @@ class TP37(TestEvaluator):
         new_prob.constraints = ["y2", "y3"]
 
         # Define th description of the problem
-        new_prob.description = r"""$$
-Implement the Rosenbrock Post Office problem, with derivatives
+        new_prob.description = """Implement the Rosenbrock Post Office problem, with derivatives
     minimize y1 subject to
 
     0 <= x(i) <= 42, i=1,...,3
@@ -104,8 +103,7 @@ Implement the Rosenbrock Post Office problem, with derivatives
 
     x* = ( 0.24000000E+02 0.12000000E+02 0.12000000E+02 )
 
-    at x* (y1, y2, y3) = (-3456.0, 0.0, 72.0)
-$$"""
+    at x* (y1, y2, y3) = (-3456.0, 0.0, 72.0)"""
         # Define the citation
         new_prob.cite = ""
         return new_prob

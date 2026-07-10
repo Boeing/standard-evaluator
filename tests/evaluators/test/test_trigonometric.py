@@ -73,8 +73,7 @@ def test_create_opt_problem():
     ), f"Expected initial guess {expected_initial_guess}, got {actual_initial_guess}"
 
     # Check the description
-    expected_description = r"""$$
-Trigonometric function
+    expected_description = r"""Trigonometric function
     "Numerical Methods for Unconstrained Optimization and Nonlinear Equations"
     by J.E. Dennis Jr. and R.B. Schnabel.
 
@@ -89,8 +88,7 @@ Trigonometric function
 
     .. math::
         f_2 = 1 - [\cos(x_1) + 2(1 - \cos(x_2)) - \sin(x_2)]
-            - [\cos(x_2) + 2(1 - \cos(x_2)) - \sin(x_2)]
-$$"""
+            - [\cos(x_2) + 2(1 - \cos(x_2)) - \sin(x_2)]"""
 
     assert (
         opt_problem.description.strip() == expected_description.strip()

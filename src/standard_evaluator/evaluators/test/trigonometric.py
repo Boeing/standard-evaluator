@@ -89,8 +89,7 @@ class Trigonometric(TestEvaluator):
         new_prob.constraints = []
 
         # Define th description of the problem
-        new_prob.description = r"""$$
-Trigonometric function
+        new_prob.description = r"""Trigonometric function
     "Numerical Methods for Unconstrained Optimization and Nonlinear Equations"
     by J.E. Dennis Jr. and R.B. Schnabel.
 
@@ -105,8 +104,7 @@ Trigonometric function
 
     .. math::
         f_2 = 1 - [\cos(x_1) + 2(1 - \cos(x_2)) - \sin(x_2)]
-            - [\cos(x_2) + 2(1 - \cos(x_2)) - \sin(x_2)]
-$$"""
+            - [\cos(x_2) + 2(1 - \cos(x_2)) - \sin(x_2)]"""
         # Define the citation
         new_prob.cite = "J.E. Dennis Jr. and R.B. Schnabel, 'Numerical Methods for Unconstrained Optimization and Nonlinear Equations'"
         return new_prob
