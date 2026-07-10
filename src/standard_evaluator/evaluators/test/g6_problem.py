@@ -22,11 +22,11 @@ class G6Problem(TestEvaluator):
     r"""Implement the G6 constrained optimization benchmark problem.
 
     .. math::
-        \begin{align}
+        \begin{aligned}
             \min\quad & f(x) = (x_1 - 10)^3 + (x_2 - 20)^3 \\[1em]
             \text{s.t.}\quad & g_1(x) = -(x_1 - 5)^2 - (x_2 - 5)^2 + 100 \leq 0 \\
             & g_2(x) = (x_1 - 6)^2 + (x_2 - 5)^2 - 82.81 \leq 0
-        \end{align}
+        \end{aligned}
 
     Variable bounds:
 

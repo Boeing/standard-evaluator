@@ -16,13 +16,13 @@ class PowellSingularFunction(TestEvaluator):
     Nonlinear Equations" by J.E. Dennis Jr. and R.B. Shnabel.
 
     .. math::
-        \begin{align*}
+        \begin{aligned}
             \min \quad& f = f_1^2 + f_2^2 + f_3^2 + f_4^2\\[.75em]
             \text{where} \quad& f_1 = x_1 + 10x_2\\
             & f_2 = \sqrt{5}\cdot(x_3 - x_4)\\
             & f_3 = x_2 - 2x_3\\
             & f_4 = \sqrt{10}\cdot(x_1 - x_4)
-        \end{align*}
+        \end{aligned}
 
     The initial guess provided for this problem is
 
@@ -92,13 +92,13 @@ class PowellSingularFunction(TestEvaluator):
     Nonlinear Equations" by J.E. Dennis Jr. and R.B. Shnabel.
 
     .. math::
-        \begin{align*}
+        \begin{aligned}
             \min \quad& f = f_1^2 + f_2^2 + f_3^2 + f_4^2\\[.75em]
             \text{where} \quad& f_1 = x_1 + 10x_2\\
             & f_2 = \sqrt{5}\cdot(x_3 - x_4)\\
             & f_3 = x_2 - 2x_3\\
             & f_4 = \sqrt{10}\cdot(x_1 - x_4)
-        \end{align*}
+        \end{aligned}
 
     The initial guess provided for this problem is
 
