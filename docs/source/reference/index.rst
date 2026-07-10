@@ -12,3 +12,4 @@ auto-generated from source code docstrings.
    components
    data_models
    decorators
+   test_evaluators/index

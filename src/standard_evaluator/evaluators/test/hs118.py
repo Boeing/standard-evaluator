@@ -158,14 +158,12 @@ class HS118(TestEvaluator):
 
         # Define th description of the problem
         new_prob.description = r"""$$
-$$
-\begin{align}
+\begin{aligned}
     x0 &= ( 20.0, 55.0, 15.0, 20.0, 60.0, 20.0, 20.0, 60.0, 20.0, 20.0, 60.0, 20.0, 20.0, 60.0, 20.0 ) \\
     f(x0) &= 942.7162499999998 \\
     x^* &= ( 8.0, 49.0, 3.0, 1.0, 56.0, 0.0, 1.0, 63.0, 6.0, 3.0, 70.0, 12.0, 5.0, 77.0, 18.0 ) \\
     f(x^*) &= 664.82045000
-\end{align}
-$$
+\end{aligned}
 $$"""
         # Define the citation
         new_prob.cite = 'Hock, Willi, and Klaus Schittkowski. "Test examples for nonlinear programming codes." Journal of optimization theory and applications 30 (1980): 127-129.'

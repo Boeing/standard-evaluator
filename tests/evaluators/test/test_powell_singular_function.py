@@ -75,26 +75,25 @@ def test_create_opt_problem():
     ), f"Expected initial guess {expected_initial_guess}, got {actual_initial_guess}"
 
     # Check the description
-    expected_description = r"""$$
-The Extended Powell Singular function.
+    expected_description = r"""The Extended Powell Singular function.
 
-    This function comes from
-    "Numerical Methods for Unconstrained Optimization and
-    Nonlinear Equations" by J.E. Dennis Jr. and R.B. Shnabel.
+This function comes from "Numerical Methods for Unconstrained Optimization and
+Nonlinear Equations" by J.E. Dennis Jr. and R.B. Schnabel.
 
-    .. math::
-        \begin{align*}
-            \min \quad& f = f_1^2 + f_2^2 + f_3^2 + f_4^2\\[.75em]
-            \text{where} \quad& f_1 = x_1 + 10x_2\\
-            & f_2 = \sqrt{5}\cdot(x_3 - x_4)\\
-            & f_3 = x_2 - 2x_3\\
-            & f_4 = \sqrt{10}\cdot(x_1 - x_4)
-        \end{align*}
+$$
+\begin{aligned}
+    \min \quad& f = f_1^2 + f_2^2 + f_3^2 + f_4^2\\[.75em]
+    \text{where} \quad& f_1 = x_1 + 10x_2\\
+    & f_2 = \sqrt{5}\cdot(x_3 - x_4)\\
+    & f_3 = x_2 - 2x_3\\
+    & f_4 = \sqrt{10}\cdot(x_1 - x_4)
+\end{aligned}
+$$
 
-    The initial guess provided for this problem is
+The initial guess provided for this problem is:
 
-    .. math::
-        f(3, -1, 0, 1) = 95
+$$
+f(3, -1, 0, 1) = 95
 $$"""
 
     assert (

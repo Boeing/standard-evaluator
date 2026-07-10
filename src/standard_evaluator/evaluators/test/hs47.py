@@ -13,12 +13,12 @@ class HS47(TestEvaluator):
     r"""Implement the Hock-Schittkowski number 47 problem.
 
     .. math::
-        \begin{align}
+        \begin{aligned}
             \min\quad & f(x) = (x_1 - x_2)^2 + (x_2 - x_3)^3 +(x_3 - x_4)^4 + (x_4 - x_5)^4\\[1em]
             \text{s.t}\quad & c_1 = x_1 + x_2^2 + x_3^3 - 3 = 0\\
             & c_2 = x_2 - x_3^2 + x_4 - 1 = 0\\
             & c_3 = x_1x_5 - 1 = 0
-        \end{align}
+        \end{aligned}
 
     :math:`x_0 = (2.0,~ \sqrt{2.0},~ -1.0,~ 2.0 - \sqrt{2.0},~ 0.5)`
 
@@ -42,11 +42,11 @@ class HS47(TestEvaluator):
         $$
         - **Constraints**: The problem includes three equality constraints:
         $$
-        \begin{align}
+        \begin{aligned}
             c_1 &= x_1 + x_2^2 + x_3^3 - 3 = 0\\
             c_2 &= x_2 - x_3^2 + x_4 - 1 = 0\\
             c_3 &= x_1x_5 - 1 = 0
-        \end{align}
+        \end{aligned}
         $$
         - **Initial Guess**: The initial point for the optimization is set to:
         $$
@@ -86,15 +86,18 @@ class HS47(TestEvaluator):
 
         # Define th description of the problem
         new_prob.description = r"""$$
-\begin{align}
+\begin{aligned}
     \min\quad & f(x) = (x_1 - x_2)^2 + (x_2 - x_3)^3 +(x_3 - x_4)^4 + (x_4 - x_5)^4\\[1em]
     \text{s.t}\quad & c_1 = x_1 + x_2^2 + x_3^3 - 3 = 0\\
     & c_2 = x_2 - x_3^2 + x_4 - 1 = 0\\
     & c_3 = x_1x_5 - 1 = 0
-\end{align}
+\end{aligned}
 $$
 
-The initial point is given by: $$x_0 = (2.0,~ \sqrt{2.0},~ -1.0,~ 2.0 - \sqrt{2.0},~ 0.5)$$
+The initial point is given by:
+
+$$
+x_0 = (2.0,~ \sqrt{2.0},~ -1.0,~ 2.0 - \sqrt{2.0},~ 0.5)
 $$"""
         # Define the citation
         new_prob.cite = 'Hock, Willi, and Klaus Schittkowski. "Test examples for nonlinear programming codes." Journal of optimization theory and applications 30 (1980): 127-129.'

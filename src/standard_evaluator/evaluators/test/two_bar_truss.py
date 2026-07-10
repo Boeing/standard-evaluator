@@ -104,8 +104,7 @@ class TwoBarTruss(TestEvaluator):
         new_prob.constraints = ["g1", "g2"]
 
         # Define th description of the problem
-        new_prob.description = r"""$$
-The Two Bar Truss evaluator. This evaluator is a concrete class which inherits
+        new_prob.description = """The Two Bar Truss evaluator. This evaluator is a concrete class which inherits
     from the abstract DE::Evaluator class.  This is to be used as an example
     for deriving Design Explorer Evaluators and for testing future optimization
     methods.
@@ -129,8 +128,7 @@ The Two Bar Truss evaluator. This evaluator is a concrete class which inherits
        - g2, double, strength 2
 
     The objective of the design is to minimize the weight of the two-bar truss subject to
-    the two strength constraints about the axial stress in each bar.
-$$"""
+    the two strength constraints about the axial stress in each bar."""
         # Define the citation
         new_prob.cite = 'Beiqing Huang and Xiaoping Du, "A robust design method using variable transformation and Gauss-Hermite integration," *INTERNATIONAL JOURNAL FOR NUMERICAL METHODS IN ENGINEERING*, Int. J. Numer. Meth. Engng 2006; 66:1841-1858.'
         return new_prob

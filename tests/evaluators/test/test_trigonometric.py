@@ -73,23 +73,26 @@ def test_create_opt_problem():
     ), f"Expected initial guess {expected_initial_guess}, got {actual_initial_guess}"
 
     # Check the description
-    expected_description = r"""$$
-Trigonometric function
-    "Numerical Methods for Unconstrained Optimization and Nonlinear Equations"
-    by J.E. Dennis Jr. and R.B. Schnabel.
+    expected_description = r"""Trigonometric function from "Numerical Methods for Unconstrained Optimization and Nonlinear Equations" by J.E. Dennis Jr. and R.B. Schnabel.
 
-    minimize f where
+minimize f where:
 
-    .. math::
-        f = f_1^2 + f_2^2
+$$
+f = f_1^2 + f_2^2
+$$
 
-    .. math::
-        f_1 = 1 - [\cos(x_1) + 2(1 - \cos(x_1)) - \sin(x_1)]
-            - [\cos(x_2) + 2(1 - \cos(x_1)) - \sin(x_1)]
+$$
+\begin{aligned}
+    f_1 &= 1 - [\cos(x_1) + 2(1 - \cos(x_1)) - \sin(x_1)] \\
+        &\quad - [\cos(x_2) + 2(1 - \cos(x_1)) - \sin(x_1)]
+\end{aligned}
+$$
 
-    .. math::
-        f_2 = 1 - [\cos(x_1) + 2(1 - \cos(x_2)) - \sin(x_2)]
-            - [\cos(x_2) + 2(1 - \cos(x_2)) - \sin(x_2)]
+$$
+\begin{aligned}
+    f_2 &= 1 - [\cos(x_1) + 2(1 - \cos(x_2)) - \sin(x_2)] \\
+        &\quad - [\cos(x_2) + 2(1 - \cos(x_2)) - \sin(x_2)]
+\end{aligned}
 $$"""
 
     assert (

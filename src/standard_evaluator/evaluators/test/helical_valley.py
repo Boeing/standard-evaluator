@@ -13,7 +13,7 @@ class HelicalValley(TestEvaluator):
     r"""Small dimensional example function
 
     .. math::
-        \begin{align}
+        \begin{aligned}
             \min\quad & f = f_1^2 + f_2^2 + x_3^2\\[1em]
             \text{where}\quad & \theta = \begin{cases}
                 \frac{\arctan(x_2/x_1)}{2\pi} & x_1 \geq 0\\
@@ -21,7 +21,7 @@ class HelicalValley(TestEvaluator):
             \end{cases}\\
             & f_1 = 10(x_3 - 10\theta)\\
             & f_2 = 10(\sqrt{x_1^2 + x_2^2} - 1)
-        \end{align}
+        \end{aligned}
     """
 
     def _create_opt_problem(self) -> OptProblem:
@@ -69,16 +69,16 @@ class HelicalValley(TestEvaluator):
         new_prob.constraints = []
 
         # Define th description of the problem
-        new_prob.description = r"""$$     
-\begin{align}
+        new_prob.description = r"""$$
+\begin{aligned}
     \min\quad & f = f_1^2 + f_2^2 + x_3^2\\[1em]
     \text{where}\quad & \theta = \begin{cases}
         \frac{\arctan(x_2/x_1)}{2\pi} & x_1 \geq 0\\
         \frac{\arctan(x_2/x_1)}{2\pi} + 0.5 & x_1 < 0
     \end{cases}\\
     & f_1 = 10(x_3 - 10\theta)\\
-    & f_2 = 10(\sqrt{x_1^2 + x_2^2} -
-\end{align}
+    & f_2 = 10(\sqrt{x_1^2 + x_2^2} - 1)
+\end{aligned}
 $$"""
         # Define the citation
         new_prob.cite = "J. J. More, B. S. Garbow and K. E. Hillstrom, “Testing Unconstrained Optimization Software,” ACM Transac tions on Mathematical Software, Vol. 7, No. 1, 1981, pp. 19-31. doi:10.1145/355934.355936"

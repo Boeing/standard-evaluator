@@ -62,8 +62,7 @@ class ExtendedRosenbrock(TestEvaluator):
         new_prob.constraints = []
 
         # Define th description of the problem
-        new_prob.description = r"""$$
-The Extended Rosenbrock function.
+        new_prob.description = r"""The Extended Rosenbrock function.
 
 This evaluator is an example function from
 "Numerical Methods for Unconstrained Optimization and
@@ -73,8 +72,7 @@ The problem has two independent variables, :math:`x_0` and :math:`x_1` and
 a single response:
 
 .. math::
-    f(x_0, x_1) = \left[10*\left(x_1-x_0^2\right)\right]^2 + (1-x_0)^2        
-$$"""
+    f(x_0, x_1) = \left[10*\left(x_1-x_0^2\right)\right]^2 + (1-x_0)^2"""
         # Define the citation
         new_prob.cite = "J. E. Dennis, Jr., Robert B. Schnabel, 'Numerical Methods for Unconstrained Optimization and Nonlinear Equations', Volume 16 of Classics in Applied Mathematics, 1996"
         return new_prob

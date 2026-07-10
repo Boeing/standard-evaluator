@@ -28,7 +28,7 @@ author = "Joerg Gablonsky, Jeff Musiak, Ranald M Engelbeck, Eduardo Ocampo, Sean
 
 # Version information
 
-from pkg_resources import parse_version
+from packaging.version import parse as parse_version
 from standard_evaluator import version
 
 version_text = version.__version__
@@ -163,11 +163,11 @@ mermaid_d3_zoom = True
 
 # Myst-NB options
 
-jupyter_execute_notebooks = "cache"
-execution_in_temp = False
-jupyter_cache = os.path.join(os.path.dirname(__file__), ".cache")
-if not os.path.exists(jupyter_cache):
-    os.mkdir(jupyter_cache)
+nb_execution_mode = "cache"
+nb_execution_in_temp = False
+nb_execution_cache_path = os.path.join(os.path.dirname(__file__), ".cache")
+if not os.path.exists(nb_execution_cache_path):
+    os.mkdir(nb_execution_cache_path)
 
 myst_enable_extensions = [
     "amsmath",
