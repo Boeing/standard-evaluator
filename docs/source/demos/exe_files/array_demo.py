@@ -15,7 +15,8 @@ def main() -> None:
 
     # Read input CSV
     data = np.loadtxt(in_file, delimiter=",", skiprows=1, ndmin=2)
-    header = open(in_file).readline().strip().split(",")
+    with open(in_file) as f:
+        header = f.readline().strip().split(",")
 
     # Find x columns and s1
     x_cols = sorted(
