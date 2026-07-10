@@ -48,5 +48,6 @@ experimenting/*.h5
 experimenting/*.html
 experimenting/assembly.json
 docs/build/
+docs/build_test/
 docs/source/.cache/
 *.db

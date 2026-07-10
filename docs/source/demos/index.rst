@@ -15,6 +15,7 @@ The documents in this section show demos of the standard evaluator.
    evaluator_hierarchy
    surrogate_models
    openmdao_component
+   ExecutableEvaluator
    array_variables
    benchmark_problems
    evaluator_interface
