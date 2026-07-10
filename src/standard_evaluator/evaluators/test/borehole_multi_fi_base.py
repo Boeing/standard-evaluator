@@ -106,14 +106,14 @@ The response is water flow rate in  𝑚3/𝑦𝑟 .
 
 Input Domain
 
-Radius of borehole ( 𝑚 ) -  𝑟𝑤∈[0.05,0.15]
-Radius of influence ( 𝑚 ) -  𝑟∈[100,50000]
-Transmissivity of upper aquifier ( 𝑚2/𝑦𝑟 ) -  𝑇𝑢∈[63070,115600]
-Potentiometric head of upper aquifier ( 𝑚 ) -  𝐻𝑢∈[990,1110]
-Transmissivity of lower aquifier ( 𝑚2/𝑦𝑟 ) -  𝑇𝑙∈[63.1,116]
-Potentiometric head of lower aquifier ( 𝑚 ) -  𝐻𝑙∈[700,820]
-Length of borehole ( 𝑚 ) -  𝐿∈[1120,1680]
-Hydraulic conductivity of borehole ( 𝑚/𝑦𝑟 ) -  𝐾𝑤∈[9855,12045]"""
+| Radius of borehole ( 𝑚 ) -  𝑟𝑤∈[0.05,0.15]
+| Radius of influence ( 𝑚 ) -  𝑟∈[100,50000]
+| Transmissivity of upper aquifier ( 𝑚2/𝑦𝑟 ) -  𝑇𝑢∈[63070,115600]
+| Potentiometric head of upper aquifier ( 𝑚 ) -  𝐻𝑢∈[990,1110]
+| Transmissivity of lower aquifier ( 𝑚2/𝑦𝑟 ) -  𝑇𝑙∈[63.1,116]
+| Potentiometric head of lower aquifier ( 𝑚 ) -  𝐻𝑙∈[700,820]
+| Length of borehole ( 𝑚 ) -  𝐿∈[1120,1680]
+| Hydraulic conductivity of borehole ( 𝑚/𝑦𝑟 ) -  𝐾𝑤∈[9855,12045]"""
         # Define the citation
         new_prob.cite = ""
         return new_prob

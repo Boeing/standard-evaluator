@@ -110,10 +110,10 @@ def test_create_opt_problem():
 The example can be found in the SOCS 7.1 manual on page 625.
 
 .. math::
-    \begin{align}
+    \begin{aligned}
         \min\quad & f = (x_1 - 1)^2 + (x_1 - x_2)^2 + (x_2 - x_3)^4\\[1em]
         \text{s.t.}\quad & c = x_1(1 + x_2^2) + x_3^4 - 4 - 3\sqrt{2} = 0
-    \end{align}
+    \end{aligned}
 
 The optimal solution in the SOCS manual is
 

@@ -107,14 +107,14 @@ class HS100(TestEvaluator):
 
         # Define th description of the problem
         new_prob.description = r"""$$
-\begin{align}
+\begin{aligned}
     \min\quad & (x_1 - 10)^2 + 5(x_2 - 12)^2 + x_3^4 + 3(x_4 - 11)^2\\
                 & + 10x_5^6 + 7x_6^2 + x_7^4 - 4x_6x_7 - 10x_6 - 8x_7\\[1em]
     \text{s.t.}\quad & 2x_1^2 + 3x_2^4 + x_3 + 4x_4^2 + 5x_5 \leq 127\\
     & 7x_1 + 3x_2 + 10x_3^2 + x_4 - x_5 \leq 282\\
     & 23x_1 + x_2^2 + 6x_6 - 8x_7 \leq 196\\
     & 4x_1^2 + x_2^2 - 3x_1x_2 + 2x_3^2 + 5x_6 - 11x_7 \geq 0
-\end{align}
+\end{aligned}
 $$
 
 The following bounds are placed on the variables:

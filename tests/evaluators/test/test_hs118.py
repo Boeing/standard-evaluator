@@ -302,12 +302,12 @@ def test_create_opt_problem():
 
     # Check the description
     expected_description = r"""$$
-\begin{align}
+\begin{aligned}
     x0 &= ( 20.0, 55.0, 15.0, 20.0, 60.0, 20.0, 20.0, 60.0, 20.0, 20.0, 60.0, 20.0, 20.0, 60.0, 20.0 ) \\
     f(x0) &= 942.7162499999998 \\
     x^* &= ( 8.0, 49.0, 3.0, 1.0, 56.0, 0.0, 1.0, 63.0, 6.0, 3.0, 70.0, 12.0, 5.0, 77.0, 18.0 ) \\
     f(x^*) &= 664.82045000
-\end{align}
+\end{aligned}
 $$"""
     assert (
         opt_problem.description.strip() == expected_description.strip()

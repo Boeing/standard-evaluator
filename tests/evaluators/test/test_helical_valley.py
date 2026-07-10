@@ -94,7 +94,7 @@ def test_create_opt_problem():
 
     # Check the description
     expected_description = r"""$$
-\begin{align}
+\begin{aligned}
     \min\quad & f = f_1^2 + f_2^2 + x_3^2\\[1em]
     \text{where}\quad & \theta = \begin{cases}
         \frac{\arctan(x_2/x_1)}{2\pi} & x_1 \geq 0\\
@@ -102,7 +102,7 @@ def test_create_opt_problem():
     \end{cases}\\
     & f_1 = 10(x_3 - 10\theta)\\
     & f_2 = 10(\sqrt{x_1^2 + x_2^2} - 1)
-\end{align}
+\end{aligned}
 $$"""
 
     assert (

@@ -86,12 +86,12 @@ class HS47(TestEvaluator):
 
         # Define th description of the problem
         new_prob.description = r"""$$
-\begin{align}
+\begin{aligned}
     \min\quad & f(x) = (x_1 - x_2)^2 + (x_2 - x_3)^3 +(x_3 - x_4)^4 + (x_4 - x_5)^4\\[1em]
     \text{s.t}\quad & c_1 = x_1 + x_2^2 + x_3^3 - 3 = 0\\
     & c_2 = x_2 - x_3^2 + x_4 - 1 = 0\\
     & c_3 = x_1x_5 - 1 = 0
-\end{align}
+\end{aligned}
 $$
 
 The initial point is given by:
