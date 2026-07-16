@@ -44,13 +44,6 @@ Optionally clone the repo and install locally for development:
    cd standard-evaluator
    pip install -e .[test,smt]
 
-Project Structure
------------------
-
-- ``src/`` — Source code of the standard evaluator library
-- ``docs/`` — Documentation source (Sphinx + Jupyter notebooks)
-- ``tests/`` — Unit and property-based tests
-
 Contents
 --------
 
