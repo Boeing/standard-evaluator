@@ -6,6 +6,11 @@
 Standard Evaluator
 ==================
 
+.. image:: ../assets/logo.svg
+   :alt: Standard Evaluator Logo
+   :align: center
+   :width: 270px
+
 This project implements the standard evaluator. 
 
 Description

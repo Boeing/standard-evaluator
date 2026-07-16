@@ -135,6 +135,9 @@ html_theme_options = {
 # so a file named "default.css" will overwrite the builtin "default.css".
 html_static_path = ["_static"]
 
+# Logo and favicon
+html_favicon = "../assets/logo-icon.svg"
+
 # Location of custom css files. Must be relative to html_static_path
 html_css_files = [
     "css/class_doc.css",
