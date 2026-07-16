@@ -38,7 +38,42 @@
 
   <!-- Header Banner -->
   <rect x="0" y="0" width="1200" height="180" fill="url(#headerGrad)" rx="0"/>
-  <text x="600" y="70" text-anchor="middle" font-family="Segoe UI, Arial, sans-serif" font-size="42" font-weight="bold" fill="white">Standard Evaluator</text>
+
+  <!-- Logo with text (centered in header) -->
+  <g transform="translate(487, 16)">
+    <!-- Outer frame around the entire logo (icon + text) -->
+    <rect x="-12" y="-6" width="250" height="76" rx="12" ry="12" fill="#3d4a5c" stroke="rgba(255,255,255,0.3)" stroke-width="1"/>
+
+    <!-- Logo icon with blue background -->
+    <g transform="translate(2, 3) scale(0.55)">
+      <!-- Blue rounded square behind icon (gradient) -->
+      <rect x="5" y="5" width="90" height="90" rx="16" ry="16" fill="url(#headerGrad)"/>
+      <!-- Diamond -->
+      <polygon points="50,25 70,50 50,75 30,50" fill="none" stroke="rgba(255,255,255,0.95)" stroke-width="2.5" stroke-linejoin="round"/>
+      <!-- Connection lines -->
+      <line x1="22" y1="30" x2="38" y2="40" stroke="rgba(255,255,255,0.6)" stroke-width="1.5" stroke-linecap="round"/>
+      <line x1="22" y1="50" x2="30" y2="50" stroke="rgba(255,255,255,0.6)" stroke-width="1.5" stroke-linecap="round"/>
+      <line x1="22" y1="70" x2="38" y2="60" stroke="rgba(255,255,255,0.6)" stroke-width="1.5" stroke-linecap="round"/>
+      <line x1="62" y1="40" x2="78" y2="38" stroke="rgba(255,255,255,0.6)" stroke-width="1.5" stroke-linecap="round"/>
+      <line x1="62" y1="60" x2="78" y2="62" stroke="rgba(255,255,255,0.6)" stroke-width="1.5" stroke-linecap="round"/>
+      <!-- Arrow tips -->
+      <polygon points="74,35.5 74,40.5 78,38" fill="rgba(255,255,255,0.6)"/>
+      <polygon points="74,59.5 74,64.5 78,62" fill="rgba(255,255,255,0.6)"/>
+      <!-- Input dots (on top) -->
+      <circle cx="22" cy="30" r="5" fill="white"/>
+      <circle cx="22" cy="50" r="5" fill="white"/>
+      <circle cx="22" cy="70" r="5" fill="white"/>
+      <!-- Output dots (on top) -->
+      <circle cx="78" cy="38" r="5" fill="white"/>
+      <circle cx="78" cy="62" r="5" fill="white"/>
+    </g>
+
+    <!-- Text next to icon -->
+    <text x="62" y="26" font-family="Segoe UI, Arial, sans-serif" font-size="26" font-weight="600" fill="white">Standard</text>
+    <text x="62" y="50" font-family="Segoe UI, Arial, sans-serif" font-size="26" font-weight="300" fill="rgba(255,255,255,0.85)">Evaluator</text>
+    <text x="62" y="64" font-family="Segoe UI, Arial, sans-serif" font-size="10" font-weight="400" fill="rgba(255,255,255,0.5)" letter-spacing="0.5">Unified Analysis &amp; Surrogate API</text>
+  </g>
+
   <text x="600" y="110" text-anchor="middle" font-family="Segoe UI, Arial, sans-serif" font-size="20" fill="#bbdefb">A unified Python API for analysis codes, surrogate models, and integration frameworks</text>
   <text x="600" y="145" text-anchor="middle" font-family="Segoe UI, Arial, sans-serif" font-size="14" fill="#90caf9">pip install standard-evaluator | Python 3.9+ | Apache 2.0 License | Partially developed under NASA Contract 80GRC023CA045</text>
   <text x="600" y="170" text-anchor="middle" font-family="Segoe UI, Arial, sans-serif" font-size="13" fill="#64b5f6">boeing.github.io/standard-evaluator</text>
