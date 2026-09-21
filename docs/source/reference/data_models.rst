@@ -50,3 +50,8 @@ Variable Types
    :members:
    :show-inheritance:
    :special-members: __init__
+
+.. autoclass:: standard_evaluator.problem.StringVariable
+   :members:
+   :show-inheritance:
+   :special-members: __init__
