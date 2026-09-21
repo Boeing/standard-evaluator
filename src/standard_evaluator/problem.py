@@ -721,7 +721,7 @@ class ArrayVariable(FloatVariable, validate_assignment=False):
             return scale
 
 # Define the Union of the different variable types. Note that we use that for responses as well
-Variable = Union[FloatVariable, IntVariable, ArrayVariable, CategoricalVariable]
+Variable = Union[FloatVariable, IntVariable, ArrayVariable, CategoricalVariable, StringVariable]
 
 
 from pydantic import BaseModel, Field
