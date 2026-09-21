@@ -65,7 +65,3 @@ se.set_variable_bounds(info, {'x': (0, 10), 'y': (-5, 5)})
 opt_problem = se.build_opt_problem(info, prob)
 evaluator = OpenMDAOEvaluator(prob, opt_problem=opt_problem)
 ```
-
-## Developers 
-- Joerg Gablonsky
-- Eduardo Ocampo
