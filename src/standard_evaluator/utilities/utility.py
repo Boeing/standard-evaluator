@@ -8,7 +8,7 @@ import numpy as np
 
 
 from standard_evaluator.evaluator import EvaluatorInfo
-from standard_evaluator.problem import Variable, ArrayVariable, CategoricalVariable, FloatVariable, IntVariable
+from standard_evaluator.problem import Variable, ArrayVariable, CategoricalVariable, FloatVariable, IntVariable, StringVariable
 from standard_evaluator.problem import OptProblem
 
 def check_prob(prob: dict) -> None:
@@ -277,6 +277,8 @@ def get_types_from_evaluator_info(my_info: EvaluatorInfo, variables_only: bool =
         # Must start with restrictive types first as they are all Float variables
         if isinstance(var, CategoricalVariable):
             type_info[var.name] = pd.CategoricalDtype(var.bounds, ordered=True)
+        elif isinstance(var, StringVariable):
+            type_info[var.name] = "string"
         elif isinstance(var, IntVariable):
             type_info[var.name] = "Int64"
         elif isinstance(var, ArrayVariable):
