@@ -6,7 +6,7 @@ import numpy as np
 
 
 from standard_evaluator.evaluator import EvaluatorInfo
-from standard_evaluator.problem import ArrayVariable, CategoricalVariable, FloatVariable, IntVariable, Variable
+from standard_evaluator.problem import ArrayVariable, CategoricalVariable, FloatVariable, IntVariable, StringVariable, Variable
 
 
 def generate_names(name: str, shape: tuple) -> typing.List[str]:
@@ -72,7 +72,7 @@ def unroll_names_using_variables(variables: typing.List[Variable]) -> typing.Lis
     """
     if not isinstance(variables, list):
         raise TypeError('Not given a list')
-    elif np.any([not isinstance(var, (IntVariable, FloatVariable, ArrayVariable,  CategoricalVariable)) for var in variables]):
+    elif np.any([not isinstance(var, (IntVariable, FloatVariable, ArrayVariable,  CategoricalVariable, StringVariable)) for var in variables]):
         raise TypeError('The list is not a list of Variables')
     
     unrolled_names = []
@@ -174,7 +174,7 @@ def unroll_data_frame_using_variables(rolled_df: pd.DataFrame, variables: typing
         raise TypeError("Input is not a DataFrame")
     if not isinstance(variables, list):
         raise TypeError('Not given a list')
-    elif np.any([not isinstance(var, (IntVariable, FloatVariable, ArrayVariable,  CategoricalVariable)) for var in variables]):
+    elif np.any([not isinstance(var, (IntVariable, FloatVariable, ArrayVariable,  CategoricalVariable, StringVariable)) for var in variables]):
         raise TypeError('The list is not a list of Variables')
     
     # Create a NumPy array that unrolls arrays in the sub DataFrame.
@@ -188,6 +188,8 @@ def unroll_data_frame_using_variables(rolled_df: pd.DataFrame, variables: typing
     for var in variables:
         if isinstance(var, CategoricalVariable):
             unrolled_df[var.name] = unrolled_df[var.name].astype(pd.CategoricalDtype(var.bounds, ordered=True))
+        elif isinstance(var, StringVariable):
+            unrolled_df[var.name] = unrolled_df[var.name].astype('string')
         elif isinstance(var, IntVariable):
             unrolled_df[var.name] = unrolled_df[var.name].astype('int')
         elif isinstance(var, ArrayVariable):
@@ -272,7 +274,7 @@ def roll_data_frame_using_variables(unrolled_df: pd.DataFrame, variables: typing
         raise TypeError("Input is not a DataFrame")
     if not isinstance(variables, list):
         raise TypeError('Not given a list')
-    elif np.any([not isinstance(var, (IntVariable, FloatVariable, ArrayVariable,  CategoricalVariable)) for var in variables]):
+    elif np.any([not isinstance(var, (IntVariable, FloatVariable, ArrayVariable,  CategoricalVariable, StringVariable)) for var in variables]):
         raise TypeError('The list is not a list of Variables')
         
     vars_to_roll = [var for var in variables if isinstance(var, ArrayVariable)]
@@ -312,7 +314,7 @@ def check_rolled_data_frame_against_variable_shapes(input_df: pd.DataFrame,  var
         raise TypeError("Input is not a DataFrame")
     if not isinstance(variables, list):
         raise TypeError('Not given a list')
-    elif np.any([not isinstance(var, (IntVariable, FloatVariable, ArrayVariable,  CategoricalVariable)) for var in variables]):
+    elif np.any([not isinstance(var, (IntVariable, FloatVariable, ArrayVariable,  CategoricalVariable, StringVariable)) for var in variables]):
         raise TypeError('The list is not a list of Variables')   
     
 
@@ -346,7 +348,7 @@ def get_variable_shape_in_data_frame(input_df:pd.DataFrame, variables: typing.Li
         raise TypeError("Input is not a DataFrame")
     if not isinstance(variables, list):
         raise TypeError('Not given a list')
-    elif np.any([not isinstance(var, (IntVariable, FloatVariable, ArrayVariable,  CategoricalVariable)) for var in variables]):
+    elif np.any([not isinstance(var, (IntVariable, FloatVariable, ArrayVariable,  CategoricalVariable, StringVariable)) for var in variables]):
         raise TypeError('The list is not a list of Variables')   
     vars_names = [var.name for var in variables]
     col_names = input_df.columns
