@@ -909,6 +909,28 @@ class OptProblem(BaseModel):
         response_names = self.unroll_names(self.responses)
         elements = set(variable_names + response_names)
 
+        # String variables are only supported as inputs (variables), not as
+        # responses. They are carried through the problem but never participate
+        # in the optimization itself.
+        for response in self.responses:
+            if isinstance(response, StringVariable):
+                raise ValueError(
+                    f"{response.name} is a StringVariable defined as a response. "
+                    f"String variables are only supported as variables (inputs)."
+                )
+
+        # A string variable can never be an objective or a constraint.
+        string_variable_names = {
+            variable.name
+            for variable in self.variables
+            if isinstance(variable, StringVariable)
+        }
+        for name in list(self.objectives) + list(self.constraints):
+            if name in string_variable_names:
+                raise ValueError(
+                    f"{name} is a StringVariable and cannot be used as an objective or constraint."
+                )
+
         if self.objectives is not None:
             # Check if all the objectives are either a variable or response
             for name in self.objectives:
@@ -1012,7 +1034,12 @@ class OptProblem(BaseModel):
         fixed = []
         for var in opt_problem.variables:
             n_elements = len(var_map[var_map["name"] == var.name])
-            is_fixed = np.array_equal(var.bounds[0], var.bounds[1])
+            # Variables without numeric bounds (StringVariable) cannot be
+            # perturbed by the optimizer, so they are always treated as fixed.
+            if var.bounds is None:
+                is_fixed = True
+            else:
+                is_fixed = np.array_equal(var.bounds[0], var.bounds[1])
             fixed.extend([is_fixed] * n_elements)
         var_map["fixed"] = fixed
 
