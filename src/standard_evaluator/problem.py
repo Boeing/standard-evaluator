@@ -381,6 +381,68 @@ class CategoricalVariable(FloatVariable, validate_assignment=True):
                 raise ValueError(f"Default not in bounds: {default}")
         return self
 
+class StringVariable(FloatVariable, validate_assignment=True):
+    """Class representing a free-form string variable.
+
+    Unlike :class:`CategoricalVariable`, a string variable is not restricted to a
+    predefined set of allowed values; it can take on any string value. Bounds,
+    shift, and scale do not apply to string variables and are therefore fixed to
+    None.
+
+    - It may only be used as a *variable* (input). Using a string variable as a
+        response raises a ``ValueError``.
+    - It can never be named as an objective or a constraint; doing so raises a
+        ``ValueError``.
+    - Within an :class:`OptProblem` it is always treated as a *fixed* variable:
+        it is passed through to the evaluator unchanged and is excluded from the
+        optimization (no gradient/Jacobian row, not counted as a free variable).
+
+    Attributes:
+        default: Default value for this variable.
+        bounds: Not applicable for string variables. Always ``None``.
+        shift: Not applicable for string variables. Always ``None``.
+        scale: Not applicable for string variables. Always ``None``.
+        class_type: Class marker for identifying the variable type.
+    """
+
+    default: Optional[str] = Field(
+        default=None, description="Default value for this variable"
+    )
+    bounds: Literal[None] = Field(
+        default=None,
+        description="Not applicable for string variables.",
+    )
+    shift: Literal[None] = Field(
+        default=None,
+        description="Shift value to be used for this variable. Does not make sense for string variables.",
+    )
+    scale: Literal[None] = Field(
+        default=None,
+        description="Scale value to be used for this variable. Does not make sense for string variables.",
+    )
+    units: Optional[str] = None
+    class_type: Literal["str"] = Field(default="str", description="Class marker")
+
+    def calculate_default(self, overwrite: bool = True) -> None:
+        """Calculate the default value for string variables.
+
+        A free-form string variable has no bounds from which a meaningful
+        default could be derived, so an existing default is never overwritten.
+        The ``overwrite`` flag is therefore ignored. If a default is already
+        set it is kept, and only an unset (``None``) default is filled with an
+        empty string.
+
+        Parameters
+        ----------
+        overwrite : bool
+            Accepted for interface consistency with the other variable types,
+            but ignored for string variables. An existing default is always
+            preserved.
+        """
+        if self.default is None:
+            self.default = ""
+
+
 class ArrayVariable(FloatVariable, validate_assignment=False):
     """Class defining array variables. The underlying data type are NumPy float64 arrays.
 
