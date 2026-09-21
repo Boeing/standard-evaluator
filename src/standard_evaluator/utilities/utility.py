@@ -670,7 +670,7 @@ def update_bounds_to_optimizer_space(element: Variable, shift_val, scale_val) ->
         shift_val: The shift value (scalar or array).
         scale_val: The scale value (scalar or array).
     """
-    if isinstance(element, CategoricalVariable):
+    if isinstance(element, (CategoricalVariable, StringVariable)):
         element.shift = None
         element.scale = None
         return
@@ -707,7 +707,7 @@ def update_bounds_to_design_space(element: Variable, shift_val, scale_val) -> No
         shift_val: The original shift value (scalar or array).
         scale_val: The original scale value (scalar or array).
     """
-    if isinstance(element, CategoricalVariable):
+    if isinstance(element, (CategoricalVariable, StringVariable)):
         element.shift = None
         element.scale = None
         return
