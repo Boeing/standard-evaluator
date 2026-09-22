@@ -20,6 +20,7 @@ authors = [
     {name = "Anjali Prasad"},
     {name = "Tyler Smith"},
     {name = "Mikel Woo"},
+    {name = "Eduardo Ocampo"},
 ]
 requires-python = ">=3.9"
 classifiers = [
