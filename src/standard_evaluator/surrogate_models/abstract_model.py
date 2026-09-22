@@ -111,21 +111,29 @@ class SurrogateModel(NumpyEvaluator):
     def xlb(self) -> NDArray[np.float64]:
         """The lower left corner of the box that bounds the input sites.
 
+        Cached; invalidated when ``self._sites`` is reassigned.
+
         Returns:
             NDArray[np.float64]: An array of length nind containing the lower
                 left corner of the bounding box.
         """
-        return np.min(self.sites_input, axis=0)
+        if self._xlb_cache is None:
+            self._xlb_cache = np.min(self.sites_input, axis=0)
+        return self._xlb_cache
 
     @property
     def xub(self) -> NDArray[np.float64]:
         """The upper right corner of the box that bounds the input sites.
 
+        Cached; invalidated when ``self._sites`` is reassigned.
+
         Returns:
             NDArray[np.float64]: An array of length nind containing the upper
                 right corner of the bounding box.
         """
-        return np.max(self.sites_input, axis=0)
+        if self._xub_cache is None:
+            self._xub_cache = np.max(self.sites_input, axis=0)
+        return self._xub_cache
 
     @property
     def nind(self) -> int:
@@ -135,6 +143,30 @@ class SurrogateModel(NumpyEvaluator):
             int: Count of nonconstant independent variables.
         """
         return len(self.nonconstant_variables)
+
+    @property
+    def _sites(self) -> pd.DataFrame:
+        """The calibration sites (backing store for :attr:`sites`).
+
+        Reassigning this attribute invalidates the derived caches
+        (``sites_input``, ``xlb``, ``xub``) via the setter. Since every site
+        mutation reassigns it, those caches cannot go stale.
+
+        Returns:
+            pd.DataFrame: The calibration sites.
+        """
+        return self._sites_df
+
+    @_sites.setter
+    def _sites(self, value: pd.DataFrame) -> None:
+        self._sites_df = value
+        self._invalidate_site_caches()
+
+    def _invalidate_site_caches(self) -> None:
+        """Clear cached quantities derived from the calibration sites."""
+        self._sites_input_cache = None
+        self._xlb_cache = None
+        self._xub_cache = None
 
     @property
     def sites(self) -> pd.DataFrame:
@@ -158,12 +190,16 @@ class SurrogateModel(NumpyEvaluator):
     def sites_input(self) -> NDArray[np.float64]:
         """Input sites used to calibrate the model.
 
+        Cached; invalidated when ``self._sites`` is reassigned.
+
         Returns:
             NDArray[np.float64]: The input portion of the calibration sites.
         """
-        return np.atleast_2d(
-            self.dataframe_to_float_ndarray(self._sites[self.nonconstant_variables])
-        )
+        if self._sites_input_cache is None:
+            self._sites_input_cache = np.atleast_2d(
+                self.dataframe_to_float_ndarray(self._sites[self.nonconstant_variables])
+            )
+        return self._sites_input_cache
 
     @property
     def sites_output(self) -> NDArray[np.float64]:
@@ -236,6 +272,9 @@ class SurrogateModel(NumpyEvaluator):
 
         # ensure data is valid w.r.t. problem specification
         self.check_consistency_of_sites(sites)
+
+        # Reset the caching internal variables
+        self._invalidate_site_caches()
 
         # We want to make a copy of the sites passed in, and not modify them.
         # We also want to make sure there are no duplicates in the sites
