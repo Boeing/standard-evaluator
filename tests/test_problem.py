@@ -162,21 +162,28 @@ def test_opt_problem_with_string_variable():
     assert my_prob.num_flat_vars == 1
 
 
-def test_opt_problem_string_variable_as_response_errors():
+def test_opt_problem_string_variable_as_response_allowed():
+    # A string variable is allowed as a response, e.g. an analysis producing a
+    # generated file name.
     x1 = FloatVariable(name="x1", bounds=[2.0, 5.0])
-    with pytest.raises(ValueError):
-        # A string variable cannot be a response.
-        OptProblem(
-            name="opt",
-            variables=[x1],
-            responses=[StringVariable(name="sres")],
-        )
+    y1 = FloatVariable(name="y1", bounds=[2.0, 5.0])
+    sres = StringVariable(name="sres", default="result.txt")
+    my_prob = OptProblem(
+        name="opt",
+        variables=[x1],
+        responses=[y1, sres],
+        objectives=["y1"],
+    )
+    assert "sres" in my_prob.response_names()
+    assert isinstance(my_prob.responses[1], StringVariable)
+    assert my_prob.responses[1].default == "result.txt"
 
 
 def test_opt_problem_string_variable_as_objective_or_constraint_errors():
     s1 = StringVariable(name="s1", default="hello")
     x1 = FloatVariable(name="x1", bounds=[2.0, 5.0])
     y1 = FloatVariable(name="y1", bounds=[2.0, 5.0])
+    sres = StringVariable(name="sres", default="result.txt")
     with pytest.raises(ValueError):
         # A string variable cannot be an objective.
         OptProblem(
@@ -192,6 +199,14 @@ def test_opt_problem_string_variable_as_objective_or_constraint_errors():
             variables=[s1, x1],
             responses=[y1],
             constraints=["s1"],
+        )
+    with pytest.raises(ValueError):
+        # A string response cannot be an objective either.
+        OptProblem(
+            name="opt",
+            variables=[x1],
+            responses=[y1, sres],
+            objectives=["sres"],
         )
 
 

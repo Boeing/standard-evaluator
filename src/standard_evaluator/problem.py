@@ -389,13 +389,14 @@ class StringVariable(FloatVariable, validate_assignment=True):
     shift, and scale do not apply to string variables and are therefore fixed to
     None.
 
-    - It may only be used as a *variable* (input). Using a string variable as a
-        response raises a ``ValueError``.
+    - It may be used as a *variable* (input) or as a *response* (output). For
+        example, an analysis may produce a unique file name pointing to a file it
+        generated.
     - It can never be named as an objective or a constraint; doing so raises a
         ``ValueError``.
-    - Within an :class:`OptProblem` it is always treated as a *fixed* variable:
-        it is passed through to the evaluator unchanged and is excluded from the
-        optimization (no gradient/Jacobian row, not counted as a free variable).
+    - As a variable it is always treated as a *fixed* variable: it is passed
+        through to the evaluator unchanged and is excluded from the optimization
+        (no gradient/Jacobian row, not counted as a free variable).
 
     Attributes:
         default: Default value for this variable.
@@ -909,24 +910,14 @@ class OptProblem(BaseModel):
         response_names = self.unroll_names(self.responses)
         elements = set(variable_names + response_names)
 
-        # String variables are only supported as inputs (variables), not as
-        # responses. They are carried through the problem but never participate
-        # in the optimization itself.
-        for response in self.responses:
-            if isinstance(response, StringVariable):
-                raise ValueError(
-                    f"{response.name} is a StringVariable defined as a response. "
-                    f"String variables are only supported as variables (inputs)."
-                )
-
         # A string variable can never be an objective or a constraint.
-        string_variable_names = {
-            variable.name
-            for variable in self.variables
-            if isinstance(variable, StringVariable)
+        string_names = {
+            element.name
+            for element in list(self.variables) + list(self.responses)
+            if isinstance(element, StringVariable)
         }
         for name in list(self.objectives) + list(self.constraints):
-            if name in string_variable_names:
+            if name in string_names:
                 raise ValueError(
                     f"{name} is a StringVariable and cannot be used as an objective or constraint."
                 )
