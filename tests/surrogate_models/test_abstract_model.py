@@ -672,3 +672,124 @@ def test_options_inheritance():
     # Test that we can create with custom values
     custom_options = options_class(deg=5)
     assert custom_options.deg == 5
+
+
+# ==========================================================================
+# |   Site-derived caching (sites_input / xlb / xub) and invalidation      |
+# ==========================================================================
+
+
+def test_site_caches_return_correct_values(
+    init_sites: pd.DataFrame, opt_problem: OptProblem
+):
+    """The cached properties must return the same values as an uncached
+    recomputation from the underlying sites."""
+    model = Polynomial1DModel(sites=init_sites, opt_problem=opt_problem)
+
+    expected_input = np.atleast_2d(
+        model.dataframe_to_float_ndarray(
+            model._sites[model.nonconstant_variables]
+        )
+    )
+    assert model.sites_input == pytest.approx(expected_input)
+    assert model.xlb == pytest.approx(np.min(expected_input, axis=0))
+    assert model.xub == pytest.approx(np.max(expected_input, axis=0))
+
+    # For this 1D problem the bounds collapse to the min/max of x.
+    assert model.xlb == pytest.approx([init_sites["x"].min()])
+    assert model.xub == pytest.approx([init_sites["x"].max()])
+
+
+def test_site_caches_are_populated_and_reused(
+    init_sites: pd.DataFrame, opt_problem: OptProblem
+):
+    """Repeated access must return the identical cached object rather than
+    recomputing, and the backing cache attributes must be populated on access."""
+    model = Polynomial1DModel(sites=init_sites, opt_problem=opt_problem)
+
+    # Freshly constructed: caches were cleared by the _sites setter.
+    assert model._sites_input_cache is None
+    assert model._xlb_cache is None
+    assert model._xub_cache is None
+
+    first_input = model.sites_input
+    first_xlb = model.xlb
+    first_xub = model.xub
+
+    # Caches are now populated.
+    assert model._sites_input_cache is not None
+    assert model._xlb_cache is not None
+    assert model._xub_cache is not None
+
+    # Repeated access returns the exact same object (proving it is cached).
+    assert model.sites_input is first_input
+    assert model.xlb is first_xlb
+    assert model.xub is first_xub
+
+
+def test_invalidate_site_caches_clears_all(
+    init_sites: pd.DataFrame, opt_problem: OptProblem
+):
+    """_invalidate_site_caches must reset every site-derived cache to None."""
+    model = Polynomial1DModel(sites=init_sites, opt_problem=opt_problem)
+
+    # Populate the caches.
+    _ = model.sites_input
+    _ = model.xlb
+    _ = model.xub
+    assert model._sites_input_cache is not None
+    assert model._xlb_cache is not None
+    assert model._xub_cache is not None
+
+    model._invalidate_site_caches()
+
+    assert model._sites_input_cache is None
+    assert model._xlb_cache is None
+    assert model._xub_cache is None
+
+
+def test_sites_setter_invalidates_caches(
+    init_sites: pd.DataFrame, opt_problem: OptProblem
+):
+    """Reassigning _sites must invalidate the derived caches so subsequent
+    reads recompute against the new sites."""
+    model = Polynomial1DModel(sites=init_sites, opt_problem=opt_problem)
+
+    # Populate caches with the initial sites.
+    _ = model.sites_input
+    _ = model.xlb
+    _ = model.xub
+
+    # Reassign to a strict subset with different bounds.
+    subset = init_sites.iloc[:3].copy()
+    model._sites = subset
+
+    # Setter should have cleared the caches.
+    assert model._sites_input_cache is None
+    assert model._xlb_cache is None
+    assert model._xub_cache is None
+
+    # Recomputed values reflect the new sites.
+    assert model.xlb == pytest.approx([subset["x"].min()])
+    assert model.xub == pytest.approx([subset["x"].max()])
+    assert model.sites_input.shape[0] == len(subset)
+
+
+def test_update_refreshes_site_caches(
+    init_sites: pd.DataFrame, add_sites: pd.DataFrame, opt_problem: OptProblem
+):
+    """update() goes through _update_sites -> _sites setter, so the cached
+    bounds and input sites must reflect the combined site set afterwards."""
+    model = Polynomial1DModel(sites=init_sites, opt_problem=opt_problem)
+
+    # Prime the caches before updating.
+    _ = model.sites_input
+    _ = model.xlb
+    _ = model.xub
+
+    model.update(add_sites.copy())
+
+    combined_x = pd.concat([init_sites["x"], add_sites["x"]], ignore_index=True)
+    assert model.xlb == pytest.approx([combined_x.min()])
+    assert model.xub == pytest.approx([combined_x.max()])
+    assert model.sites_input.shape[0] == model.nsites
