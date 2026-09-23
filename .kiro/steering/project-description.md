@@ -36,7 +36,7 @@ The broader open-source community, particularly users of OpenMDAO and multidisci
 | `IntVariable` | `problem.py` | Integer design variable |
 | `ArrayVariable` | `problem.py` | NumPy array design variable |
 | `CategoricalVariable` | `problem.py` | Categorical (discrete set) variable |
-| `StringVariable` | `problem.py` | Free-form string variable (inputs only; treated as fixed / ignored during optimization) |
+| `StringVariable` | `problem.py` | Free-form string variable (allowed as input or response; cannot be an objective/constraint; treated as fixed / ignored during optimization) |
 
 `Variable` is the union type: `FloatVariable | IntVariable | ArrayVariable | CategoricalVariable | StringVariable`
 
