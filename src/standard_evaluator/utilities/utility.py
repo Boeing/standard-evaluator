@@ -8,7 +8,7 @@ import numpy as np
 
 
 from standard_evaluator.evaluator import EvaluatorInfo
-from standard_evaluator.problem import Variable, ArrayVariable, CategoricalVariable, FloatVariable, IntVariable
+from standard_evaluator.problem import Variable, ArrayVariable, CategoricalVariable, FloatVariable, IntVariable, StringVariable
 from standard_evaluator.problem import OptProblem
 
 def check_prob(prob: dict) -> None:
@@ -277,6 +277,8 @@ def get_types_from_evaluator_info(my_info: EvaluatorInfo, variables_only: bool =
         # Must start with restrictive types first as they are all Float variables
         if isinstance(var, CategoricalVariable):
             type_info[var.name] = pd.CategoricalDtype(var.bounds, ordered=True)
+        elif isinstance(var, StringVariable):
+            type_info[var.name] = "string"
         elif isinstance(var, IntVariable):
             type_info[var.name] = "Int64"
         elif isinstance(var, ArrayVariable):
@@ -668,7 +670,7 @@ def update_bounds_to_optimizer_space(element: Variable, shift_val, scale_val) ->
         shift_val: The shift value (scalar or array).
         scale_val: The scale value (scalar or array).
     """
-    if isinstance(element, CategoricalVariable):
+    if isinstance(element, (CategoricalVariable, StringVariable)):
         element.shift = None
         element.scale = None
         return
@@ -705,7 +707,7 @@ def update_bounds_to_design_space(element: Variable, shift_val, scale_val) -> No
         shift_val: The original shift value (scalar or array).
         scale_val: The original scale value (scalar or array).
     """
-    if isinstance(element, CategoricalVariable):
+    if isinstance(element, (CategoricalVariable, StringVariable)):
         element.shift = None
         element.scale = None
         return

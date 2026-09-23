@@ -9,7 +9,10 @@ from standard_evaluator import (
     evaluator_info_to_opt_problem,
     opt_problem_to_evaluator_info,
     CategoricalVariable,
+    StringVariable,
 )
+from standard_evaluator.problem import Variable
+from pydantic import TypeAdapter
 
 def test_float_variable():
     my_float_var = FloatVariable(name="dummy")
@@ -68,6 +71,144 @@ def test_categorical_variable():
     with pytest.raises(ValueError):
         # Check that is lower bound is larger than upper bound we throw an error
         IntVariable(name="dummy", bounds=[2.0, 1.0, "ret"], default="no")
+
+def test_string_variable():
+    # A string variable can be constructed with just a name.
+    my_str_var = StringVariable(name="s1")
+    assert my_str_var.name == "s1"
+    assert my_str_var.class_type == "str"
+    # Bounds, shift and scale do not apply to string variables.
+    assert my_str_var.bounds is None
+    assert my_str_var.shift is None
+    assert my_str_var.scale is None
+    assert my_str_var.default is None
+
+    # A default value can be provided and is stored as given.
+    my_str_var2 = StringVariable(name="s2", default="hello")
+    assert my_str_var2.default == "hello"
+
+    # Bounds, shift and scale must remain None for string variables.
+    with pytest.raises(ValueError):
+        StringVariable(name="s3", shift=1.0)
+    with pytest.raises(ValueError):
+        StringVariable(name="s4", scale=2.0)
+    with pytest.raises(ValueError):
+        StringVariable(name="s5", bounds=(0.0, 1.0))
+
+    # Names still cannot contain whitespace.
+    with pytest.raises(ValueError):
+        StringVariable(name="bad name")
+
+    # An empty name is allowed, consistent with the other variable types.
+    assert StringVariable(name="").name == ""
+
+
+def test_calculate_default_string():
+    # When no default is set it is filled with an empty string.
+    s1 = StringVariable(name="s1")
+    s1.calculate_default()
+    assert s1.default == ""
+    # An existing default is preserved, even with overwrite=True (the default),
+    # because a free-form string has no bounds to derive a value from.
+    s2 = StringVariable(name="s2", default="preset")
+    assert s2.default == "preset"
+    s2.calculate_default()
+    assert s2.default == "preset"
+    # overwrite=False behaves the same: the existing default is kept.
+    s3 = StringVariable(name="s3", default="preset")
+    s3.calculate_default(overwrite=False)
+    assert s3.default == "preset"
+
+
+def test_string_variable_serialization_roundtrip():
+    # A StringVariable should survive a serialize/deserialize round-trip and
+    # be reconstructed as a StringVariable via the discriminating class_type.
+    original = StringVariable(name="s1", default="hello", description="a note")
+    dumped = original.model_dump()
+    assert dumped["class_type"] == "str"
+
+    adapter = TypeAdapter(Variable)
+    restored = adapter.validate_python(dumped)
+    assert isinstance(restored, StringVariable)
+    assert restored.name == "s1"
+    assert restored.default == "hello"
+    assert restored.description == "a note"
+
+
+def test_opt_problem_with_string_variable():
+    s1 = StringVariable(name="s1", default="hello")
+    x1 = FloatVariable(name="x1", bounds=[2.0, 5.0])
+    y1 = FloatVariable(name="y1", bounds=[2.0, 5.0])
+    my_prob = OptProblem(
+        name="opt",
+        variables=[s1, x1],
+        responses=[y1],
+        objectives=["y1"],
+    )
+    assert "s1" in my_prob.variable_names()
+    my_prob.calculate_default()
+    assert my_prob.variables[0].default == "hello"
+
+    # The string variable must be treated as a fixed variable, i.e. it never
+    # gets a Jacobian/gradient row and is excluded from the free variables.
+    var_map = my_prob.var_map
+    s1_rows = var_map[var_map["name"] == "s1"]
+    assert len(s1_rows) == 1
+    assert bool(s1_rows["fixed"].iloc[0]) is True
+    assert s1_rows["jac_row"].iloc[0] is None
+    assert s1_rows["grad_row"].iloc[0] is None
+
+    # Only the free float variable x1 contributes to the free variable count.
+    assert my_prob.num_flat_vars == 1
+
+
+def test_opt_problem_string_variable_as_response_allowed():
+    # A string variable is allowed as a response, e.g. an analysis producing a
+    # generated file name.
+    x1 = FloatVariable(name="x1", bounds=[2.0, 5.0])
+    y1 = FloatVariable(name="y1", bounds=[2.0, 5.0])
+    sres = StringVariable(name="sres", default="result.txt")
+    my_prob = OptProblem(
+        name="opt",
+        variables=[x1],
+        responses=[y1, sres],
+        objectives=["y1"],
+    )
+    assert "sres" in my_prob.response_names()
+    assert isinstance(my_prob.responses[1], StringVariable)
+    assert my_prob.responses[1].default == "result.txt"
+
+
+def test_opt_problem_string_variable_as_objective_or_constraint_errors():
+    s1 = StringVariable(name="s1", default="hello")
+    x1 = FloatVariable(name="x1", bounds=[2.0, 5.0])
+    y1 = FloatVariable(name="y1", bounds=[2.0, 5.0])
+    sres = StringVariable(name="sres", default="result.txt")
+    with pytest.raises(ValueError):
+        # A string variable cannot be an objective.
+        OptProblem(
+            name="opt",
+            variables=[s1, x1],
+            responses=[y1],
+            objectives=["s1"],
+        )
+    with pytest.raises(ValueError):
+        # A string variable cannot be a constraint.
+        OptProblem(
+            name="opt",
+            variables=[s1, x1],
+            responses=[y1],
+            constraints=["s1"],
+        )
+    with pytest.raises(ValueError):
+        # A string response cannot be an objective either.
+        OptProblem(
+            name="opt",
+            variables=[x1],
+            responses=[y1, sres],
+            objectives=["sres"],
+        )
+
 
 def test_int_variable():
     my_int_var = IntVariable(name="dummy")
