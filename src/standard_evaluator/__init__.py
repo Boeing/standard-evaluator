@@ -8,7 +8,7 @@ from .standard_evaluator import StandardEval
 from .standard_group import StandardGroup
 from .utilities import unique_names
 from .problem import ArrayVariable, FloatVariable, IntVariable, Variable, MAXINT
-from .problem import OptProblem, CategoricalVariable
+from .problem import OptProblem, CategoricalVariable, StringVariable
 from .evaluator import EvaluatorInfo, GroupInfo, EquationInfo, JoinedInfo
 from .converters import evaluator_info_to_opt_problem, opt_problem_to_evaluator_info
 from .aviary_encoder import AviaryEncoder
@@ -39,6 +39,7 @@ __all__ = [
     "ArrayVariable",
     "FloatVariable",
     "CategoricalVariable",
+    "StringVariable",
     "IntVariable",
     "Variable",
     "MAXINT",

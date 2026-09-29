@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 270 90" width="270" height="90">
+  <defs>
+    <linearGradient id="accentGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#1a237e"/>
+      <stop offset="100%" style="stop-color:#0d47a1"/>
+    </linearGradient>
+    <filter id="shadow" x="-5%" y="-5%" width="110%" height="110%">
+      <feDropShadow dx="0" dy="1" stdDeviation="1.5" flood-opacity="0.15"/>
+    </filter>
+  </defs>
+
+  <!-- Outer frame with solid dark fill (works on any background) -->
+  <rect x="4" y="4" width="262" height="82" rx="14" ry="14" fill="#3d4a5c" stroke="rgba(255,255,255,0.3)" stroke-width="1"/>
+
+  <!-- Logo icon -->
+  <g transform="translate(16, 12) scale(0.65)" filter="url(#shadow)">
+    <!-- Rounded square background with gradient -->
+    <rect x="0" y="0" width="100" height="100" rx="18" ry="18" fill="url(#accentGrad)"/>
+
+    <!-- Diamond -->
+    <polygon points="50,25 70,50 50,75 30,50" fill="none" stroke="rgba(255,255,255,0.95)" stroke-width="2.5" stroke-linejoin="round"/>
+    <!-- Connection lines -->
+    <line x1="22" y1="30" x2="38" y2="40" stroke="rgba(255,255,255,0.6)" stroke-width="1.5" stroke-linecap="round"/>
+    <line x1="22" y1="50" x2="30" y2="50" stroke="rgba(255,255,255,0.6)" stroke-width="1.5" stroke-linecap="round"/>
+    <line x1="22" y1="70" x2="38" y2="60" stroke="rgba(255,255,255,0.6)" stroke-width="1.5" stroke-linecap="round"/>
+    <line x1="62" y1="40" x2="78" y2="38" stroke="rgba(255,255,255,0.6)" stroke-width="1.5" stroke-linecap="round"/>
+    <line x1="62" y1="60" x2="78" y2="62" stroke="rgba(255,255,255,0.6)" stroke-width="1.5" stroke-linecap="round"/>
+    <!-- Arrow tips -->
+    <polygon points="74,35.5 74,40.5 78,38" fill="rgba(255,255,255,0.6)"/>
+    <polygon points="74,59.5 74,64.5 78,62" fill="rgba(255,255,255,0.6)"/>
+    <!-- Input dots (on top) -->
+    <circle cx="22" cy="30" r="5" fill="white"/>
+    <circle cx="22" cy="50" r="5" fill="white"/>
+    <circle cx="22" cy="70" r="5" fill="white"/>
+    <!-- Output dots (on top) -->
+    <circle cx="78" cy="38" r="5" fill="white"/>
+    <circle cx="78" cy="62" r="5" fill="white"/>
+  </g>
+
+  <!-- Text next to icon -->
+  <text x="92" y="36" font-family="'Segoe UI', 'Helvetica Neue', Arial, sans-serif" font-size="26" font-weight="600" fill="white">Standard</text>
+  <text x="92" y="60" font-family="'Segoe UI', 'Helvetica Neue', Arial, sans-serif" font-size="26" font-weight="300" fill="rgba(255,255,255,0.85)">Evaluator</text>
+  <text x="92" y="76" font-family="'Segoe UI', 'Helvetica Neue', Arial, sans-serif" font-size="10" font-weight="400" fill="rgba(255,255,255,0.55)" letter-spacing="0.5">Unified Analysis &amp; Surrogate API</text>
+</svg>

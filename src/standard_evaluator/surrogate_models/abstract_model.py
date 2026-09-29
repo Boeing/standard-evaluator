@@ -111,21 +111,29 @@ class SurrogateModel(NumpyEvaluator):
     def xlb(self) -> NDArray[np.float64]:
         """The lower left corner of the box that bounds the input sites.
 
+        Cached; invalidated when ``self._sites`` is reassigned.
+
         Returns:
             NDArray[np.float64]: An array of length nind containing the lower
                 left corner of the bounding box.
         """
-        return np.min(self.sites_input, axis=0)
+        if self._xlb_cache is None:
+            self._xlb_cache = np.min(self.sites_input, axis=0)
+        return self._xlb_cache
 
     @property
     def xub(self) -> NDArray[np.float64]:
         """The upper right corner of the box that bounds the input sites.
 
+        Cached; invalidated when ``self._sites`` is reassigned.
+
         Returns:
             NDArray[np.float64]: An array of length nind containing the upper
                 right corner of the bounding box.
         """
-        return np.max(self.sites_input, axis=0)
+        if self._xub_cache is None:
+            self._xub_cache = np.max(self.sites_input, axis=0)
+        return self._xub_cache
 
     @property
     def nind(self) -> int:
@@ -135,6 +143,30 @@ class SurrogateModel(NumpyEvaluator):
             int: Count of nonconstant independent variables.
         """
         return len(self.nonconstant_variables)
+
+    @property
+    def _sites(self) -> pd.DataFrame:
+        """The calibration sites (backing store for :attr:`sites`).
+
+        Reassigning this attribute invalidates the derived caches
+        (``sites_input``, ``xlb``, ``xub``) via the setter. Since every site
+        mutation reassigns it, those caches cannot go stale.
+
+        Returns:
+            pd.DataFrame: The calibration sites.
+        """
+        return self._sites_df
+
+    @_sites.setter
+    def _sites(self, value: pd.DataFrame) -> None:
+        self._sites_df = value
+        self._invalidate_site_caches()
+
+    def _invalidate_site_caches(self) -> None:
+        """Clear cached quantities derived from the calibration sites."""
+        self._sites_input_cache = None
+        self._xlb_cache = None
+        self._xub_cache = None
 
     @property
     def sites(self) -> pd.DataFrame:
@@ -158,12 +190,16 @@ class SurrogateModel(NumpyEvaluator):
     def sites_input(self) -> NDArray[np.float64]:
         """Input sites used to calibrate the model.
 
+        Cached; invalidated when ``self._sites`` is reassigned.
+
         Returns:
             NDArray[np.float64]: The input portion of the calibration sites.
         """
-        return np.atleast_2d(
-            self.dataframe_to_float_ndarray(self._sites[self.nonconstant_variables])
-        )
+        if self._sites_input_cache is None:
+            self._sites_input_cache = np.atleast_2d(
+                self.dataframe_to_float_ndarray(self._sites[self.nonconstant_variables])
+            )
+        return self._sites_input_cache
 
     @property
     def sites_output(self) -> NDArray[np.float64]:
@@ -236,6 +272,9 @@ class SurrogateModel(NumpyEvaluator):
 
         # ensure data is valid w.r.t. problem specification
         self.check_consistency_of_sites(sites)
+
+        # Reset the caching internal variables
+        self._invalidate_site_caches()
 
         # We want to make a copy of the sites passed in, and not modify them.
         # We also want to make sure there are no duplicates in the sites
@@ -579,20 +618,89 @@ class SurrogateModel(NumpyEvaluator):
         response_indices = [self.outputs.index(r) for r in target_responses]
         return response_indices
 
+    def eval_np(
+        self, sites: np.ndarray, names: list = None, std_deviations: float = 0
+    ) -> NDArray[np.float64]:
+        """Predict the desired response values for the given sites.
+
+        The mean prediction is produced by :meth:`_def_eval_np_mean`. When
+        ``std_deviations`` is nonzero, the prediction is shifted by that many
+        standard deviations away from the mean, which requires the model to
+        provide a prediction variance (see :meth:`variance` and
+        :meth:`supports_variance`).
+
+        Args:
+            sites: Sites to compute predicted response values.
+            names: Which responses are computed. Defaults to None (all).
+            std_deviations: Number of standard deviations to shift predictions
+                from the mean. 0 returns mean predictions. Defaults to 0.
+
+        Returns:
+            NDArray[np.float64]: Predicted response values for the given sites.
+
+        Raises:
+            NotImplementedError: If ``std_deviations`` is nonzero and the model
+                does not provide a prediction variance.
+        """
+        mean = self._def_eval_np_mean(sites, names)
+        if std_deviations == 0:
+            return mean
+        if not self.supports_variance():
+            raise NotImplementedError(
+                f"{type(self).__name__}: does not support variance-based "
+                "prediction, so a nonzero 'std_deviations' cannot be applied."
+            )
+        response_indices = self.get_response_indices(names)
+        variance = self.variance(sites)[:, response_indices]
+        return mean + std_deviations * np.sqrt(np.abs(variance))
+
+    def variance(self, x: np.ndarray) -> NDArray[np.float64]:
+        """Compute the prediction variance at the given points.
+
+        The base implementation raises, as most models do not quantify
+        uncertainty. Models that can (e.g. Kriging) override this and return an
+        array of shape ``(n_pts, ndep)``.
+
+        Args:
+            x: Array (n_pts x nind) of points.
+
+        Returns:
+            NDArray[np.float64]: Array (n_pts x ndep) of estimated variances.
+
+        Raises:
+            NotImplementedError: Always, unless overridden by a subclass.
+        """
+        raise NotImplementedError(
+            f"{type(self).__name__}: does not support variance-based prediction."
+        )
+
+    def supports_variance(self) -> bool:
+        """Whether this model can produce a prediction variance.
+
+        Returns:
+            bool: ``True`` if :meth:`variance` is implemented, else ``False``.
+        """
+        return False
+
     # ================
     # |   Abstract   |
     # ================
 
     @abstractmethod
-    def eval_np(self, sites: np.ndarray, names: list = None) -> NDArray[np.float64]:
-        """Predict the desired response values for the given sites.
+    def _def_eval_np_mean(
+        self, sites: np.ndarray, names: list = None
+    ) -> NDArray[np.float64]:
+        """Compute the mean response prediction for the given sites.
+
+        This is the model-specific prediction with no variance-based shift.
+        :meth:`eval_np` calls this and applies any ``std_deviations`` shift.
 
         Args:
             sites: Sites to compute predicted response values.
             names: Which responses are computed. Defaults to None (all).
 
         Returns:
-            NDArray[np.float64]: Predicted response values for the given sites.
+            NDArray[np.float64]: Mean predicted response values for the sites.
         """
 
     @abstractmethod

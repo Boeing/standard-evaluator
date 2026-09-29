@@ -1,0 +1,15 @@
+{
+  "version": "v1",
+  "hooks": [
+    {
+      "name": "Enforce .venv Python for shell commands",
+      "trigger": "PreToolUse",
+      "description": "Reminds the agent before every shell command execution to use .venv\\Scripts\\python.exe — never bare python, pytest, or pip.",
+      "matcher": "execute_pwsh",
+      "action": {
+        "type": "agent",
+        "prompt": "MANDATORY: For ALL Python commands, you MUST use `.venv\\Scripts\\python.exe` as the interpreter. Never use bare `python`, `pytest`, `pip`, or `python3`. Examples: `.venv\\Scripts\\python.exe -m pytest tests/` for tests, `.venv\\Scripts\\python.exe -m pip install ...` for installs, `.venv\\Scripts\\python.exe script.py` for scripts. Do NOT activate the venv — it does not persist across commands. This is a Windows PowerShell environment."
+      }
+    }
+  ]
+}
