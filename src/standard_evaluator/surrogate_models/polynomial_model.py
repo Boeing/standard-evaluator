@@ -172,7 +172,9 @@ class PolynomialModel(SurrogateModel):
                 degree_exponents=degree_exponents_val.astype(float)
             )
 
-    def eval_np(self, x: np.array, names: Optional[List[str]] = None) -> np.ndarray:
+    def _def_eval_np_mean(
+        self, x: np.array, names: Optional[List[str]] = None
+    ) -> np.ndarray:
         """Evaluate the polynomial model at given points.
 
         Parameters

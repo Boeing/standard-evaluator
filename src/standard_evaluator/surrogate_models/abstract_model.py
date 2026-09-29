@@ -618,20 +618,89 @@ class SurrogateModel(NumpyEvaluator):
         response_indices = [self.outputs.index(r) for r in target_responses]
         return response_indices
 
+    def eval_np(
+        self, sites: np.ndarray, names: list = None, std_deviations: float = 0
+    ) -> NDArray[np.float64]:
+        """Predict the desired response values for the given sites.
+
+        The mean prediction is produced by :meth:`_def_eval_np_mean`. When
+        ``std_deviations`` is nonzero, the prediction is shifted by that many
+        standard deviations away from the mean, which requires the model to
+        provide a prediction variance (see :meth:`variance` and
+        :meth:`supports_variance`).
+
+        Args:
+            sites: Sites to compute predicted response values.
+            names: Which responses are computed. Defaults to None (all).
+            std_deviations: Number of standard deviations to shift predictions
+                from the mean. 0 returns mean predictions. Defaults to 0.
+
+        Returns:
+            NDArray[np.float64]: Predicted response values for the given sites.
+
+        Raises:
+            NotImplementedError: If ``std_deviations`` is nonzero and the model
+                does not provide a prediction variance.
+        """
+        mean = self._def_eval_np_mean(sites, names)
+        if std_deviations == 0:
+            return mean
+        if not self.supports_variance():
+            raise NotImplementedError(
+                f"{type(self).__name__}: does not support variance-based "
+                "prediction, so a nonzero 'std_deviations' cannot be applied."
+            )
+        response_indices = self.get_response_indices(names)
+        variance = self.variance(sites)[:, response_indices]
+        return mean + std_deviations * np.sqrt(np.abs(variance))
+
+    def variance(self, x: np.ndarray) -> NDArray[np.float64]:
+        """Compute the prediction variance at the given points.
+
+        The base implementation raises, as most models do not quantify
+        uncertainty. Models that can (e.g. Kriging) override this and return an
+        array of shape ``(n_pts, ndep)``.
+
+        Args:
+            x: Array (n_pts x nind) of points.
+
+        Returns:
+            NDArray[np.float64]: Array (n_pts x ndep) of estimated variances.
+
+        Raises:
+            NotImplementedError: Always, unless overridden by a subclass.
+        """
+        raise NotImplementedError(
+            f"{type(self).__name__}: does not support variance-based prediction."
+        )
+
+    def supports_variance(self) -> bool:
+        """Whether this model can produce a prediction variance.
+
+        Returns:
+            bool: ``True`` if :meth:`variance` is implemented, else ``False``.
+        """
+        return False
+
     # ================
     # |   Abstract   |
     # ================
 
     @abstractmethod
-    def eval_np(self, sites: np.ndarray, names: list = None) -> NDArray[np.float64]:
-        """Predict the desired response values for the given sites.
+    def _def_eval_np_mean(
+        self, sites: np.ndarray, names: list = None
+    ) -> NDArray[np.float64]:
+        """Compute the mean response prediction for the given sites.
+
+        This is the model-specific prediction with no variance-based shift.
+        :meth:`eval_np` calls this and applies any ``std_deviations`` shift.
 
         Args:
             sites: Sites to compute predicted response values.
             names: Which responses are computed. Defaults to None (all).
 
         Returns:
-            NDArray[np.float64]: Predicted response values for the given sites.
+            NDArray[np.float64]: Mean predicted response values for the sites.
         """
 
     @abstractmethod

@@ -86,7 +86,7 @@ class Polynomial1DModel(SurrogateModel):
 
         return A
 
-    def eval_np(self, sites: np.ndarray, names: list = None) -> np.ndarray:
+    def _def_eval_np_mean(self, sites: np.ndarray, names: list = None) -> np.ndarray:
         ret = np.zeros((len(sites), 1))
         for i in range(self.deg + 1):
             ret += self.coefs[i] * sites**i
@@ -263,7 +263,7 @@ def test_abstract():
     with pytest.raises(TypeError, match="Can't instantiate abstract class"):
         SurrogateModel(None)
 
-    # Derived class is missing eval_np
+    # Derived class is missing _def_eval_np_mean
     class DummyModel1(SurrogateModel):
         def _def_update(
             self, sites_input, sites_output, append, new_sites_number=None
@@ -282,16 +282,16 @@ def test_abstract():
     # Check Python version
     if sys.version_info.minor < 12:
         expected_message = "Can't instantiate abstract class "
-        "DummyModel1 with abstract methods? eval_np"
+        "DummyModel1 with abstract methods? _def_eval_np_mean"
     else:
-        expected_message = "Can't instantiate abstract class DummyModel1 without an implementation for abstract method 'eval_np'"
+        expected_message = "Can't instantiate abstract class DummyModel1 without an implementation for abstract method '_def_eval_np_mean'"
 
     with pytest.raises(TypeError, match=expected_message):
         DummyModel1()
 
     # Derived class is missing _def_update
     class DummyModel2(SurrogateModel):
-        def eval_np(self, *args, **kwargs) -> None:
+        def _def_eval_np_mean(self, *args, **kwargs) -> None:
             pass
 
         def _def_to_dict(self) -> dict:
@@ -315,7 +315,7 @@ def test_abstract():
 
     # Derived class is missing _def_to_dict
     class DummyModel3(SurrogateModel):
-        def eval_np(self, *args, **kwargs) -> None:
+        def _def_eval_np_mean(self, *args, **kwargs) -> None:
             pass
 
         def _def_update(self, x, y, is_trained) -> None:
@@ -340,7 +340,7 @@ def test_abstract():
 
     # Derived class is missing _def_from_dict
     class DummyModel4(SurrogateModel):
-        def eval_np(self, *args, **kwargs) -> None:
+        def _def_eval_np_mean(self, *args, **kwargs) -> None:
             pass
 
         def _def_update(
@@ -552,7 +552,7 @@ def test_to_from_dict(
 
     # Trying to instantiate wrong model type
     class DummyModel(SurrogateModel):
-        def eval_np(self, sites, names=None):
+        def _def_eval_np_mean(self, sites, names=None):
             pass
 
         def _def_update(self, add_sites, names, outputs, sites_input=None, sites_output=None, new_sites_number=None):
@@ -793,3 +793,38 @@ def test_update_refreshes_site_caches(
     assert model.xlb == pytest.approx([combined_x.min()])
     assert model.xub == pytest.approx([combined_x.max()])
     assert model.sites_input.shape[0] == model.nsites
+
+
+# =============================================================================
+# std_deviations template-method behavior (surrogate-std-deviations-refactor)
+# =============================================================================
+
+
+def test_supports_variance_default_false(init_sites, opt_problem):
+    """A model that does not implement variance reports supports_variance False."""
+    model = Polynomial1DModel(sites=init_sites, opt_problem=opt_problem)
+    assert model.supports_variance() is False
+
+
+def test_eval_np_default_equals_std_deviations_zero(init_sites, opt_problem):
+    """eval_np(sites) equals eval_np(sites, std_deviations=0)."""
+    model = Polynomial1DModel(sites=init_sites, opt_problem=opt_problem)
+    sites = np.array([[0.0], [1.0], [2.0]])
+    assert np.allclose(model.eval_np(sites), model.eval_np(sites, std_deviations=0))
+
+
+def test_eval_np_nonzero_std_deviations_without_variance_raises(
+    init_sites, opt_problem
+):
+    """A model without variance raises NotImplementedError for nonzero std_deviations."""
+    model = Polynomial1DModel(sites=init_sites, opt_problem=opt_problem)
+    sites = np.array([[0.0], [1.0], [2.0]])
+    with pytest.raises(NotImplementedError, match="variance"):
+        model.eval_np(sites, std_deviations=2.0)
+
+
+def test_variance_base_raises_with_class_name(init_sites, opt_problem):
+    """The base variance raises NotImplementedError naming the concrete class."""
+    model = Polynomial1DModel(sites=init_sites, opt_problem=opt_problem)
+    with pytest.raises(NotImplementedError, match="Polynomial1DModel"):
+        model.variance(np.array([[0.0]]))
