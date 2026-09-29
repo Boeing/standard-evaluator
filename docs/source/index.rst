@@ -6,11 +6,6 @@
 Standard Evaluator
 ==================
 
-.. image:: ../assets/logo.svg
-   :alt: Standard Evaluator Logo
-   :align: center
-   :width: 270px
-
 Standard Evaluator is an open-source Python library (published on PyPI as ``standard-evaluator``) that provides a common API for defining, wrapping, and composing analysis codes and surrogate models. It was initially developed under NASA Contract 80GRC023CA045, and has been expanded since then.
 
 The library has three main purposes:
