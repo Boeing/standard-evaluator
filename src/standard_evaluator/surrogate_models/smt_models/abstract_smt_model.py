@@ -254,8 +254,8 @@ class AbstractSmtModel(SurrogateModel):
                 sites_output=sites_np[:, nind:],
             )
 
-    def eval_np(self, sites: np.ndarray, names: list = None) -> np.ndarray:
-        """Predict the desired response values (given by ``names``) for the given sites.
+    def _def_eval_np_mean(self, sites: np.ndarray, names: list = None) -> np.ndarray:
+        """Predict the mean response values (given by ``names``) for the given sites.
 
         :param sites: Sites to compute predicted response values.
         :type sites: np.ndarray
