@@ -322,11 +322,13 @@ class Evaluator(ABC):
                 + " Check that input is not unrolled."
             )
 
-        # Check fixed variables
+        # Check fixed variables. Only variables with numeric bounds where the
+        # lower bound equals the upper bound are "pinned" fixed variables.
         fixed_vars = [
             var
             for var in self._opt_problem.variables
-            if np.array_equal(var.bounds[0], var.bounds[1])
+            if var.bounds is not None
+            and np.array_equal(var.bounds[0], var.bounds[1])
         ]
         # mask is a NumPy boolean array of length equal to the number of rows in the sites DataFrame, initialized with all True values.
         mask = np.ones(len(sites), dtype=bool)
