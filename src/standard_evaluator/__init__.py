@@ -25,6 +25,13 @@ from .om_converter import (
 )
 from .om_converter import set_opt_problem, get_opt_problem
 from .om_converter import set_variable_bounds, build_opt_problem
+from .utilities.dependency_tracing import (
+    build_dependency_graph,
+    trace_required_components,
+    trace_impacted_components,
+    explain_dependencies,
+    prune_model_dict,
+)
 from . import evaluators
 from . import surrogate_models
 
@@ -71,6 +78,11 @@ __all__ = [
     "set_opt_problem",
     "set_variable_bounds",
     "build_opt_problem",
+    "build_dependency_graph",
+    "trace_required_components",
+    "trace_impacted_components",
+    "explain_dependencies",
+    "prune_model_dict",
     "evaluators",
     "surrogate_models",
 ]

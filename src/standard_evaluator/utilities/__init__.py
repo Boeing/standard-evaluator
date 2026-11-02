@@ -66,6 +66,14 @@ from standard_evaluator.utilities.opt_problem_utility import (
     get_opt_problem_constant_vars,
 )
 
+from standard_evaluator.utilities.dependency_tracing import (
+    build_dependency_graph,
+    trace_required_components,
+    trace_impacted_components,
+    explain_dependencies,
+    prune_model_dict,
+)
+
 
 __all__ = [
     "unique_names",
@@ -98,4 +106,9 @@ __all__ = [
     "compress_whitespace",
     "res_element_to_string",
     "get_opt_problem_constant_vars",
+    "build_dependency_graph",
+    "trace_required_components",
+    "trace_impacted_components",
+    "explain_dependencies",
+    "prune_model_dict",
 ]
